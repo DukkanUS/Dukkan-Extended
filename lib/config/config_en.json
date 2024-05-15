@@ -1,568 +1,738 @@
 {
   "HorizonLayout": [
     {
-      "layout": "logo",
-      "showMenu": true,
-      "showSearch": true,
+      "iconOpacity": 0,
+      "image": "https://www.strunkmedia.com/wp-content/uploads/2018/05/bigstock-Print-163213010.png",
       "showLogo": true,
-      "enableBackground": true
-    },
-    {
-      "layout": "category",
-      "type": "icon",
-      "useFor": "mobile",
-      "wrap": false,
-      "size": 1.0,
-      "radius": 50.0,
-      "enableBackground": true,
-      "items": [
-        {
-          "category": 18,
-          "image": "https://user-images.githubusercontent.com/1459805/62820029-2e679f00-bb88-11e9-80de-fdf115cfd942.png",
-          "colors": [
-            "#3CC2BF",
-            "#3CC2BF"
-          ],
-          "originalColor": false
-        },
-        {
-          "category": 24,
-          "label": "Bag",
-          "image": "https://trello.com/1/cards/60a62a9bca5053572a669dee/attachments/60a62abccf14cb63646c1706/previews/60a62abdcf14cb63646c1728/download/ic_dress.png",
-          "colors": [
-            "#3E6AB5",
-            "#3E6AB5"
-          ]
-        },
-        {
-          "category": 25,
-          "label": "Blazers",
-          "image": "https://trello.com/1/cards/60a62a9bca5053572a669dee/attachments/60a62ac38749561a23fed73c/previews/60a62ac38749561a23fed76d/download/ic_shorts.png",
-          "colors": [
-            "#53A2CC",
-            "#53A2CC"
-          ]
-        },
-        {
-          "category": 28,
-          "label": "Shoes",
-          "image": "https://trello.com/1/cards/60a62a9bca5053572a669dee/attachments/60a62ac27eb3b0027e045f80/previews/60a62ac27eb3b0027e045fee/download/ic_shoes.png",
-          "colors": [
-            "#53688A",
-            "#53688A"
-          ]
-        },
-        {
-          "category": 29,
-          "label": "Jeans",
-          "image": "https://trello.com/1/cards/60a62a9bca5053572a669dee/attachments/60a62ac568d4170599acd4ca/previews/60a62ac568d4170599acd4dd/download/ic_tie.png",
-          "colors": [
-            "#43506A",
-            "#43506A"
-          ]
-        },
-        {
-          "category": 30,
-          "label": "Jeans Man",
-          "image": "https://trello.com/1/cards/60a62a9bca5053572a669dee/attachments/60a62ac048c3790a65a5f75f/previews/60a62ac048c3790a65a5f763/download/ic_panties.png",
-          "colors": [
-            "#12B58C",
-            "#12B58C"
-          ]
-        }
-      ]
-    },
-    {
-      "layout": "bannerImage",
-      "isSlider": true,
-      "autoPlay": false,
-      "showNumber": false,
-      "design": "default",
-      "showBackGround": true,
-      "radius": 2.0,
-      "enableBackground": true,
-      "items": [
-        {
-          "category": 29,
-          "image": "https://trello.com/1/cards/5f8fe6093cd3ef24d9ede5f5/attachments/5f8fe62076ec8884a587b043/previews/5f8fe62176ec8884a587b05c/download/Mobile_Template_1b.png",
-          "padding": 15.0
-        },
-        {
-          "category": 28,
-          "image": "https://user-images.githubusercontent.com/1459805/59846818-12672e80-938b-11e9-8184-5f7bfe66f1a2.png",
-          "padding": 15.0
-        },
-        {
-          "product": 30,
-          "image": "https://user-images.githubusercontent.com/1459805/60091808-a19b8a00-976f-11e9-9cc7-576ca05c2442.png",
-          "padding": 15.0
-        }
-      ],
-      "itemsWeb": [
-        {
-          "category": 29,
-          "image": "https://cln.sh/41hyDrzG+",
-          "padding": 15.0
-        },
-        {
-          "category": 28,
-          "image": "https://cln.sh/5nl2ZsKG+",
-          "padding": 15.0
-        },
-        {
-          "product": 30,
-          "image": "https://cln.sh/q24Xpr1c+",
-          "padding": 15.0
-        }
-      ]
-    },
-    {
-      "layout": "category",
-      "type": "twoRow",
-      "wrap": true,
-      "useFor": "web",
-      "showShortDescription": true,
-      "size": 1.0,
-      "radius": 150.0,
-      "title": "Shop by category",
-      "spacing": 12.0,
-      "items": [
-        {
-          "category": "25",
-          "image": "https://mstore.io/wp-content/uploads/2017/06/poster.png",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Blazers",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "29",
-          "image": "https://images.unsplash.com/photo-1475178626620-a4d074967452?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=686&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Jeans",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "28",
-          "image": "https://images.unsplash.com/photo-1594587639781-a68a2796bb90?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Jacket",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "18",
-          "image": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Suit",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "26",
-          "image": "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=780&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Dress",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "24",
-          "image": "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=738&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Bag",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "20",
-          "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Glasses",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "22",
-          "image": "https://images.unsplash.com/photo-1531399395381-6603d3b9899f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=719&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Hat",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "23",
-          "image": "https://images.unsplash.com/photo-1604508230015-5a54faf1fa56?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "T-Shirt",
-          "onSale": false,
-          "isFeatured": false
-        },
-        {
-          "category": "29",
-          "image": "https://images.unsplash.com/photo-1475178626620-a4d074967452?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=686&q=80",
-          "showText": true,
-          "originalColor": true,
-          "keepDefaultTitle": false,
-          "showDescription": false,
-          "productType": false,
-          "title": "Jeans",
-          "onSale": false,
-          "isFeatured": false
-        }
-      ],
-      "line": false,
-      "marginLeft": 16.0,
-      "marginRight": 16.0,
-      "marginTop": 10.0,
-      "marginBottom": 10.0,
-      "paddingX": 10.0,
-      "paddingY": 10.0,
-      "marginX": 0.0,
-      "marginY": 0.0,
-      "hideTitle": false,
-      "noBackground": false,
-      "imageBorderWidth": 0.0,
-      "imageBorderColor": "ffe61a00",
-      "imageBorderStyle": "dot",
-      "imageSpacing": 0.0,
-      "border": 0.6,
-      "enableBorder": false,
-      "textAlignment": "topCenter",
-      "imageBoxFit": "fitWidth",
-      "columns": 4,
-      "itemSize": {
-        "width": 270.0,
-        "height": 118.0
-      }
-    },
-    {
-      "key": "v14g5clzc34tf8",
-      "name": "On Sale Today ⚡️",
-      "layout": "saleOff",
-      "isSnapping": true,
-      "rows": 1,
-      "columns": 0,
-      "imageBoxfit": "cover",
-      "imageRatio": 1.2,
-      "hMargin": 9.0,
-      "vMargin": 30.0,
-      "hPadding": 8.0,
-      "vPadding": 6.0,
-      "pos": 400,
-      "showStockStatus": false,
-      "enableRating": true,
-      "hideTitle": false,
-      "hideStore": false,
-      "onSale": true,
-      "hidePrice": false,
-      "featured": false,
-      "showHeart": true,
-      "showCartButton": false,
-      "cartIconRadius": 9.0,
-      "showQuantity": false,
-      "showCartIconColor": false,
-      "showCartIcon": false,
-      "enableBottomAddToCart": false,
-      "cardDesign": "card",
-      "borderRadius": 12.0,
-      "backgroundRadius": 0.0,
-      "showCartButtonWithQuantity": false,
-      "category": "26",
-      "tag": null,
-      "showCountDown": true,
-      "backgroundColor": "ffF1F8FA",
-      "backgroundImage": "https://trello.com/1/cards/6237d7a3eb71c81e0a45964b/attachments/626281b57aedd4517a682e40/previews/626281b67aedd4517a682e5a/download/sale4.png",
-      "spaceWidth": 130.0,
-      "backgroundHeight": 288.0,
-      "backgroundBoxFit": "contain",
-      "parallax": true,
-      "parallaxImageRatio": 1.2,
-      "boxShadow": {
-        "blurRadius": 14.0,
-        "colorOpacity": 0.1,
-        "spreadRadius": 10.0,
-        "x": 0.0,
-        "y": 6.0
+      "menuIcon": {
+        "fontFamily": "MaterialIcons",
+        "name": "menu_rounded"
       },
-      "hideEmptyProductLayout": false,
-      "enableBackground": true
+      "showNotification": true,
+      "showBadgeCart": false,
+      "iconSpreadRadius": 0,
+      "layout": "logo",
+      "iconRadius": 6,
+      "logoSize": 50,
+      "showMenu": true,
+      "showSearch": false,
+      "iconSize": 24,
+      "showCart": false,
+      "opacity": 1
     },
     {
-      "name": "Man Collections",
-      "image": "",
-      "layout": "twoColumn",
-      "category": 21,
-      "enableBackground": true
+      "rotate": [],
+      "boxShadow": {
+        "spreadRadius": 1.0101010101010102,
+        "colorOpacity": 0.09,
+        "blurRadius": 21.01010101010101,
+        "x": 0,
+        "y": 4
+      },
+      "usePrimaryColor": true,
+      "paddingRight": 15,
+      "title": "Search for Item",
+      "type": "static",
+      "enableBackground": false,
+      "marginRight": 20,
+      "paddingBottom": 0,
+      "showSearch": true,
+      "borderInput": false,
+      "paddingTop": 0,
+      "isSafeArea": false,
+      "radius": 9,
+      "fontWeight": 0,
+      "height": 35,
+      "backgroundColor": "ffffffff",
+      "minWidth": 0,
+      "backgroundGradientColor": [],
+      "marginLeft": 20,
+      "layout": "header_search",
+      "textOpacity": 0.5,
+      "fontSize": 16,
+      "marginBottom": 0,
+      "alignment": "centerLeft",
+      "paddingLeft": 5,
+      "marginTop": 10,
+      "font": "Roboto"
     },
     {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 20
+    },
+    {
+      "parallax": false,
+      "doubleTapToFullScreen": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "fit": "fill",
+      "isBlur": false,
+      "parallaxImageRatio": 1.2,
+      "showNumber": false,
+      "design": "swiper",
+      "showBackground": false,
+      "radius": 6,
+      "enableTimeIndicator": true,
+      "intervalTime": 3,
+      "padding": 0,
+      "upHeight": 0,
+      "pageIndicatorType": "line",
+      "isSlider": true,
+      "isSoundOn": false,
+      "enableParallax": false,
+      "autoPlayVideo": false,
       "layout": "bannerImage",
-      "design": "static",
-      "useFor": "mobile",
-      "fit": "fitWidth",
-      "marginLeft": 0.0,
-      "enableBackground": true,
+      "marginBottom": 0,
+      "autoPlay": false,
       "items": [
         {
-          "image": "https://trello.com/1/cards/5fb8de4a9ffe12204a2a3607/attachments/5fb8de57d9356e0af474cc94/previews/5fb8de58d9356e0af474cca0/download/image.png",
-          "coupon": "blackf",
-          "padding": 15.0,
-          "radius": 9.0
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e413459e1a04ab016050/download/DALL%C2%B7E_2024-04-18_12.10.07_-_A_clean_and_inviting_banner_for_a_grocery_store_s_Dairy_%26_Eggs_category._The_image_should_display_dairy_products_like_milk%2C_cheese%2C_eggs%2C_with_a_backd.webp",
+          "bannerWithProduct": false,
+          "name": "",
+          "showSubcategory": false,
+          "video": "",
+          "category": "66",
+          "defaultShowProduct": false,
+          "products": []
+        },
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e43eee2e851c0ed19112/download/DALL%C2%B7E_2024-04-18_12.10.10_-_An_appealing_banner_for_a_grocery_store_s_Bakery_category._The_image_should_feature_freshly_baked_bread%2C_pastries%2C_and_other_bakery_items%2C_artisticall.webp",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "73",
+          "defaultShowProduct": false,
+          "products": []
+        },
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e45b5709401593b4e258/download/DALL%C2%B7E_2024-04-18_12.10.12_-_A_dynamic_banner_for_a_grocery_store_s_Beverages_category._The_image_should_showcase_a_variety_of_drinks_like_juices%2C_soft_drinks%2C_and_water_bottles%2C_.webp",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "95",
+          "defaultShowProduct": false,
+          "products": []
+        },
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e46609a216282e73aacb/download/DALL%C2%B7E_2024-04-18_12.10.15_-_A_professional_banner_for_a_grocery_store_s_Meats_%26_Seafood_category._The_image_should_feature_an_assortment_of_meats_and_seafood%2C_such_as_steaks%2C_chi.webp",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "90",
+          "defaultShowProduct": false,
+          "products": []
         }
       ],
-      "marginBottom": 0.0,
-      "height": 0.15,
-      "marginRight": 0.0,
-      "marginTop": 20.0
+      "marginTop": 0
     },
     {
-      "name": "Recent View",
-      "layout": "recentView"
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 20
     },
     {
-      "name": "Our Blog Posts",
-      "layout": "blog"
+      "showCartIcon": true,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": false,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": false,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "order": "asc",
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "orderby": "menu_order",
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "threeColumn",
+      "enableRating": true,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Artisan Cheese",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "64",
+      "hideEmptyProductListRating": false
     },
     {
-      "name": "New Collections",
-      "layout": "staggered",
-      "limit": 20,
-      "category": 29
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 5
     },
     {
-      "useFor": "web",
-      "layout": "bannerGrid"
+      "showCartIcon": true,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": false,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": false,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "order": "asc",
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "orderby": "menu_order",
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "threeColumn",
+      "enableRating": true,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Bakery & Bread",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "76",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "parallax": false,
+      "enableParallax": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "marginLeft": 0,
+      "layout": "bannerImage",
+      "fit": "fitWidth",
+      "marginRight": 0,
+      "parallaxImageRatio": 1.2,
+      "design": "static",
+      "marginBottom": 0,
+      "items": [
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620eceb218291f1a42cfcc2/download/Sampars-Web-Banner-Snacks-1.jpg",
+          "padding": 15,
+          "product": "225",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "defaultShowProduct": false,
+          "products": []
+        }
+      ],
+      "marginTop": 0
+    },
+    {
+      "showCartIcon": true,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": false,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": false,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "order": "asc",
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "orderby": "menu_order",
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "threeColumn",
+      "enableRating": true,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Snacks",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "gid://shopify/Collection/287467438125,74",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "parallax": false,
+      "enableParallax": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "marginLeft": 0,
+      "layout": "bannerImage",
+      "fit": "fitWidth",
+      "marginRight": 0,
+      "parallaxImageRatio": 1.2,
+      "design": "static",
+      "marginBottom": 0,
+      "items": [
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620eceb218291f1a42cfcc2/download/Sampars-Web-Banner-Snacks-1.jpg",
+          "padding": 15,
+          "product": "225",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "defaultShowProduct": false,
+          "products": []
+        }
+      ],
+      "marginTop": 0
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 5
+    },
+    {
+      "parallax": false,
+      "enableParallax": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "marginLeft": 0,
+      "layout": "bannerImage",
+      "fit": "fitWidth",
+      "marginRight": 0,
+      "parallaxImageRatio": 1.2,
+      "design": "static",
+      "marginBottom": 0,
+      "items": [
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620eb6f2c652ab1c7baf9fe/download/DALL%C2%B7E_2024-04-18_12.07.15_-_A_vibrant_and_colorful_banner_for_a_grocery_store_s_Fruits_%26_Vegetables_category._The_image_should_feature_a_variety_of_fresh_fruits_and_vegetables_li.webp",
+          "padding": 15,
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "16",
+          "defaultShowProduct": false,
+          "products": []
+        }
+      ],
+      "marginTop": 0
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 20
+    },
+    {
+      "showCartIcon": true,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 3,
+      "hideStore": false,
+      "vPadding": 2,
+      "showQuantity": false,
+      "showHeart": false,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": false,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "order": "asc",
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "orderby": "menu_order",
+      "hPadding": 6,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": true,
+      "layout": "twoColumn",
+      "enableRating": true,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "borderRadius": 3,
+      "hideTitle": false,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Bakery",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "108,61",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 20
     }
   ],
   "Setting": {
-    "MainColor": "#3FC1BE",
-    "FontFamily": "Inter",
-    "FontHeader": "Inter",
-    "ProductListLayout": "list",
-    "StickyHeader": false,
+    "TabBarConfig": {
+      "enableOnTop": false,
+      "color": null,
+      "radiusTopLeft": 0,
+      "bottomBarStyle": "static",
+      "paddingRight": 0,
+      "radiusTopRight": 0,
+      "TabBarIndicator": {
+        "strokeWidth": 0,
+        "color": null,
+        "horizontalPadding": 0,
+        "topRightRadius": 0,
+        "tabPosition": "bottom",
+        "bottomRightRadius": 0,
+        "bottomLeftRadius": 0,
+        "topLeftRadius": 0,
+        "paintingStyle": "fill",
+        "distanceFromCenter": 0,
+        "radius": 0,
+        "verticalPadding": 0,
+        "height": 0
+      },
+      "showMinimize": false,
+      "marginRight": 0,
+      "enableDivider": true,
+      "paddingBottom": 0,
+      "indicatorStyle": "material",
+      "enable": true,
+      "radiusBottomRight": 0,
+      "iconSize": 22,
+      "showFloatingClip": true,
+      "paddingTop": 0,
+      "isSafeArea": true,
+      "TabBarFloating": {
+        "elevation": 2,
+        "color": null,
+        "width": 50,
+        "floatingType": "circle",
+        "location": null,
+        "isCoverMode": false,
+        "position": 0,
+        "notchMargin": 4,
+        "radius": 50,
+        "height": 50
+      },
+      "showFloating": false,
+      "colorActiveIcon": null,
+      "colorCart": null,
+      "radiusBottomLeft": 0,
+      "alwaysShowTabBar": true,
+      "marginLeft": 0,
+      "colorIcon": null,
+      "marginBottom": 0,
+      "paddingLeft": 0,
+      "marginTop": 0
+    },
+    "FontFamily": "ABeeZee",
+    "FontHeader": "ABeeZee",
+    "ProductDetail": "simpleType",
     "ShowChat": true,
-    "useMaterial3": false,
     "AgeRestriction": {
       "enable": false,
+      "alwaysShowUponOpen": true,
       "imageUrl": "",
-      "backgroundImageUrl": "",
+      "minimumAge": 21,
+      "hintMessage": "What is your year of birth?",
+      "useLogo": true,
       "title": "Welcome to our shop\nYou must be 21 or older to enter",
       "deniedMessage": "You are not of legal age to use this application",
-      "hintMessage": "What is your year of birth?",
-      "minimumAge": 21,
-      "useLogo": true,
-      "alwaysShowUponOpen": true
+      "backgroundImageUrl": ""
     },
-    "AboutUS": "https://codecanyon.net/user/inspireui",
-    "Privacy": "https://inspireui.com/privacy/",
-    "FAQ": "https://products.inspireui.com/have-a-question/",
-    "News": "https://products.inspireui.com/",
-    "Support": "https://support.inspireui.com/",
-    "DownloadApp": "https://fluxstore.app/",
+    "ProductListLayout": "list",
     "SmartEngagementBanner": {
       "popup": {
-        "enable": false,
+        "closePosition": "topRight",
+        "updatedTime": 1661314494281,
         "data": {
-          "layout": "bannerImage",
-          "design": "static",
-          "fit": "fitHeight",
+          "parallax": false,
+          "enableParallax": false,
+          "isHorizontal": false,
           "marginLeft": null,
+          "layout": "bannerImage",
+          "fit": "fitHeight",
+          "marginRight": null,
+          "parallaxImageRatio": 1.2,
+          "design": "static",
+          "marginBottom": 10,
           "items": [
             {
               "image": "https://i.imgur.com/ZL1LO75.png",
-              "showSubcategory": false,
+              "padding": 0,
               "bannerWithProduct": false,
-              "defaultShowProduct": false,
-              "products": [],
+              "showSubcategory": false,
               "category": "22",
-              "padding": 0.0
+              "defaultShowProduct": false,
+              "products": []
             }
           ],
-          "marginBottom": 10.0,
-          "height": 0.45,
-          "marginRight": null,
-          "marginTop": 10.0,
-          "enableParallax": false,
-          "parallaxImageRatio": 1.2,
-          "isHorizontal": false,
-          "parallax": false,
-          "key": "p2oq4zc4hg"
+          "marginTop": 10,
+          "key": "p2oq4zc4hg",
+          "height": 0.45
         },
-        "alwaysShowUponOpen": true,
-        "closePosition": "topRight",
-        "updatedTime": 1661314494281
+        "enable": false,
+        "alwaysShowUponOpen": true
       },
       "flexible": {
-        "enable": false,
+        "canClose": true,
         "data": {
+          "layout": "button",
+          "marginBottom": 0,
           "alignment": "topCenter",
-          "marginTop": 0.0,
-          "marginBottom": 0.0,
           "items": [
             {
+              "marginRight": 0,
+              "textFontSize": 14,
               "image": "https://assets9.lottiefiles.com/private_files/lf30_a4mKwA.json",
-              "width": 100.0,
-              "height": 80.0,
-              "borderRadius": 2.0,
-              "marginLeft": 0.0,
-              "marginRight": 0.0,
-              "textFontSize": 14.0,
               "useMaxWidth": true,
+              "borderRadius": 2,
+              "width": 100,
               "navigator": {
-                "showSubcategory": false,
-                "coupon": "blackf"
-              }
+                "coupon": "blackf",
+                "showSubcategory": false
+              },
+              "height": 80,
+              "marginLeft": 0
             }
           ],
-          "layout": "button"
+          "marginTop": 0
         },
+        "enable": false,
+        "width": 100,
         "canDrag": true,
-        "canClose": true,
-        "width": 100.0,
-        "height": 100.0
+        "height": 100
       },
       "sticky": {
-        "enable": false,
         "data": {
+          "parallax": false,
+          "enableParallax": false,
+          "isHorizontal": false,
+          "marginLeft": 10,
           "layout": "bannerImage",
-          "design": "static",
           "fit": "fitWidth",
-          "marginLeft": 10.0,
+          "marginRight": 10,
+          "parallaxImageRatio": 1.2,
+          "design": "static",
+          "marginBottom": 10,
           "items": [
             {
               "image": "https://i.imgur.com/LUaEM3v.jpeg",
-              "showSubcategory": false,
-              "bannerWithProduct": false,
-              "defaultShowProduct": false,
-              "products": [],
+              "padding": 0,
               "coupon": "halfprice",
-              "padding": 0.0,
-              "radius": 9.0
+              "bannerWithProduct": false,
+              "showSubcategory": false,
+              "radius": 9,
+              "defaultShowProduct": false,
+              "products": []
             }
           ],
-          "marginBottom": 10.0,
-          "marginRight": 10.0,
-          "marginTop": 10.0,
-          "height": 0.2,
-          "enableParallax": false,
-          "parallaxImageRatio": 1.2,
-          "isHorizontal": false,
-          "parallax": false,
-          "key": "ga8oe39k5t"
-        }
+          "marginTop": 10,
+          "key": "ga8oe39k5t",
+          "height": 0.2
+        },
+        "enable": false
       }
-    }
+    },
+    "StickyHeader": true
   },
   "TabBar": [
     {
       "layout": "home",
-      "icon": "assets/icons/tabs/icon-home.png"
-    },
-    {
-      "layout": "videos",
-      "icon": "assets/icons/tabs/icon-videos.png"
+      "fontFamily": "CupertinoIcons",
+      "fullscreen": false,
+      "pos": 100,
+      "showOriginalColor": false,
+      "defaultTab": false,
+      "icon": "home",
+      "key": "ENhcXWHEIH"
     },
     {
       "layout": "category",
-      "categoryLayout": "card",
-      "icon": "assets/icons/tabs/icon-category.png"
+      "parallaxImageRatio": 1.2,
+      "fontFamily": "CupertinoIcons",
+      "fullscreen": false,
+      "pos": 200,
+      "showOriginalColor": false,
+      "parallax": false,
+      "defaultTab": false,
+      "showSearch": true,
+      "icon": "rectangle_grid_1x2",
+      "categoryLayout": "fancy-scroll",
+      "key": "UzbsxiXCRp"
+    },
+    {
+      "layout": "search",
+      "fontFamily": "CupertinoIcons",
+      "visible": false,
+      "fullscreen": false,
+      "pos": 300,
+      "showOriginalColor": false,
+      "defaultTab": false,
+      "icon": "search",
+      "key": "zgkUltgWWD"
     },
     {
       "layout": "cart",
-      "icon": "assets/icons/tabs/icon-cart2.png"
+      "fontFamily": "CupertinoIcons",
+      "fullscreen": false,
+      "pos": 400,
+      "showOriginalColor": false,
+      "defaultTab": false,
+      "icon": "bag",
+      "key": "vAisfDpYem"
     },
     {
       "layout": "profile",
-      "icon": "assets/icons/tabs/icon-user.png",
-      "showChat": true,
-      "showBackground": true,
-      "styleItem": "listTile",
-      "settingStyle": "normal"
+      "settings": [
+        "wishlist",
+        "notifications",
+        "order",
+        "point",
+        "privacy",
+        "about"
+      ],
+      "styleItem": "flatShadow",
+      "fontFamily": "CupertinoIcons",
+      "visible": true,
+      "fullscreen": false,
+      "pos": 500,
+      "showOriginalColor": false,
+      "defaultTab": false,
+      "showBackground": false,
+      "icon": "person",
+      "drawerIcon": {
+        "fontFamily": "MaterialIcons",
+        "icon": "menu_rounded"
+      },
+      "key": "RVOmCIgVBa"
     }
   ],
-  "searchSuggestion": [
-    "Here are some suggestions:",
-    "Print",
-    "T-Shirt",
-    "Jersey",
-    "Hoodie"
-  ],
-  "PrivacyPoliciesPageUrlOrId": "https://inspireui.com/privacy/",
-  "MetaSeo": {
-    "app": {
-      "excludes": [
-        "checkout"
-      ],
-      "config": {
-        "author": "InspireUI",
-        "description": "All-in-one mobile solutions and services for Startups, Developers, Entrepreneurs & more…",
-        "keywords": [
-          "Flutter",
-          "Dart",
-          "SEO",
-          "Meta",
-          "Web",
-          "FluxStore",
-          "FluxBuilder"
-        ]
+  "Drawer": {
+    "filter": 0,
+    "logoConfig": {
+      "marginRight": 0,
+      "boxFit": "cover",
+      "marginBottom": 10,
+      "marginTop": 60,
+      "height": 38,
+      "marginLeft": 5
+    },
+    "enable": true,
+    "subDrawerItem": {
+      "web-13hiqqweo9": {
+        "webViewMode": true,
+        "webUrl": "https://yezmart.ph/jobs/",
+        "icon": "briefcase",
+        "title": "Careers",
+        "iconFontFamily": "CupertinoIcons",
+        "requiredLogin": false
       }
     },
-    "routes": [
+    "safeArea": true,
+    "items": [
       {
-        "route": "dashboard",
-        "config": {
-          "author": "InspireUI",
-          "description": "All-in-one mobile solutions and services for Startups, Developers, Entrepreneurs & more…",
-          "keywords": [
-            "Flutter",
-            "Dart",
-            "SEO",
-            "Meta",
-            "Web",
-            "FluxStore"
-          ]
-        }
+        "show": true,
+        "type": "home"
+      },
+      {
+        "show": false,
+        "type": "blog"
+      },
+      {
+        "show": true,
+        "type": "profile"
+      },
+      {
+        "show": true,
+        "type": "login"
+      },
+      {
+        "show": true,
+        "type": "category"
+      },
+      {
+        "show": false,
+        "type": "categories"
+      },
+      {
+        "show": false,
+        "type": "cart"
       }
-    ]
+    ],
+    "key": "PYdbXUcdLo"
   },
-  "overrideTranslation": {
-    "copyright": "Copyright © 2024 InspireUI Ltd. All rights reserved."
+  "AppBar": {
+    "elevation": 0,
+    "pinned": true,
+    "showOnScreens": [
+      "home",
+      "product"
+    ],
+    "enable": false,
+    "floating": true,
+    "alwaysShowAppBar": true,
+    "expandedItems": [],
+    "items": [],
+    "snap": true
+  },
+  "Background": {
+    "type": "wave",
+    "height": 0.5
   }
 }
