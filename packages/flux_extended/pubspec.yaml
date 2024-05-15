@@ -1,0 +1,71 @@
+name: flux_extended
+description: A Extended package for FluxStore apps
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  fstore:
+    path: ../../
+  inspireui: 2.0.0
+
+  ##---- Extended features ------ ###
+  ## Native payment
+  easy_paypal: 1.0.8
+  pay: 2.0.0
+  
+  ## Currently in Flutter version 3.19.2, Fluxstore cannot upgrade stripe to the latest version because it still affects some features.
+  ## We will upgrade Stripe in the near future.
+  flutter_stripe: 9.2.0
+  stripe_android: 9.2.0
+  stripe_ios: 9.2.0
+  stripe_platform_interface: 9.2.0
+
+  stripe_sdk: # Old Stripe library (ver 1)
+    git:
+      url: https://github.com/inspireui/stripe-sdk
+      ref: d4a904b0604fcc43c6dafbf4fa66d2fc326d9542
+  myfatoorah_flutter:
+    git:
+      url: https://github.com/inspireui/myfatoorah_flutter.git
+      ref: ef949b69be6e30dc075cc67e08f0ecffbe1da17a
+  in_app_purchase: 3.1.13
+  midtrans_sdk:
+    git:
+      url: https://github.com/inspireui/midtrans_sdk
+      ref: 29b94ef300e972ba847e35b0461261fba76a6d21
+  expresspay_sdk:
+    git:
+      url: https://github.com/inspireui/expresspay-flutter-sdk
+      ref: 3faf49a9145a20203f38be66f4e8c2faf7438a30
+
+  openai:
+    path: ../chatgpt_core
+
+  # OTHERS
+  dropdown_search: 5.0.6
+  provider: 6.0.5
+  quiver: 3.2.1
+  async: 2.11.0
+  collection: any
+  http: ^1.1.0
+  webview_flutter: 4.2.2
+  freezed_annotation: 2.4.1
+  easy_debounce: 2.0.3
+  flutter_calendar_carousel: 2.4.2 # use intl 0.18.0
+  intl: any
+  image_gallery_saver: ^2.0.3
+
+  ### CRM services
+  ### 💬 Zoho SalesIQ Mobilisten
+  ### Search "Zoho SalesIQ Mobilisten" and uncomment to use - https://take.ms/McejF
+  # salesiq_mobilisten: 4.0.0
+
+flutter:
+  uses-material-design: true
+
