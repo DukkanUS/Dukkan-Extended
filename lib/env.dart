@@ -104,7 +104,7 @@ Map<String, dynamic> environment = {
     "EnableMembershipUltimate": false,
     "EnableWooCommerceWholesalePrices": false,
     "IsRequiredSiteSelection": true,
-    "EnablePaidMembershipPro": false,
+    "EnablePaidMembershipPro": true,
     "EnableDeliveryDateOnCheckout": false,
     "EnableNewSMSLogin": false,
     "EnableBottomAddToCart": true,
@@ -184,17 +184,18 @@ Map<String, dynamic> environment = {
     "about"
   ],
   "loginSetting": {
-    "facebookAppId": "430258564493822",
-    "requirePhoneNumberWhenRegister": false,
-    "facebookLoginProtocolScheme": "fb430258564493822",
-    "smsLoginAsDefault": false,
-    "showPhoneNumberWhenRegister": false,
     "IsRequiredLogin": false,
+    "showAppleLogin": true,
+    "showFacebook": false,
+    "showSMSLogin": false,
+    "showGoogleLogin": true,
+    "showPhoneNumberWhenRegister": true,
+    "requirePhoneNumberWhenRegister": false,
     "isResetPasswordSupported": true,
     "facebookClientToken": "",
     "appleLoginSetting": {
-      "appleAccountTeamID": "S9RPAM8224",
-      "iOSBundleId": "com.inspireui.mstore.flutter"
+      "iOSBundleId": "tech.evokey.dukkan",
+      "appleAccountTeamID": "89VJM6J2LV"
     }
   },
   "oneSignalKey": {"enable": false, "appID": ""},
