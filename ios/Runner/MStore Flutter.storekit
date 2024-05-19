@@ -15,7 +15,7 @@
           "locale" : "en_GB"
         }
       ],
-      "productID" : "com.inspireui.fluxstore.test",
+      "productID" : "tech.evokey.dukkan.test",
       "referenceName" : "In App Purchase Test",
       "type" : "Consumable"
     },
@@ -36,7 +36,7 @@
     }
   ],
   "settings" : {
-    "_applicationInternalID" : "1469772800",
+    "_applicationInternalID" : "6502571619",
     "_developerTeamID" : "S9RPAM8224",
     "_lastSynchronizedDate" : 693061907.61445606
   },
@@ -63,7 +63,7 @@
           "localizations" : [
 
           ],
-          "productID" : "com.inspireui.fluxstore.subscription.test",
+          "productID" : "tech.evokey.dukkan.subscription.test",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Subscription Test",
           "subscriptionGroupID" : "21093766",

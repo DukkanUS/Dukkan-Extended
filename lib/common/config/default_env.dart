@@ -373,12 +373,12 @@ class DefaultConfig {
     //The link your app will open
     'link': 'https://mstore.io/',
     //----------* Android Setting *----------//
-    'androidPackageName': 'com.inspireui.fluxstore',
+    'androidPackageName': 'tech.evokey.dukkan',
     'androidAppMinimumVersion': 1,
     //----------* iOS Setting *----------//
     'iOSBundleId': 'com.inspireui.mstore.flutter',
     'iOSAppMinimumVersion': '1.0.1',
-    'iOSAppStoreId': '1469772800'
+    'iOSAppStoreId': '6502571619'
   };
   static List<Map> languagesInfo = <Map>[];
   static Map paymentConfig = {};

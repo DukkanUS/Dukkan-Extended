@@ -30,7 +30,7 @@ Map<String, dynamic> environment = {
     "minLaunches": 10,
     "showOnOpen": false,
     "remindDays": 7,
-    "appStoreIdentifier": "1469772800",
+    "appStoreIdentifier": "6502571619",
     "minDays": 7,
     "remindLaunches": 10,
     "googlePlayIdentifier": "tech.evokey.dukkan"
@@ -275,15 +275,15 @@ Map<String, dynamic> environment = {
     "adMobAppIdAndroid": "ca-app-pub-7432665165146018~2664444130"
   },
   "firebaseDynamicLinkConfig": {
-    "iOSAppStoreId": "1469772800",
-    "androidPackageName": "com.inspireui.fluxstore",
+    "iOSAppStoreId": "6502571619",
+    "androidPackageName": "tech.evokey.dukkan",
     "isEnabled": true,
     "androidAppMinimumVersion": 1,
-    "link": "https://mstore.io/",
-    "uriPrefix": "https://fluxstoreinspireui.page.link",
+    "link": "https://dukkan.us/",
+    "uriPrefix": "https://dukkanmarket.page.link",
     "shortDynamicLinkEnable": true,
-    "iOSBundleId": "com.inspireui.mstore.flutter",
-    "iOSAppMinimumVersion": "1.0.1"
+    "iOSBundleId": "tech.evokey.dukkan",
+    "iOSAppMinimumVersion": "0.0.1"
   },
   "languagesInfo": [
     {
@@ -343,8 +343,8 @@ Map<String, dynamic> environment = {
     "enableManualCapture": false,
     "stripeApiVersion": 3,
     "enabled": true,
-    "merchantDisplayName": "FluxStore",
-    "merchantIdentifier": "merchant.com.inspireui.mstore.flutter",
+    "merchantDisplayName": "merchant tech evokey dukkan",
+    "merchantIdentifier": "merchant.tech.evokey.dukkan",
     "serverEndpoint": "",
     "enableApplePay": true,
     "returnUrl": "fluxstore://inspireui.com",
@@ -357,7 +357,7 @@ Map<String, dynamic> environment = {
     "paymentMethodId": "paypal",
     "nativeMode": false,
     "secret": "ECbFREri7NFj64FI_9WzS6A0Az2DqNLrVokBo0ZBu4enHZKMKOvX45v9Y1NBPKFr6QJv2KaSp5vk5A1G",
-    "returnUrl": "com.inspireui.fluxstore://paypalpay",
+    "returnUrl": "tech.evokey.dukkan://paypalpay",
     "enabled": true
   },
   "razorpayConfig": {
@@ -411,9 +411,9 @@ Map<String, dynamic> environment = {
     "enabled": false
   },
   "inAppPurchaseConfig": {
-    "subscriptionProductIDs": ["com.inspireui.fluxstore.subscription.test"],
+    "subscriptionProductIDs": ["tech.evokey.dukkan.subscription.test"],
     "nonConsumableProductIDs": [],
-    "consumableProductIDs": ["com.inspireui.fluxstore.test"],
+    "consumableProductIDs": ["tech.evokey.dukkan.test"],
     "enabled": false
   },
   "xenditConfig": {

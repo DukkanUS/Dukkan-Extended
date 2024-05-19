@@ -4,8 +4,8 @@ const int _defaultMinDays = 7;
 const int _defaultMinLaunches = 10;
 const int _defaultRemindDays = 7;
 const int _defaultRemindLaunches = 10;
-const String _defaultGooglePlayIdentifier = 'com.inspireui.fluxstore';
-const String _defaultAppStoreIdentifier = '1469772800';
+const String _defaultGooglePlayIdentifier = 'tech.evokey.dukkan';
+const String _defaultAppStoreIdentifier = '6502571619';
 
 class AppRatingConfig {
   final int minDays;

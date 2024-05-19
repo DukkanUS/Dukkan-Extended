@@ -1,4 +1,4 @@
-package com.inspireui.fluxstore
+package tech.evokey.dukkan
 
 import android.app.NotificationManager
 import android.content.Context
