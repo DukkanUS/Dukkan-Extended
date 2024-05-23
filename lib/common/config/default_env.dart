@@ -422,12 +422,12 @@ class DefaultConfig {
     },
     {
       'type': 'selectAddress',
-      'visible': true,
+      'visible': false,
       'position': 6,
     },
     {
       'type': 'country',
-      'visible': true,
+      'visible': false,
       'position': 7,
     },
     {
@@ -452,7 +452,7 @@ class DefaultConfig {
     },
     {
       'type': 'block',
-      'visible': true,
+      'visible': false,
       'position': 11,
       'editable': true,
       'required': false,

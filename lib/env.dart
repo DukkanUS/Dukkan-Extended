@@ -104,7 +104,7 @@ Map<String, dynamic> environment = {
     "EnableMembershipUltimate": false,
     "EnableWooCommerceWholesalePrices": false,
     "IsRequiredSiteSelection": true,
-    "EnablePaidMembershipPro": true,
+    "EnablePaidMembershipPro": false,
     "EnableDeliveryDateOnCheckout": false,
     "EnableNewSMSLogin": false,
     "EnableBottomAddToCart": true,
@@ -187,10 +187,10 @@ Map<String, dynamic> environment = {
     "IsRequiredLogin": false,
     "showAppleLogin": true,
     "showFacebook": false,
-    "showSMSLogin": false,
+    "showSMSLogin": true,
     "showGoogleLogin": true,
     "showPhoneNumberWhenRegister": true,
-    "requirePhoneNumberWhenRegister": false,
+    "requirePhoneNumberWhenRegister": true,
     "isResetPasswordSupported": true,
     "facebookClientToken": "",
     "appleLoginSetting": {
@@ -676,8 +676,8 @@ Map<String, dynamic> environment = {
       "required": true
     },
     {"visible": true, "position": 5, "type": "searchAddress"},
-    {"visible": true, "position": 6, "type": "selectAddress"},
-    {"visible": true, "position": 7, "type": "country"},
+    {"visible": false, "position": 6, "type": "selectAddress"},
+    {"visible": false, "position": 7, "type": "country"},
     {"visible": true, "position": 8, "type": "state"},
     {
       "visible": true,
@@ -696,7 +696,7 @@ Map<String, dynamic> environment = {
       "required": false
     },
     {
-      "visible": true,
+      "visible": false,
       "editable": true,
       "defaultValue": "",
       "position": 11,

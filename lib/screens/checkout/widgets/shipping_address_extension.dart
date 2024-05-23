@@ -410,37 +410,38 @@ extension on _ShippingAddressState {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 150,
-            child: OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(padding: EdgeInsets.zero),
-              onPressed: () {
-                if (!checkToSave()) return;
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  Provider.of<CartModel>(context, listen: false)
-                      .setAddress(address);
-                  saveDataToLocal();
-                } else {
-                  FlashHelper.errorMessage(
-                    context,
-                    message: S.of(context).pleaseInput,
-                  );
-                }
-              },
-              icon: const Icon(
-                CupertinoIcons.plus_app,
-                size: 20,
-              ),
-              label: Text(
-                S.of(context).saveAddress.toUpperCase(),
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
+
+          // SizedBox(
+          //   width: 150,
+          //   child: OutlinedButton.icon(
+          //     style: OutlinedButton.styleFrom(padding: EdgeInsets.zero),
+          //     onPressed: () {
+          //       if (!checkToSave()) return;
+          //       if (_formKey.currentState!.validate()) {
+          //         _formKey.currentState!.save();
+          //         Provider.of<CartModel>(context, listen: false)
+          //             .setAddress(address);
+          //         saveDataToLocal();
+          //       } else {
+          //         FlashHelper.errorMessage(
+          //           context,
+          //           message: S.of(context).pleaseInput,
+          //         );
+          //       }
+          //     },
+          //     icon: const Icon(
+          //       CupertinoIcons.plus_app,
+          //       size: 20,
+          //     ),
+          //     label: Text(
+          //       S.of(context).saveAddress.toUpperCase(),
+          //       style: Theme.of(context).textTheme.bodySmall!.copyWith(
+          //             color: Theme.of(context).colorScheme.secondary,
+          //           ),
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(width: 8),
           if (isDesktop) btnContinue else Expanded(child: btnContinue),
         ],
       ),

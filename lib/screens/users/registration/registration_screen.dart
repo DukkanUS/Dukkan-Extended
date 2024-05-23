@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,9 +9,11 @@ import '../../../common/config.dart';
 import '../../../common/constants.dart';
 import '../../../common/tools.dart';
 import '../../../common/tools/flash.dart';
+import '../../../custom/providers/registration_provider.dart';
+import '../../../data/boxes.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/index.dart'
-    show AppModel, CartModel, PointModel, User, UserModel;
+    show Address, AppModel, CartModel, PointModel, User, UserModel;
 import '../../../modules/dynamic_layout/helper/helper.dart';
 import '../../../modules/vendor_on_boarding/screen_index.dart';
 import '../../../routes/flux_navigate.dart';
@@ -16,7 +21,10 @@ import '../../../services/service_config.dart';
 import '../../../services/services.dart';
 import '../../../widgets/common/custom_text_field.dart';
 import '../../../widgets/common/flux_image.dart';
+import '../../../widgets/common/place_picker.dart';
+import '../../checkout/choose_address_screen.dart';
 import '../../home/privacy_term_screen.dart';
+import '../../login_sms/verify.dart';
 import 'registration_screen_web.dart';
 
 enum RegisterType { customer, vendor }
@@ -42,7 +50,9 @@ class RegistrationScreenMobile extends StatefulWidget {
 }
 
 class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
-  // final _auth = firebase_auth.FirebaseAuth.instance;
+  List<Address?> listAddress = [];
+  Address? address;
+  Address? remoteAddress;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   final TextEditingController _emailController = TextEditingController();
@@ -62,16 +72,47 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   final emailNode = FocusNode();
   final passwordNode = FocusNode();
 
-  void _welcomeDiaLog(User user) {
+  void getDataFromLocal() {
+    var listData = List<Address>.from(UserBox().addresses);
+    final indexRemote =
+        listData.indexWhere((element) => element.isShow == false);
+    if (indexRemote != -1) {
+      remoteAddress = listData[indexRemote];
+    }
+
+    listData.removeWhere((element) => element.isShow == false);
+    listAddress = listData;
+    setState(() {});
+  }
+
+  Future<void> saveDataToLocal() async {
+    var listAddress = <Address>[];
+    final address = this.address;
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
+    await Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
+  }
+
+  Future<void> _welcomeDiaLog(User user) async {
+    Provider.of<RegistrationProvider>(context, listen: false).stopLoading();
     Provider.of<CartModel>(context, listen: false).setUser(user);
-    Provider.of<PointModel>(context, listen: false).getMyPoint(user.cookie);
+    await Provider.of<PointModel>(context, listen: false)
+        .getMyPoint(user.cookie);
     final model = Provider.of<UserModel>(context, listen: false);
 
     /// Show VendorOnBoarding.
     if (kVendorConfig.vendorRegister &&
         Provider.of<AppModel>(context, listen: false).isMultivendor &&
         user.isVender) {
-      Navigator.of(context).pushReplacement(
+      await Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (ctx) => VendorOnBoarding(
             user: user,
@@ -108,21 +149,59 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       isError: false,
     );
     if (Services().widget.isRequiredLogin) {
-      Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
+      log('uiweh34h34giuhweiuogoi');
+
+      await Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
       return;
     }
     var routeFound = false;
-    var routeNames = [RouteList.dashboard, RouteList.productDetail];
-    Navigator.popUntil(context, (route) {
-      if (routeNames
-          .any((element) => route.settings.name?.contains(element) ?? false)) {
-        routeFound = true;
-      }
-      return routeFound || route.isFirst;
-    });
 
     if (!routeFound) {
-      Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
+      log('uiwehgiuhreherhweiuogoi');
+
+      if (listAddress.isEmpty || true) {
+        final result = await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PlacePicker(
+              kIsWeb
+                  ? kGoogleApiKey.web
+                  : isIos
+                      ? kGoogleApiKey.ios
+                      : kGoogleApiKey.android,
+            ),
+          ),
+        );
+
+        if (result is LocationResult) {
+          address = Address();
+          address?.country = result.country;
+          address?.street = result.street;
+          address?.state = result.state;
+          address?.city = result.city;
+          address?.zipCode = result.zip;
+          if (result.latLng?.latitude != null &&
+              result.latLng?.latitude != null) {
+            address?.mapUrl =
+                'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+            address?.latitude = result.latLng?.latitude.toString();
+            address?.longitude = result.latLng?.longitude.toString();
+          }
+          address?.firstName = user.firstName;
+          address?.lastName = user.lastName;
+          address?.email = user.email;
+          address?.phoneNumber = user.phoneNumber;
+
+          if (address != null) {
+            Provider.of<CartModel>(context, listen: false).setAddress(address);
+            await saveDataToLocal();
+          } else {
+            await FlashHelper.errorMessage(
+              context,
+              message: S.of(context).pleaseInput,
+            );
+          }
+        }
+      }
     }
   }
 
@@ -144,6 +223,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
     if (!mounted) {
       return;
     }
+    Provider.of<RegistrationProvider>(context, listen: false).stopLoading();
+    Navigator.of(context).pop();
     FlashHelper.message(
       context,
       message: text,
@@ -159,6 +240,72 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
     String? password,
     bool? isVendor,
   }) async {
+    {
+      await Provider.of<UserModel>(context, listen: false).createUser(
+        username: emailAddress,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phoneNumber,
+        success: _welcomeDiaLog,
+        fail: _showMessage,
+        isVendor: isVendor,
+      );
+    }
+  }
+
+  void failMessage(message, context) {
+    /// Showing Error messageSnackBarDemo
+    /// Ability so close message
+    final snackBar = SnackBar(
+      content: Text('⚠️: $message'),
+      duration: const Duration(seconds: 30),
+      action: SnackBarAction(
+        label: S.of(context).close,
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
+  Future autoRetrieve(String verId) {
+    return Future(() => null);
+  }
+
+  Future smsCodeSent(String verId, [int? forceCodeResend]) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CustomVerifyCode(
+          verId: verId,
+          phoneNumber: phoneNumber,
+          resendToken: forceCodeResend,
+          onVerfiySuccesTORENAME: (_) async {
+            await _submitRegister(
+              firstName: firstName,
+              lastName: lastName,
+              phoneNumber: phoneNumber,
+              emailAddress: emailAddress,
+              password: password,
+              isVendor: _registerType == RegisterType.vendor,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void verifyFailed(exception) {
+    Provider.of<RegistrationProvider>(context, listen: false).stopLoading();
+    _showMessage(exception.toString());
+  }
+
+  void loginSMS(context) {
     if (firstName == null ||
         lastName == null ||
         emailAddress == null ||
@@ -175,21 +322,27 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
         return;
       }
 
-      if (password.length < 8) {
-        _showMessage(S.of(context).errorPasswordFormat);
-        return;
+      if (password?.isNotEmpty ?? false) {
+        if (password!.length < 8) {
+          _showMessage(S.of(context).errorPasswordFormat);
+          return;
+        }
       }
 
-      await Provider.of<UserModel>(context, listen: false).createUser(
-        username: emailAddress,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        success: _welcomeDiaLog,
-        fail: _showMessage,
-        isVendor: isVendor,
-      );
+      try {
+        unawaited(Services().firebase.verifyPhoneNumber(
+              phoneNumber: phoneNumber,
+              codeAutoRetrievalTimeout: autoRetrieve,
+              verificationCompleted: (value) => log(
+                  '🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴'),
+              verificationFailed: verifyFailed,
+              codeSent: smsCodeSent,
+            ));
+        // Future.delayed(const Duration(seconds: 1)).then((_) => Provider.of<RegistrationProvider>(context, listen: false).stopLoading());
+      } catch (e) {
+        Provider.of<RegistrationProvider>(context, listen: false).stopLoading();
+        rethrow;
+      }
     }
   }
 
@@ -406,27 +559,39 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                                   onPressed: value.loading == true
                                       ? null
                                       : () async {
-                                          await _submitRegister(
-                                            firstName: firstName,
-                                            lastName: lastName,
-                                            phoneNumber: phoneNumber,
-                                            emailAddress: emailAddress,
-                                            password: password,
-                                            isVendor: _registerType ==
-                                                RegisterType.vendor,
-                                          );
+                                          try {
+                                            Provider.of<RegistrationProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .startLoading();
+                                            loginSMS(context);
+                                          } catch (e) {
+                                            Provider.of<RegistrationProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .stopLoading();
+                                            _showMessage(e.toString());
+                                          }
                                         },
                                   minWidth: 200.0,
                                   elevation: 0.0,
                                   height: 42.0,
-                                  child: Text(
-                                    value.loading == true
-                                        ? S.of(context).loading
-                                        : S.of(context).createAnAccount,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                  child: (value.loading == true ||
+                                          Provider.of<RegistrationProvider>(
+                                                  context)
+                                              .isLoading)
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ))
+                                      : Text(
+                                          S.of(context).createAnAccount,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                 ),
                               ),
                             ),

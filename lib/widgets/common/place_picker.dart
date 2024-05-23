@@ -1,6 +1,7 @@
 /// This widget is customize from the place_picker - https://pub.dev/packages/place_picker
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:math' show Random;
 
 import 'package:flutter/material.dart';
@@ -507,6 +508,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                 .toUri()!)
         .then((response) {
       Map<String, dynamic> responseJson = jsonDecode(response.body);
+      log("fuck $responseJson");
       if (response.statusCode == 200 &&
           responseJson['results'] is List &&
           List.from(responseJson['results']).isNotEmpty) {
@@ -559,10 +561,11 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
           }
           if (types.contains('country')) {
             country = item['short_name'];
-            if (types.contains('postal_code')) {
-              if (zip!.isEmpty) {
-                zip = item['long_name'];
-              }
+          }
+          if (types.contains('postal_code')) {
+            if (zip!.isEmpty) {
+              zip = item['long_name'];
+
             }
           }
 

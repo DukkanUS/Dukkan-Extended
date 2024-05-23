@@ -16,6 +16,7 @@ import 'common/constants.dart';
 import 'common/events.dart';
 import 'common/theme/index.dart';
 import 'common/tools.dart';
+import 'custom/providers/registration_provider.dart';
 import 'generated/l10n.dart';
 import 'generated/languages/index.dart';
 import 'generated/overrides/app_localizations.dart';
@@ -450,6 +451,8 @@ class AppState extends State<App>
                 ),
                 ChangeNotifierProvider<BranchModel>(
                     create: (_) => BranchModel()),
+                ChangeNotifierProvider<RegistrationProvider>(
+                    create: (_) => RegistrationProvider()),
                 ChangeNotifierProvider<ProductPriceModel>(
                     create: (_) => ProductPriceModel()),
               ],
