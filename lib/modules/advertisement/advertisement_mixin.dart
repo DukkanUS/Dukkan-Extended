@@ -106,6 +106,8 @@ class AdvertisementServiceImpl implements AdvertisementService {
 
   @override
   Widget getAdWidget() {
+    ///advertisements
+    return const SizedBox.shrink();
     return ValueListenableBuilder<String?>(
       valueListenable: _currentScreenName,
       builder: (context, screenName, child) {

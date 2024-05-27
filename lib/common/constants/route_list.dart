@@ -15,6 +15,7 @@ class RouteList {
   static const String profile = 'profile';
   static const String login = 'login';
   static const String loginSMS = 'login-sms';
+  static const String verifyPhoneNumber = 'verify-phone-number';
   static const String register = 'register';
   static const String updateUser = 'update-user';
   static const String language = 'language';

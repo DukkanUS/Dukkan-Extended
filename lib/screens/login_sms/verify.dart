@@ -7,14 +7,19 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../../app.dart';
+import '../../common/config.dart';
 import '../../common/constants.dart';
 import '../../common/tools.dart';
+import '../../common/tools/flash.dart';
 import '../../custom/providers/registration_provider.dart';
+import '../../data/boxes.dart';
 import '../../generated/l10n.dart';
 import '../../models/index.dart';
 import '../../services/services.dart';
 import '../../widgets/common/flux_image.dart';
 import '../../widgets/common/login_animation.dart';
+import '../../widgets/common/place_picker.dart';
 
 class VerifyCode extends StatefulWidget {
   final String? phoneNumber;
@@ -38,6 +43,9 @@ class _VerifyCodeState extends State<VerifyCode>
     with TickerProviderStateMixin, CodeAutoFill {
   late AnimationController _loginButtonController;
   bool isLoading = false;
+  List<Address?> listAddress = [];
+  Address? address;
+  Address? remoteAddress;
 
   final TextEditingController _pinCodeController = TextEditingController();
 
@@ -338,6 +346,36 @@ class _VerifyCodeState extends State<VerifyCode>
     );
   }
 
+
+  void getDataFromLocal() {
+    var listData = List<Address>.from(UserBox().addresses);
+    final indexRemote =
+    listData.indexWhere((element) => element.isShow == false);
+    if (indexRemote != -1) {
+      remoteAddress = listData[indexRemote];
+    }
+
+    listData.removeWhere((element) => element.isShow == false);
+    listAddress = listData;
+    setState(() {});
+  }
+
+  Future<void> saveDataToLocal() async {
+    var listAddress = <Address>[];
+    final address = this.address;
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
+    await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context).pushReplacementNamed(RouteList.dashboard);
+  }
+
   Future<void> _signInWithCredential(credential) async {
     final user = await Services()
         .firebase
@@ -350,9 +388,77 @@ class _VerifyCodeState extends State<VerifyCode>
       } else {
         await Provider.of<UserModel>(context, listen: false).loginFirebaseSMS(
           phoneNumber: user.phoneNumber!.replaceAll('+', ''),
-          success: (user) {
-            _stopAnimation();
-            NavigateTools.navigateAfterLogin(user, context);
+          success: (user) async {
+            await _stopAnimation();
+
+            getDataFromLocal();
+            if(listAddress.isEmpty ){
+              var user = Provider.of<UserModel>(context, listen: false).user;
+              final result = await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PlacePicker(
+                    kIsWeb
+                        ? kGoogleApiKey.web
+                        : isIos
+                        ? kGoogleApiKey.ios
+                        : kGoogleApiKey.android,
+                    fromRegister: true,
+                  ),
+                ),
+              );
+
+              if (result is LocationResult) {
+                try{
+                  address = Address();
+                  address?.country = result.country;
+                  address?.street = result.street;
+                  address?.state = result.state;
+                  address?.city = result.city;
+                  address?.zipCode = result.zip;
+                  if (result.latLng?.latitude != null &&
+                      result.latLng?.latitude != null) {
+                    address?.mapUrl =
+                    'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                    address?.latitude = result.latLng?.latitude.toString();
+                    address?.longitude = result.latLng?.longitude.toString();
+                  }
+                  address?.firstName = user?.firstName;
+                  address?.lastName = user?.lastName;
+                  address?.email = user?.email;
+                  address?.phoneNumber = user?.phoneNumber;
+
+                  if (address != null) {
+                    Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).setAddress(address);
+                    await saveDataToLocal();
+                    return;
+                  } else {
+                    await FlashHelper.errorMessage(
+                      context,
+                      message: S.of(context).pleaseInput,
+                    );
+                  }
+                }catch(e){
+                  log('fuckk :: $e');
+                  await FlashHelper.errorMessage(
+                    context,
+                    message:e.toString(),
+                  );
+                }
+              }
+            }
+            else {
+              final canPop = ModalRoute.of(context)!.canPop;
+              if (canPop) {
+                // When not required login
+                Navigator.of(context).pop();
+              } else {
+                // When required login
+                await Navigator.of(App.fluxStoreNavigatorKey.currentContext!)
+                    .pushReplacementNamed(RouteList.dashboard);
+              }
+            }
+
+
           },
           fail: (message) {
             _stopAnimation();

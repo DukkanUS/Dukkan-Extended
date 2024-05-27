@@ -1,25 +1,21 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fstore/widgets/common/place_picker.dart';
 import 'package:provider/provider.dart';
 
+import 'app.dart';
 import 'common/config.dart';
 import 'common/config/models/onboarding_config.dart';
 import 'common/constants.dart';
 import 'common/tools.dart';
+import 'common/tools/flash.dart';
 import 'data/boxes.dart';
+import 'generated/l10n.dart';
 import 'models/index.dart'
-    show
-        AppModel,
-        CartModel,
-        CategoryModel,
-        FilterAttributeModel,
-        FilterTagModel,
-        ListingLocationModel,
-        NotificationModel,
-        ProductPriceModel,
-        TagModel;
+    show Address, AppModel, CartModel, CategoryModel, FilterAttributeModel, FilterTagModel, ListingLocationModel, NotificationModel, ProductPriceModel, TagModel, UserModel;
 import 'modules/dynamic_layout/config/app_config.dart';
 import 'modules/dynamic_layout/helper/helper.dart';
 import 'screens/app_error.dart';
@@ -36,6 +32,10 @@ class AppInit extends StatefulWidget {
 }
 
 class _AppInitState extends BaseScreen<AppInit> {
+  List<Address?> listAddress = [];
+  Address? address;
+  Address? remoteAddress;
+
   /// It is true if the app is initialized
   bool isLoggedIn = false;
   bool hasLoadedData = false;
@@ -50,10 +50,40 @@ class _AppInitState extends BaseScreen<AppInit> {
   NotificationModel get _notificationModel =>
       Provider.of<NotificationModel>(context, listen: false);
 
+  void getDataFromLocal() {
+    var listData = List<Address>.from(UserBox().addresses);
+    final indexRemote =
+    listData.indexWhere((element) => element.isShow == false);
+    if (indexRemote != -1) {
+      remoteAddress = listData[indexRemote];
+    }
+
+    listData.removeWhere((element) => element.isShow == false);
+    listAddress = listData;
+    setState(() {});
+  }
+
+  Future<void> saveDataToLocal() async {
+    var listAddress = <Address>[];
+    final address = this.address;
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
+    await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context).pushReplacementNamed(RouteList.dashboard);
+  }
+
   Future<void> loadInitData() async {
     try {
       printLog('[AppState] Init Data 💫');
       isLoggedIn = UserBox().isLoggedIn;
+
 
       /// set the server config at first loading
       /// Load App model config
@@ -85,11 +115,11 @@ class _AppInitState extends BaseScreen<AppInit> {
       Future.delayed(
         Duration.zero,
         () {
-          Provider.of<TagModel>(context, listen: false).getTags();
+          // Provider.of<TagModel>(context, listen: false).getTags();
 
-          Provider.of<ListBlogModel>(context, listen: false).getBlogs();
+          // Provider.of<ListBlogModel>(context, listen: false).getBlogs();
 
-          Provider.of<FilterTagModel>(context, listen: false).getFilterTags();
+          // Provider.of<FilterTagModel>(context, listen: false).getFilterTags();
 
           Provider.of<FilterAttributeModel>(context, listen: false)
               .getFilterAttributes();
@@ -191,6 +221,64 @@ class _AppInitState extends BaseScreen<AppInit> {
       );
       return;
     }
+    else
+      {
+        getDataFromLocal();
+        if(isLoggedIn && listAddress.isEmpty && false ){
+          var user = Provider.of<UserModel>(context, listen: false).user;
+          final result = await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PlacePicker(
+                kIsWeb
+                    ? kGoogleApiKey.web
+                    : isIos
+                    ? kGoogleApiKey.ios
+                    : kGoogleApiKey.android,
+                fromRegister: true,
+              ),
+            ),
+          );
+
+          if (result is LocationResult) {
+            try{
+              address = Address();
+              address?.country = result.country;
+              address?.street = result.street;
+              address?.state = result.state;
+              address?.city = result.city;
+              address?.zipCode = result.zip;
+              if (result.latLng?.latitude != null &&
+                  result.latLng?.latitude != null) {
+                address?.mapUrl =
+                'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                address?.latitude = result.latLng?.latitude.toString();
+                address?.longitude = result.latLng?.longitude.toString();
+              }
+              address?.firstName = user?.firstName;
+              address?.lastName = user?.lastName;
+              address?.email = user?.email;
+              address?.phoneNumber = user?.phoneNumber;
+
+              if (address != null) {
+                Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).setAddress(address);
+                await saveDataToLocal();
+                 return;
+              } else {
+                await FlashHelper.errorMessage(
+                  context,
+                  message: S.of(context).pleaseInput,
+                );
+              }
+            }catch(e){
+              log('fuckk :: $e');
+              await FlashHelper.errorMessage(
+                context,
+                message:e.toString(),
+              );
+            }
+          }
+        }
+      }
 
     await Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
   }

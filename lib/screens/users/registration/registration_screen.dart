@@ -106,61 +106,13 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
     Provider.of<CartModel>(context, listen: false).setUser(user);
     await Provider.of<PointModel>(context, listen: false)
         .getMyPoint(user.cookie);
-    final model = Provider.of<UserModel>(context, listen: false);
-
-    /// Show VendorOnBoarding.
-    if (kVendorConfig.vendorRegister &&
-        Provider.of<AppModel>(context, listen: false).isMultivendor &&
-        user.isVender) {
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (ctx) => VendorOnBoarding(
-            user: user,
-            onFinish: () {
-              model.getUser();
-              var email = user.email;
-              _showMessage(
-                '${S.of(ctx).welcome} $email!',
-                isError: false,
-              );
-              var routeFound = false;
-              var routeNames = [RouteList.dashboard, RouteList.productDetail];
-              Navigator.popUntil(ctx, (route) {
-                if (routeNames.any((element) =>
-                    route.settings.name?.contains(element) ?? false)) {
-                  routeFound = true;
-                }
-                return routeFound || route.isFirst;
-              });
-
-              if (!routeFound) {
-                Navigator.of(ctx).pushReplacementNamed(RouteList.dashboard);
-              }
-            },
-          ),
-        ),
-      );
-      return;
-    }
-
     var email = user.email;
     _showMessage(
       '${S.of(context).welcome} $email!',
       isError: false,
     );
-    if (Services().widget.isRequiredLogin) {
-      log('uiweh34h34giuhweiuogoi');
-
-      await Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
-      return;
-    }
-    var routeFound = false;
-
-    if (!routeFound) {
-      log('uiwehgiuhreherhweiuogoi');
-
-      if (listAddress.isEmpty || true) {
-        final result = await Navigator.of(context).push(
+      if (listAddress.isEmpty ) {
+        final result = await Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => PlacePicker(
               kIsWeb
@@ -168,11 +120,14 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                   : isIos
                       ? kGoogleApiKey.ios
                       : kGoogleApiKey.android,
+              fromRegister: true,
             ),
           ),
+          (route) => false,
         );
 
         if (result is LocationResult) {
+        try{
           address = Address();
           address?.country = result.country;
           address?.street = result.street;
@@ -182,7 +137,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
           if (result.latLng?.latitude != null &&
               result.latLng?.latitude != null) {
             address?.mapUrl =
-                'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+            'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
             address?.latitude = result.latLng?.latitude.toString();
             address?.longitude = result.latLng?.longitude.toString();
           }
@@ -200,9 +155,14 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
               message: S.of(context).pleaseInput,
             );
           }
+        }catch(e){
+          await FlashHelper.errorMessage(
+            context,
+            message:e.toString(),
+          );
+        }
         }
       }
-    }
   }
 
   @override
@@ -255,8 +215,6 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   }
 
   void failMessage(message, context) {
-    /// Showing Error messageSnackBarDemo
-    /// Ability so close message
     final snackBar = SnackBar(
       content: Text('⚠️: $message'),
       duration: const Duration(seconds: 30),

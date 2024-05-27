@@ -7,6 +7,7 @@ import 'package:universal_platform/universal_platform.dart';
 import '../common/config.dart';
 import '../common/constants.dart';
 import '../common/tools.dart';
+import '../custom/Phone Verification/phone_verification.dart';
 import '../menu/maintab.dart';
 import '../models/brand_model.dart';
 import '../models/index.dart'
@@ -75,6 +76,17 @@ class Routes {
         child: const LoginSMSScreen(),
       );
     },
+    RouteList.verifyPhoneNumber: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments as PhoneVerificationArguments;
+      return ChangeNotifierProvider<LoginSmsViewModel>(
+        create: (context) => LoginSmsViewModel(Services().firebase),
+        child: PhoneVerification(
+          onVerifySuccessCallBack: args.onVerifySuccessCallBack,
+        ),
+      );
+    },
+
+
     // RouteList.products: (context) => const ProductsScreen(),
     RouteList.wishlist: (context) => Services().widget.renderWishListScreen(),
     RouteList.notify: (context) => NotificationScreen(),

@@ -112,8 +112,8 @@ class PlacePicker extends StatefulWidget {
   /// API key generated from Google Cloud Console. You can get an API key
   /// [here](https://cloud.google.com/maps-platform/)
   final String? apiKey;
-
-  const PlacePicker(this.apiKey);
+  final bool? fromRegister;
+  const PlacePicker(this.apiKey, {this.fromRegister = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -184,7 +184,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
         key: appBarKey,
         title: SearchInput(searchPlace),
         centerTitle: true,
-        leading: IconButton(
+        leading: (widget.fromRegister ?? false) ? null : IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
             size: 20,
@@ -508,7 +508,6 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                 .toUri()!)
         .then((response) {
       Map<String, dynamic> responseJson = jsonDecode(response.body);
-      log("fuck $responseJson");
       if (response.statusCode == 200 &&
           responseJson['results'] is List &&
           List.from(responseJson['results']).isNotEmpty) {

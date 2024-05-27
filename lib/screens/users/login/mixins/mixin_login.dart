@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,12 +9,18 @@ import '../../../../common/config.dart';
 import '../../../../common/constants.dart';
 import '../../../../common/events.dart';
 import '../../../../common/tools/flash.dart';
+import '../../../../custom/Phone Verification/phone_verification.dart';
+import '../../../../data/boxes.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../models/index.dart';
 import '../../../../modules/sms_login/sms_login.dart';
+import '../../../../routes/flux_navigate.dart';
 import '../../../../services/index.dart';
+import '../../../../widgets/common/place_picker.dart';
 import '../../../../widgets/common/webview.dart';
 import '../../../base_screen.dart';
+import '../../../login_sms/login_sms_screen.dart';
+import '../../../login_sms/login_sms_viewmodel.dart';
 import '../../forgot_password_screen.dart';
 
 typedef LoginSocialFunction = Future<void> Function({
@@ -31,6 +38,9 @@ typedef LoginFunction = Future<void> Function({
 
 mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
   bool _isActiveAudio = false;
+  List<Address?> listAddress = [];
+  Address? address;
+  Address? remoteAddress;
 
   Future<void> beforeCallLogin();
   Future<void> afterCallLogin(bool isLoginSuccess);
@@ -47,21 +57,115 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
   LoginSocialFunction get _loginGoogle => _userModel.loginGoogle;
   AudioManager get _audioPlayerService => injector<AudioManager>();
 
-  void redirectingAfterLoginSuccess() {
-    final canPop = ModalRoute.of(context)!.canPop;
-    if (canPop) {
-      // When not required login
-      Navigator.of(context).pop();
-    } else {
-      // When required login
-      Navigator.of(App.fluxStoreNavigatorKey.currentContext!)
-          .pushReplacementNamed(RouteList.dashboard);
+  void getDataFromLocal() {
+    var listData = List<Address>.from(UserBox().addresses);
+    final indexRemote =
+    listData.indexWhere((element) => element.isShow == false);
+    if (indexRemote != -1) {
+      remoteAddress = listData[indexRemote];
+    }
+
+    listData.removeWhere((element) => element.isShow == false);
+    listAddress = listData;
+    setState(() {});
+  }
+
+  Future<void> saveDataToLocal() async {
+    var listAddress = <Address>[];
+    final address = this.address;
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
+    await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context).pushReplacementNamed(RouteList.dashboard);
+  }
+
+  Future<void> redirectingAfterLoginSuccess({bool? googleLogin ,bool? appleLogin, bool? facebookLogin, String? phonenumbereee }) async {
+
+    getDataFromLocal();
+    if(listAddress.isEmpty ){
+      var user = Provider.of<UserModel>(context, listen: false).user;
+      final result = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PlacePicker(
+            kIsWeb
+                ? kGoogleApiKey.web
+                : isIos
+                ? kGoogleApiKey.ios
+                : kGoogleApiKey.android,
+            fromRegister: true,
+          ),
+        ),
+      );
+
+      if (result is LocationResult) {
+        try{
+          address = Address();
+          address?.country = result.country;
+          address?.street = result.street;
+          address?.state = result.state;
+          address?.city = result.city;
+          address?.zipCode = result.zip;
+          if (result.latLng?.latitude != null &&
+              result.latLng?.latitude != null) {
+            address?.mapUrl =
+            'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+            address?.latitude = result.latLng?.latitude.toString();
+            address?.longitude = result.latLng?.longitude.toString();
+          }
+          address?.firstName = user?.firstName;
+          address?.lastName = user?.lastName;
+          address?.email = user?.email;
+          address?.phoneNumber = ((googleLogin ?? false) || (appleLogin ?? false) || (facebookLogin ?? false)) ?  phonenumbereee : user?.phoneNumber;
+
+          if (address != null) {
+            Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).setAddress(address);
+            await saveDataToLocal();
+            return;
+          } else {
+            await FlashHelper.errorMessage(
+              context,
+              message: S.of(context).pleaseInput,
+            );
+          }
+        }catch(e){
+          log('fuckk :: $e');
+          await FlashHelper.errorMessage(
+            context,
+            message:e.toString(),
+          );
+        }
+      }
+    }
+    else {
+      final canPop = ModalRoute.of(context)!.canPop;
+      if (canPop) {
+        // When not required login
+        Navigator.of(context).pop();
+      } else {
+        // When required login
+        await Navigator.of(App.fluxStoreNavigatorKey.currentContext!)
+            .pushReplacementNamed(RouteList.dashboard);
+      }
     }
   }
 
-  void loginDone() {
-    _updateEventBus();
-    redirectingAfterLoginSuccess();
+  void loginDone({bool? googleLogin ,bool? appleLogin, bool? facebookLogin }) {
+    if((googleLogin ?? false) || (appleLogin ?? false) || (facebookLogin ?? false)) {
+      Navigator.of(context).pushNamed(RouteList.verifyPhoneNumber,
+        arguments: PhoneVerificationArguments((phone) =>
+            redirectingAfterLoginSuccess(googleLogin: googleLogin,appleLogin: appleLogin,facebookLogin: facebookLogin,phonenumbereee: phone),
+          _updateEventBus));
+    }else{
+      _updateEventBus();
+      redirectingAfterLoginSuccess(googleLogin: googleLogin,appleLogin: appleLogin,facebookLogin: facebookLogin);
+    }
   }
 
   void loginWithFacebook(context) async {
@@ -71,7 +175,7 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
       success: (user) {
         //hideLoading();
         afterCallLogin(true);
-        loginDone();
+        loginDone(facebookLogin: true);
       },
       fail: (message) {
         //hideLoading();
@@ -87,7 +191,7 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
     await _loginApple(
         success: (user) {
           afterCallLogin(true);
-          loginDone();
+          loginDone(appleLogin: true);
         },
         fail: (message) {
           afterCallLogin(false);
@@ -180,7 +284,7 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
         success: (user) {
           //hideLoading();
           afterCallLogin(true);
-          loginDone();
+          loginDone(googleLogin: true);
         },
         fail: (message) {
           //hideLoading();
