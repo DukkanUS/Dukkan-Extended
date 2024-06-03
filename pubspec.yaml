@@ -213,6 +213,8 @@ dependencies:
   ### Uncomment file lib/common/tools/in_app_update_for_android.dart
   in_app_update: 4.2.2
   meta_seo: 3.0.9
+  geolocator: ^11.1.0
+  intl_utils: ^2.8.7
 
 dev_dependencies:
   flutter_lints: 3.0.1

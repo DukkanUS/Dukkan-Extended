@@ -402,7 +402,7 @@ class _VerifyCodeState extends State<VerifyCode>
                         : isIos
                         ? kGoogleApiKey.ios
                         : kGoogleApiKey.android,
-                    fromRegister: true,
+                    // fromRegister: true,
                   ),
                 ),
               );

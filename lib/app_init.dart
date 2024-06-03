@@ -224,7 +224,7 @@ class _AppInitState extends BaseScreen<AppInit> {
     else
       {
         getDataFromLocal();
-        if(isLoggedIn && listAddress.isEmpty && false ){
+        if(isLoggedIn && listAddress.isEmpty){
           var user = Provider.of<UserModel>(context, listen: false).user;
           final result = await Navigator.of(context).push(
             MaterialPageRoute(
@@ -234,7 +234,7 @@ class _AppInitState extends BaseScreen<AppInit> {
                     : isIos
                     ? kGoogleApiKey.ios
                     : kGoogleApiKey.android,
-                fromRegister: true,
+                // fromRegister: true,
               ),
             ),
           );

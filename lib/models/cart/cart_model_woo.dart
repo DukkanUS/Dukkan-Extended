@@ -41,6 +41,13 @@ class CartModelWoo
   }
 
   @override
+  void setAddress(data) {
+    super.setAddress(data);
+    notifyListeners();
+
+  }
+
+  @override
   double getTotal() {
     var subtotal = getSubTotal() ?? 1.0;
 

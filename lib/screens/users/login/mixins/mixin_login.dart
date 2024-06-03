@@ -99,7 +99,7 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
                 : isIos
                 ? kGoogleApiKey.ios
                 : kGoogleApiKey.android,
-            fromRegister: true,
+            // fromRegister: true,
           ),
         ),
       );

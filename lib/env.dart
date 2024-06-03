@@ -301,7 +301,7 @@ Map<String, dynamic> environment = {
     "SmartCOD": {"amountStop": 200.0, "enabled": false, "extraFee": 10.0},
     "DefaultStateISOCode": "LA",
     "ShowTransactionDetails": true,
-    "GuestCheckout": false,
+    "GuestCheckout": true,
     "UpdateOrderStatus": true,
     "CheckoutPageSlug": {"en": "checkout"},
     "ShowWebviewCheckoutSuccessScreen": true,
@@ -676,7 +676,7 @@ Map<String, dynamic> environment = {
       "required": true
     },
     {"visible": true, "position": 5, "type": "searchAddress"},
-    {"visible": false, "position": 6, "type": "selectAddress"},
+    {"visible": true, "position": 6, "type": "selectAddress"},
     {"visible": false, "position": 7, "type": "country"},
     {"visible": true, "position": 8, "type": "state"},
     {

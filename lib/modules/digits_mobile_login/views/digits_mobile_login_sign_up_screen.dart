@@ -332,6 +332,7 @@ class _RegistrationScreenState extends State<DigitsMobileLoginSignUpScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           CountryCodePicker(
+                            countryFilter: const ['US','JO'],
                             onChanged: (country) {
                               setState(() {
                                 countryCode = country;

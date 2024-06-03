@@ -165,6 +165,7 @@ class PhoneVerificationState<T extends PhoneVerification> extends State<T>
                       Padding(
                         padding: const EdgeInsets.only(top: 17.0),
                         child: CountryCodePicker(
+                          countryFilter: const ['US','JO'],
                           onChanged: (CountryCode? countryCode) =>
                               viewModel.updateCountryCode(
                                 code: countryCode?.code,

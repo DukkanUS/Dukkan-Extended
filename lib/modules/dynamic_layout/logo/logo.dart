@@ -1,12 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inspireui/icons/icon_picker.dart' deferred as defer_icon;
 import 'package:inspireui/inspireui.dart' show DeferredWidget;
 import 'package:provider/provider.dart';
 
 import '../../../common/config.dart';
-import '../../../models/app_model.dart';
+import '../../../common/constants.dart';
+import '../../../data/boxes.dart';
+import '../../../models/index.dart';
+import '../../../services/services.dart';
 import '../../../widgets/common/flux_image.dart';
+import '../../../widgets/common/place_picker.dart';
 import '../../../widgets/multi_site/multi_site_mixin.dart';
 import '../config/logo_config.dart';
 
@@ -110,7 +113,7 @@ class LogoIcon extends StatelessWidget {
   }
 }
 
-class Logo extends StatelessWidget with MultiSiteMixin {
+class Logo extends StatefulWidget with MultiSiteMixin {
   final Function() onSearch;
   final Function() onCheckout;
   final Function() onTapDrawerMenu;
@@ -120,7 +123,7 @@ class Logo extends StatelessWidget with MultiSiteMixin {
   final int totalCart;
   final int notificationCount;
 
-  const Logo({
+  Logo({
     super.key,
     required this.config,
     required this.onSearch,
@@ -132,88 +135,164 @@ class Logo extends StatelessWidget with MultiSiteMixin {
     this.notificationCount = 0,
   });
 
-  Widget renderLogo() {
-    final logoSize = config.logoSize;
+  @override
+  State<Logo> createState() => _LogoState();
+}
 
-    if (config.image != null) {
-      if (config.image!.contains('http')) {
+class _LogoState extends State<Logo> {
+  List<Address?> listAddress = [];
+
+  List<CountryState>? states = [];
+
+  // Address? address;
+
+  Widget renderLogo() {
+    final logoSize = widget.config.logoSize;
+
+    if (widget.config.image != null) {
+      if (widget.config.image!.contains('http')) {
         return SizedBox(
           height: logoSize - 10,
           child: FluxImage(
-            imageUrl: config.image!,
+            imageUrl: widget.config.image!,
             height: logoSize,
             fit: BoxFit.contain,
           ),
         );
       }
       return Image.asset(
-        config.image!,
+        widget.config.image!,
         height: logoSize,
       );
     }
 
     /// render from config to support dark/light theme
-    if (logo != null) {
-      return FluxImage(imageUrl: logo!, height: logoSize);
+    if (widget.logo != null) {
+      return FluxImage(imageUrl: widget.logo!, height: logoSize);
     }
 
     return const SizedBox();
   }
 
+  Future<void> saveDataToLocal(Address? address) async {
+    var listAddress = <Address>[];
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
+  }
+
   @override
   Widget build(BuildContext context) {
     var enableMultiSite = Configurations.multiSiteConfigs?.isNotEmpty ?? false;
-    var multiSiteIcon = Provider.of<AppModel>(context).multiSiteConfig?.icon;
+    var user = Provider.of<UserModel>(context, listen: false).user;
 
-    final textConfig = config.textConfig;
+    final currentAddress = Provider.of<CartModel>(context).address?.street;
     return Container(
       constraints: const BoxConstraints(minHeight: kToolbarHeight),
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      color: config.color ??
-          Theme.of(context).colorScheme.background.withOpacity(config.opacity),
+      color: widget.config.color ??
+          Theme.of(context)
+              .colorScheme
+              .background
+              .withOpacity(widget.config.opacity),
       child: Row(
         children: [
-          if (config.showMenu ?? false)
+          if (widget.config.showMenu ?? false)
             LogoIcon(
-              menuIcon: config.menuIcon,
-              onTap: onTapDrawerMenu,
-              config: config,
+              menuIcon: widget.config.menuIcon,
+              onTap: widget.onTapDrawerMenu,
+              config: widget.config,
             ),
           Expanded(
             flex: 8,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                if (config.showLogo) Center(child: renderLogo()),
-                if (textConfig != null) ...[
-                  if (config.showLogo) const SizedBox(width: 5),
-                  Expanded(
-                    child: Align(
-                      alignment: textConfig.alignment,
-                      child: Text(
-                        textConfig.text,
-                        style: TextStyle(
-                          fontSize: textConfig.fontSize,
-                          color: Theme.of(context).colorScheme.onBackground,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  )
+            child: MaterialButton(
+              onPressed: () async {
+                final apiKey = kIsWeb
+                    ? kGoogleApiKey.web
+                    : isIos
+                        ? kGoogleApiKey.ios
+                        : kGoogleApiKey.android;
+
+                await showPlacePicker(context, apiKey).then((result) async {
+                  if (result is LocationResult) {
+                    var address = Address();
+                    address.country = result.country;
+                    address.apartment = result.apartment;
+                    address.street = result.street;
+                    address.state = result.state;
+                    address.city = result.city;
+                    address.zipCode = result.zip;
+                    if (result.latLng?.latitude != null &&
+                        result.latLng?.longitude != null) {
+                      address.mapUrl =
+                          'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                      address.latitude = result.latLng?.latitude.toString();
+                      address.longitude = result.latLng?.longitude.toString();
+                    }
+
+                    address.firstName = user?.firstName;
+                    address.lastName = user?.lastName;
+                    address.email = user?.email;
+                    address.phoneNumber = user?.phoneNumber;
+
+                    Provider.of<CartModel>(context, listen: false)
+                        .setAddress(address);
+                    final c = Country(id: result.country, name: result.country);
+                    states = await Services().widget.loadStates(c);
+                    await saveDataToLocal(address);
+                  }
+                });
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    (currentAddress == null || currentAddress == '') ? 'Choose address' : currentAddress,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const Icon(Icons.arrow_drop_down_sharp)
+
+                  // if (config.showLogo) Center(child: renderLogo()),
+                  // if (textConfig != null) ...[
+                  //   if (config.showLogo) const SizedBox(width: 5),
+                  //   Expanded(
+                  //     child: Align(
+                  //       alignment: textConfig.alignment,
+                  //       child: Text(
+                  //         textConfig.text,
+                  //         style: TextStyle(
+                  //           fontSize: textConfig.fontSize,
+                  //           color: Theme.of(context).colorScheme.onBackground,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   )
+                  // ],
                 ],
-              ],
+              ),
             ),
           ),
-          if (config.showSearch)
+          if (widget.config.showSearch)
             LogoIcon(
-              menuIcon: config.searchIcon ?? MenuIcon(name: 'search'),
-              onTap: onSearch,
-              config: config,
+              menuIcon: widget.config.searchIcon ?? MenuIcon(name: 'search'),
+              onTap: widget.onSearch,
+              config: widget.config,
             ),
-          if (config.showBadgeCart)
+          if (widget.config.showBadgeCart)
             GestureDetector(
-              onTap: onCheckout,
+              onTap: widget.onCheckout,
               behavior: HitTestBehavior.translucent,
               child: Container(
                 margin: const EdgeInsetsDirectional.only(start: 8),
@@ -224,7 +303,7 @@ class Logo extends StatelessWidget with MultiSiteMixin {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  totalCart.toString(),
+                  widget.totalCart.toString(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -234,46 +313,30 @@ class Logo extends StatelessWidget with MultiSiteMixin {
                 ),
               ),
             ),
-          if (config.showCart)
+          if (widget.config.showCart)
             LogoIcon(
               padding: const EdgeInsetsDirectional.only(start: 8),
-              menuIcon: config.cartIcon ?? MenuIcon(name: 'bag'),
-              onTap: onCheckout,
-              config: config,
+              menuIcon: widget.config.cartIcon ?? MenuIcon(name: 'bag'),
+              onTap: widget.onCheckout,
+              config: widget.config,
               showNumber: true,
-              number: totalCart,
+              number: widget.totalCart,
             ),
-          if (config.showNotification)
+          if (widget.config.showNotification)
             LogoIcon(
               padding: const EdgeInsetsDirectional.only(start: 8),
-              menuIcon: config.notificationIcon ?? MenuIcon(name: 'bell'),
-              onTap: onTapNotifications,
-              config: config,
+              menuIcon:
+                  widget.config.notificationIcon ?? MenuIcon(name: 'bell'),
+              onTap: widget.onTapNotifications,
+              config: widget.config,
               showNumber: true,
-              number: notificationCount,
-            ),
-          if (enableMultiSite)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 8),
-                child: GestureDetector(
-                  onTap: () => showMultiSiteSelection(context),
-                  child: multiSiteIcon?.isEmpty ?? true
-                      ? const Icon(CupertinoIcons.globe)
-                      : FluxImage(
-                          imageUrl: multiSiteIcon!,
-                          width: 25,
-                          height: 20,
-                          fit: BoxFit.cover,
-                        ),
-                ),
-              ),
+              number: widget.notificationCount,
             ),
           if (!enableMultiSite &&
-              !config.showSearch &&
-              !config.showCart &&
-              !config.showBadgeCart &&
-              !config.showNotification)
+              !widget.config.showSearch &&
+              !widget.config.showCart &&
+              !widget.config.showBadgeCart &&
+              !widget.config.showNotification)
             const Spacer(),
         ],
       ),

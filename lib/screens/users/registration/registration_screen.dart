@@ -13,7 +13,15 @@ import '../../../custom/providers/registration_provider.dart';
 import '../../../data/boxes.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/index.dart'
-    show Address, AppModel, CartModel, PointModel, User, UserModel;
+    show
+        Address,
+        AppModel,
+        CartModel,
+        Country,
+        CountryState,
+        PointModel,
+        User,
+        UserModel;
 import '../../../modules/dynamic_layout/helper/helper.dart';
 import '../../../modules/vendor_on_boarding/screen_index.dart';
 import '../../../routes/flux_navigate.dart';
@@ -51,7 +59,7 @@ class RegistrationScreenMobile extends StatefulWidget {
 
 class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   List<Address?> listAddress = [];
-  Address? address;
+  List<CountryState>? states = [];
   Address? remoteAddress;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -85,9 +93,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
     setState(() {});
   }
 
-  Future<void> saveDataToLocal() async {
+  Future<void> saveDataToLocal(Address? address) async {
     var listAddress = <Address>[];
-    final address = this.address;
     if (address != null) {
       listAddress.add(address);
     }
@@ -98,7 +105,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       }
     }
     UserBox().addresses = listAddress;
-    await Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
+    await Navigator.of(context).pushNamed(RouteList.dashboard);
   }
 
   Future<void> _welcomeDiaLog(User user) async {
@@ -111,58 +118,46 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       '${S.of(context).welcome} $email!',
       isError: false,
     );
-      if (listAddress.isEmpty ) {
-        final result = await Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => PlacePicker(
-              kIsWeb
-                  ? kGoogleApiKey.web
-                  : isIos
-                      ? kGoogleApiKey.ios
-                      : kGoogleApiKey.android,
-              fromRegister: true,
-            ),
+    if (listAddress.isEmpty) {
+      final result = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PlacePicker(
+            kIsWeb
+                ? kGoogleApiKey.web
+                : isIos
+                    ? kGoogleApiKey.ios
+                    : kGoogleApiKey.android,
+            // fromRegister: true,
           ),
-          (route) => false,
-        );
+        ),
+        // (route) => false,
+      );
 
-        if (result is LocationResult) {
-        try{
-          address = Address();
-          address?.country = result.country;
-          address?.street = result.street;
-          address?.state = result.state;
-          address?.city = result.city;
-          address?.zipCode = result.zip;
-          if (result.latLng?.latitude != null &&
-              result.latLng?.latitude != null) {
-            address?.mapUrl =
-            'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-            address?.latitude = result.latLng?.latitude.toString();
-            address?.longitude = result.latLng?.longitude.toString();
-          }
-          address?.firstName = user.firstName;
-          address?.lastName = user.lastName;
-          address?.email = user.email;
-          address?.phoneNumber = user.phoneNumber;
+      if (result is LocationResult) {
+        var address = Address();
+        address.country = result.country;
+        address.street = result.street;
+        address.state = result.state;
+        address.city = result.city;
+        address.zipCode = result.zip;
+        if (result.latLng?.latitude != null &&
+            result.latLng?.latitude != null) {
+          address.mapUrl =
+              'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+          address.latitude = result.latLng?.latitude.toString();
+          address.longitude = result.latLng?.longitude.toString();
+        }
+        address.firstName = user.firstName;
+        address.lastName = user.lastName;
+        address.email = user.email;
+        address.phoneNumber = user.phoneNumber;
 
-          if (address != null) {
-            Provider.of<CartModel>(context, listen: false).setAddress(address);
-            await saveDataToLocal();
-          } else {
-            await FlashHelper.errorMessage(
-              context,
-              message: S.of(context).pleaseInput,
-            );
-          }
-        }catch(e){
-          await FlashHelper.errorMessage(
-            context,
-            message:e.toString(),
-          );
-        }
-        }
+        Provider.of<CartModel>(context, listen: false).setAddress(address);
+        final c = Country(id: result.country, name: result.country);
+        states = await Services().widget.loadStates(c);
+        await saveDataToLocal(address);
       }
+    }
   }
 
   @override

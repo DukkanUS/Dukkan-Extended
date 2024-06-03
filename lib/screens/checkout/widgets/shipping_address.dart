@@ -323,6 +323,22 @@ class _ShippingAddressState extends State<ShippingAddress> {
     }
   }
 
+
+  Future<void> saveDataToLocal() async {
+    var listAddress = <Address>[];
+    final address = this.address;
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
+  }
+
   List<Widget> _renderFormItem() {
     var countryName = S.of(context).country;
     final currentCountry =
@@ -407,40 +423,35 @@ class _ShippingAddressState extends State<ShippingAddress> {
                         elevation: 0.0,
                       ),
                       onPressed: () async {
-                        final result = await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => PlacePicker(
-                              kIsWeb
-                                  ? kGoogleApiKey.web
-                                  : isIos
-                                      ? kGoogleApiKey.ios
-                                      : kGoogleApiKey.android,
-                            ),
-                          ),
-                        );
+                        final apiKey = kIsWeb
+                            ? kGoogleApiKey.web
+                            : isIos
+                            ? kGoogleApiKey.ios
+                            : kGoogleApiKey.android;
 
-                        if (result is LocationResult) {
-                          address!.country = result.country;
-                          address!.street = result.street;
-                          address!.state = result.state;
-                          address!.city = result.city;
-                          address!.zipCode = result.zip;
-                          if (result.latLng?.latitude != null &&
-                              result.latLng?.latitude != null) {
-                            address!.mapUrl =
-                                'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-                            address!.latitude =
-                                result.latLng?.latitude.toString();
-                            address!.longitude =
-                                result.latLng?.longitude.toString();
+                        await showPlacePicker(context, apiKey).then((result) async {
+                          if (result is LocationResult) {
+                            address?.country = result.country;
+                            address?.apartment = result.apartment;
+                            address?.street = result.street;
+                            address?.state = result.state;
+                            address?.city = result.city;
+                            address?.zipCode = result.zip;
+                            if (result.latLng?.latitude != null && result.latLng?.longitude != null) {
+                              address?.mapUrl =
+                              'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                              address?.latitude = result.latLng?.latitude.toString();
+                              address?.longitude = result.latLng?.longitude.toString();
+                            }
+
+                            Provider.of<CartModel>(context, listen: false).setAddress(address);
+                            loadAddressFields(address);
+                            final c = Country(id: result.country, name: result.country);
+                            states = await Services().widget.loadStates(c);
+                            await saveDataToLocal();
+                            setState(() {});
                           }
-
-                          loadAddressFields(address);
-                          final c =
-                              Country(id: result.country, name: result.country);
-                          states = await Services().widget.loadStates(c);
-                          setState(() {});
-                        }
+                        });
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
