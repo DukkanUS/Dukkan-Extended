@@ -243,6 +243,7 @@ class _AppInitState extends BaseScreen<AppInit> {
             try{
               address = Address();
               address?.country = result.country;
+              address?.apartment = result.apartment;
               address?.street = result.street;
               address?.state = result.state;
               address?.city = result.city;

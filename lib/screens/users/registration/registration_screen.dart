@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/config.dart';
@@ -80,6 +82,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   final emailNode = FocusNode();
   final passwordNode = FocusNode();
 
+  var countryDIalCOde;
+
   void getDataFromLocal() {
     var listData = List<Address>.from(UserBox().addresses);
     final indexRemote =
@@ -136,6 +140,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       if (result is LocationResult) {
         var address = Address();
         address.country = result.country;
+        address.apartment = result.apartment;
         address.street = result.street;
         address.state = result.state;
         address.city = result.city;
@@ -231,18 +236,19 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   }
 
   Future smsCodeSent(String verId, [int? forceCodeResend]) {
+    print("sadasdasdasddsad $countryDIalCOde$phoneNumber");
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CustomVerifyCode(
           verId: verId,
-          phoneNumber: phoneNumber,
+          phoneNumber: '$countryDIalCOde$phoneNumber',
           resendToken: forceCodeResend,
           onVerfiySuccesTORENAME: (_) async {
             await _submitRegister(
               firstName: firstName,
               lastName: lastName,
-              phoneNumber: phoneNumber,
+              phoneNumber: '$countryDIalCOde$phoneNumber',
               emailAddress: emailAddress,
               password: password,
               isVendor: _registerType == RegisterType.vendor,
@@ -284,7 +290,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
 
       try {
         unawaited(Services().firebase.verifyPhoneNumber(
-              phoneNumber: phoneNumber,
+              phoneNumber: '$countryDIalCOde$phoneNumber',
               codeAutoRetrievalTimeout: autoRetrieve,
               verificationCompleted: (value) => log(
                   '🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴'),
@@ -372,20 +378,47 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                             if (showPhoneNumberWhenRegister)
                               const SizedBox(height: 20.0),
                             if (showPhoneNumberWhenRegister)
-                              CustomTextField(
-                                key: const Key('registerPhoneField'),
-                                focusNode: phoneNumberNode,
-                                autofillHints: const [
-                                  AutofillHints.telephoneNumber
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 17.0),
+                                    child: CountryCodePicker(
+                                      countryFilter: const ['US', 'JO'],
+                                      initialSelection: 'JO',
+                                      onInit: (code) {
+                                        countryDIalCOde = code?.dialCode!;
+                                      },
+                                      onChanged: (code) {
+                                        countryDIalCOde =
+                                            code.dialCode?.toString() ?? '';
+                                      },
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                      dialogBackgroundColor: Theme.of(context)
+                                          .dialogBackgroundColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: TextFormField(
+                                      key: const Key('registerPhoneField'),
+                                      focusNode: phoneNumberNode,
+                                      autofillHints: const [
+                                        AutofillHints.telephoneNumber
+                                      ],
+                                      textInputAction: TextInputAction.next,
+                                      onChanged: (value) => phoneNumber = value,
+                                      decoration: InputDecoration(
+                                        labelText: S.of(context).phone,
+                                        hintText:
+                                            S.of(context).enterYourPhoneNumber,
+                                      ),
+                                      keyboardType: TextInputType.phone,
+                                    ),
+                                  )
                                 ],
-                                nextNode: emailNode,
-                                showCancelIcon: true,
-                                onChanged: (value) => phoneNumber = value,
-                                decoration: InputDecoration(
-                                  labelText: S.of(context).phone,
-                                  hintText: S.of(context).enterYourPhoneNumber,
-                                ),
-                                keyboardType: TextInputType.phone,
                               ),
                             const SizedBox(height: 20.0),
                             CustomTextField(

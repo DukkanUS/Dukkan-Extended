@@ -428,6 +428,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
                             : isIos
                             ? kGoogleApiKey.ios
                             : kGoogleApiKey.android;
+                        var user = Provider.of<UserModel>(context, listen: false).user;
 
                         await showPlacePicker(context, apiKey).then((result) async {
                           if (result is LocationResult) {
@@ -443,6 +444,11 @@ class _ShippingAddressState extends State<ShippingAddress> {
                               address?.latitude = result.latLng?.latitude.toString();
                               address?.longitude = result.latLng?.longitude.toString();
                             }
+
+                            address?.firstName = user?.firstName;
+                            address?.lastName = user?.lastName;
+                            address?.email = user?.email;
+                            address?.phoneNumber = user?.phoneNumber;
 
                             Provider.of<CartModel>(context, listen: false).setAddress(address);
                             loadAddressFields(address);
