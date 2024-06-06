@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' show Random;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:inspireui/inspireui.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom/helper.dart';
@@ -49,12 +51,6 @@ class LocationResult {
   String? apartment;
 }
 
-class NearbyPlace {
-  String? name;
-  String? icon;
-  LatLng? latLng;
-}
-
 class AutoCompleteItem {
   String? id;
   String? text;
@@ -64,8 +60,9 @@ class AutoCompleteItem {
 
 class PlacePicker extends StatefulWidget {
   final String? apiKey;
+  final Future<void> Function(BuildContext context, dynamic result)? onPop;
 
-  const PlacePicker(this.apiKey);
+  const PlacePicker(this.apiKey, {this.onPop});
 
   @override
   State<StatefulWidget> createState() => PlacePickerState();
@@ -91,7 +88,6 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
 
   LocationResult? locationResult;
   OverlayEntry? overlayEntry;
-  List<NearbyPlace> nearbyPlaces = [];
   String sessionToken = Uuid().generateV4();
   GlobalKey appBarKey = GlobalKey();
   bool hasSearchTerm = false;
@@ -129,98 +125,121 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
     super.initState();
   }
 
+  void removeData(int index, Address addressRemove) {
+    var data = UserBox().addresses;
+    if (data.isNotEmpty) {
+      final indexWhere =
+          data.indexWhere((element) => element.compareFullInfo(addressRemove));
+
+      if (indexWhere != -1) {
+        if (remoteAddress?.compareFullInfo(data[indexWhere]) ?? false) {
+          data[indexWhere].isShow = false;
+        } else {
+          data.removeAt(indexWhere);
+        }
+
+        UserBox().addresses = data;
+      }
+    }
+    getDataFromLocal();
+  }
+
   @override
   Widget build(BuildContext context) {
     InputBorder borderStyle = OutlineInputBorder(
       borderRadius: BorderRadius.circular(20),
-      borderSide: const BorderSide(color: Colors.black), // Enabled border color
+      borderSide: const BorderSide(color: Colors.black),
     );
     return SafeArea(
       top: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 0, left: 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                children: [
-                  (Navigator.canPop(context)
-                      ? IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: const Icon(Icons.cancel_outlined))
-                      : const SizedBox.shrink()),
-                  const Text(
-                    'Choose address',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ],
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    (Navigator.canPop(context)
+                        ? IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.black,
+                            ))
+                        : const SizedBox.shrink()),
+                    const Text(
+                      'Choose address',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 0),
-            child: SearchInput(searchPlace),
-          ),
-          (!hasSearchTerm && !isByCurrentLocation)
-              ? Expanded(
-                  child: Column(
-                    children: [
-                      (isFetchingLocation)
-                          ? const Padding(
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: SearchInput(searchPlace),
+            ),
+            if (!hasSearchTerm && !isByCurrentLocation)
+              Expanded(
+                child: Column(
+                  children: [
+                    (isFetchingLocation)
+                        ? const Padding(
                             padding: EdgeInsets.only(top: 20),
-                            child:  Center(
-                                child: SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator()),
-                              ),
+                            child: Center(
+                              child: SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator()),
+                            ),
                           )
-                          : TextButton(
-                              onPressed: () async {
+                        : TextButton(
+                            onPressed: () async {
+                              setState(() {
+                                isFetchingLocation = true;
+                              });
+                              var latLng = await Helper.getCurrentLocation();
+
+                              if (latLng != null) {
                                 setState(() {
-                                  isFetchingLocation = true;
+                                  isFetchingLocation = false;
+                                  isByCurrentLocation = true;
+                                  isMapVisible = true;
                                 });
-                                var latLng = await Helper.getCurrentLocation();
-
-                                if (latLng != null) {
-                                  setState(() {
-                                    isFetchingLocation = false;
-                                    isByCurrentLocation = true;
-                                    isMapVisible = true;
-                                  });
-                                  moveToLocation(latLng);
-
-
-
-
-                                } else {
-                                  setState(() {
-                                    isFetchingLocation = false;
-                                  });                                }
-                                ///liofing
-                              },
-                              child: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: Colors.black,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    'Use Current Location',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              )),
-                      Flexible(
+                                moveToLocation(latLng);
+                              } else {
+                                setState(() {
+                                  isFetchingLocation = false;
+                                });
+                              }
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  CupertinoIcons.location_fill,
+                                  color: Colors.black,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Use Current Location',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
                         child: ListView.builder(
                             itemCount: listAddress.length,
                             // shrinkWrap: true,
@@ -231,215 +250,234 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                       .setAddress(listAddress[index]);
                                   Navigator.of(context).pop();
                                 },
-                                child: ListTile(
-                                  title: Text(listAddress[index]?.street ?? ''),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      listAddress[index]?.street ?? '',
+                                      style: TextStyle(
+                                          fontWeight:
+                                              (Provider.of<CartModel>(context)
+                                                          .address
+                                                          ?.street ==
+                                                      listAddress[index]
+                                                          ?.street)
+                                                  ? FontWeight.bold
+                                                  : null),
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                        onPressed: () {
+                                          removeData(
+                                              index, listAddress[index]!);
+                                        },
+                                        icon: const Icon(Icons.delete))
+                                  ],
                                 ),
                               );
                             }),
-                      )
-                    ],
-                  ),
-                )
-              : Flexible(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: isMapVisible ? 2 : 0,
-                        child: Visibility(
-                          visible: isMapVisible,
-                          child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 15, right: 15, top: 10),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  // Radius for the rounded edges
-                                  child: GoogleMap(
-                                    buildingsEnabled: false,
-                                    mapToolbarEnabled: false,
-                                    initialCameraPosition: const CameraPosition(
-                                      target: initialTarget,
-                                      zoom: 15,
-                                    ),
-                                    myLocationButtonEnabled: true,
-                                    myLocationEnabled: true,
-                                    onMapCreated: onMapCreated,
-                                    onTap: (latLng) {
-                                      // clearOverlay();
-                                      // moveToLocation(latLng);
-                                    },
-                                    markers: markers,
-                                    gestureRecognizers: const <Factory<
-                                        OneSequenceGestureRecognizer>>{},
-                                    zoomGesturesEnabled: false,
-                                    scrollGesturesEnabled: false,
-                                    rotateGesturesEnabled: false,
-                                    tiltGesturesEnabled: false,
-                                  ))),
-                        ),
                       ),
-                      if (locationResult != null) ...[
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            children: [
-                              Form(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 20),
-                                child: Column(
-                                  children: [
-                                    TextFormField(
-                                      enabled: false,
-                                      controller: _streetAddressController,
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                      // Text color
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          borderSide: const BorderSide(
-                                              color: Colors.black),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          borderSide: const BorderSide(
-                                              color: Colors
-                                                  .black), // Enabled border color
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          borderSide: const BorderSide(
-                                              color: Colors
-                                                  .black), // Focused border color
-                                        ),
-                                        labelText: 'Street Address',
-                                        labelStyle: const TextStyle(
+                    )
+                  ],
+                ),
+              )
+            else
+              Flexible(
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: isMapVisible ? 2 : 0,
+                      child: Visibility(
+                        visible: isMapVisible,
+                        child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 15, right: 15, top: 10),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                // Radius for the rounded edges
+                                child: GoogleMap(
+                                  buildingsEnabled: false,
+                                  mapToolbarEnabled: false,
+                                  initialCameraPosition: const CameraPosition(
+                                    target: initialTarget,
+                                    zoom: 15,
+                                  ),
+                                  myLocationButtonEnabled: true,
+                                  myLocationEnabled: true,
+                                  onMapCreated: onMapCreated,
+                                  onTap: (latLng) {
+                                    // clearOverlay();
+                                    // moveToLocation(latLng);
+                                  },
+                                  markers: markers,
+                                  gestureRecognizers: const <Factory<
+                                      OneSequenceGestureRecognizer>>{},
+                                  zoomGesturesEnabled: false,
+                                  scrollGesturesEnabled: false,
+                                  rotateGesturesEnabled: false,
+                                  tiltGesturesEnabled: false,
+                                ))),
+                      ),
+                    ),
+                    if (locationResult != null) ...[
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          children: [
+                            Form(
+                                child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 20),
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    enabled: false,
+                                    controller: _streetAddressController,
+                                    style: const TextStyle(color: Colors.black),
+                                    // Text color
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        borderSide: const BorderSide(
                                             color: Colors.black),
                                       ),
-                                      textInputAction: TextInputAction.next,
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    TextFormField(
-                                      controller: _apartmentController,
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                      // Text color
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          borderSide: const BorderSide(
-                                              color: Colors.black),
-                                        ),
-                                        enabledBorder: borderStyle.copyWith(
-                                            borderSide: const BorderSide(
-                                                color: Colors.black,
-                                                width: .1)),
-                                        focusedBorder: borderStyle,
-                                        labelText: 'Apt. floor, suite, etc',
-                                        // labelStyle: const TextStyle(
-                                        //     color: Colors.black),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        borderSide: const BorderSide(
+                                            color: Colors
+                                                .black), // Enabled border color
                                       ),
-                                      textInputAction: TextInputAction.next,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        borderSide: const BorderSide(
+                                            color: Colors
+                                                .black), // Focused border color
+                                      ),
+                                      labelText: 'Street Address',
+                                      labelStyle:
+                                          const TextStyle(color: Colors.black),
                                     ),
-                                    const SizedBox(
-                                      height: 15,
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  TextFormField(
+                                    controller: _apartmentController,
+                                    style: const TextStyle(color: Colors.black),
+                                    // Text color
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        borderSide: const BorderSide(
+                                            color: Colors.black),
+                                      ),
+                                      enabledBorder: borderStyle.copyWith(
+                                          borderSide: const BorderSide(
+                                              color: Colors.black, width: .1)),
+                                      focusedBorder: borderStyle,
+                                      labelText: 'Apt. floor, suite, etc',
+                                      // labelStyle: const TextStyle(
+                                      //     color: Colors.black),
                                     ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            enabled: false,
-                                            controller: _zipCodeController,
-                                            style: const TextStyle(
-                                                color: Colors.black),
-                                            // Text color
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                borderSide: const BorderSide(
-                                                    color: Colors.black),
-                                              ),
-                                              enabledBorder: borderStyle,
-                                              focusedBorder: borderStyle,
-                                              labelText: 'Zip Code',
-                                              labelStyle: const TextStyle(
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          enabled: false,
+                                          controller: _zipCodeController,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                          // Text color
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              borderSide: const BorderSide(
                                                   color: Colors.black),
                                             ),
-                                            textInputAction:
-                                                TextInputAction.next,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: TextFormField(
-                                            enabled: false,
-                                            controller: _countryController,
-                                            style: const TextStyle(
+                                            enabledBorder: borderStyle,
+                                            focusedBorder: borderStyle,
+                                            labelText: 'Zip Code',
+                                            labelStyle: const TextStyle(
                                                 color: Colors.black),
-                                            // Text color
-                                            decoration: const InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              border: InputBorder.none,
-                                              labelText: 'Country',
-                                              // Added missing label
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black),
-                                            ),
-                                            textInputAction:
-                                                TextInputAction.next,
                                           ),
+                                          textInputAction: TextInputAction.next,
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )),
-                            ],
-                          ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: TextFormField(
+                                          enabled: false,
+                                          controller: _countryController,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                          // Text color
+                                          decoration: const InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                            border: InputBorder.none,
+                                            labelText: 'Country',
+                                            // Added missing label
+                                            labelStyle:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                          textInputAction: TextInputAction.next,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: FloatingActionButton.extended(
-                            onPressed: () {
-                              locationResult?.apartment =
-                                  _apartmentController.text;
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: FloatingActionButton.extended(
+                          onPressed: () {
+                            locationResult?.apartment =
+                                _apartmentController.text;
+
+                            if (widget.onPop != null) {
+                              widget.onPop!(context, locationResult);
+                            } else {
                               Navigator.of(context).pop(locationResult);
-                            },
-                            backgroundColor: Colors.green,
-                            label: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                child: const Center(
-                                    child: Text(
-                                  'Save Address',
-                                  style: TextStyle(color: Colors.white),
-                                ))),
-                          ),
+                            }
+                          },
+                          backgroundColor: Colors.green,
+                          label: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              child: const Center(
+                                  child: Text(
+                                'Save Address',
+                                style: TextStyle(color: Colors.white),
+                              ))),
                         ),
-                      ],
+                      ),
                     ],
-                  ),
-                )
-        ],
+                  ],
+                ),
+              )
+          ],
+        ),
       ),
     );
   }
@@ -540,7 +578,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
 
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: 120,
+        top: 155,
         bottom: 60,
         width: MediaQuery.of(context).size.width,
         child: Container(
@@ -763,7 +801,7 @@ class _SearchInputState extends State<SearchInput> {
         labelStyle: const TextStyle(color: Colors.black),
 
         hintText: S.of(context).searchPlace,
-        hintStyle: const TextStyle(color: Colors.black), // Hint text color
+        hintStyle: const TextStyle(color: Colors.black),
       ),
     );
   }
@@ -774,16 +812,16 @@ Future<LocationResult?> showPlacePicker(
   return await showModalBottomSheet<LocationResult>(
     context: context,
     isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+    ),
+    backgroundColor: Theme.of(context).colorScheme.background,
     builder: (context) {
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
         child: PlacePicker(apiKey),
       );
     },

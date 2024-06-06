@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app.dart';
 import '../../../common/config.dart';
 import '../../../common/constants.dart';
 import '../../../common/tools.dart';
@@ -109,7 +110,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       }
     }
     UserBox().addresses = listAddress;
-    await Navigator.of(context).pushNamed(RouteList.dashboard);
+    await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
+        .pushReplacementNamed(RouteList.dashboard);
   }
 
   Future<void> _welcomeDiaLog(User user) async {
@@ -123,7 +125,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       isError: false,
     );
     if (listAddress.isEmpty) {
-      final result = await Navigator.of(context).push(
+      await Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => PlacePicker(
             kIsWeb
@@ -131,37 +133,40 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                 : isIos
                     ? kGoogleApiKey.ios
                     : kGoogleApiKey.android,
+            onPop: (validContext, result) async {
+              if (result is LocationResult) {
+                var address = Address();
+                address.country = result.country;
+                address.apartment = result.apartment;
+                address.street = result.street;
+                address.state = result.state;
+                address.city = result.city;
+                address.zipCode = result.zip;
+                if (result.latLng?.latitude != null &&
+                    result.latLng?.latitude != null) {
+                  address.mapUrl =
+                      'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                  address.latitude = result.latLng?.latitude.toString();
+                  address.longitude = result.latLng?.longitude.toString();
+                }
+                address.firstName = user.firstName;
+                address.lastName = user.lastName;
+                address.email = user.email;
+                address.phoneNumber = user.phoneNumber;
+
+                Provider.of<CartModel>(validContext, listen: false)
+                    .setAddress(address);
+                final c = Country(id: result.country, name: result.country);
+                states = await Services().widget.loadStates(c);
+                await saveDataToLocal(address);
+              }
+            },
+
             // fromRegister: true,
           ),
         ),
-        // (route) => false,
+        (route) => false,
       );
-
-      if (result is LocationResult) {
-        var address = Address();
-        address.country = result.country;
-        address.apartment = result.apartment;
-        address.street = result.street;
-        address.state = result.state;
-        address.city = result.city;
-        address.zipCode = result.zip;
-        if (result.latLng?.latitude != null &&
-            result.latLng?.latitude != null) {
-          address.mapUrl =
-              'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-          address.latitude = result.latLng?.latitude.toString();
-          address.longitude = result.latLng?.longitude.toString();
-        }
-        address.firstName = user.firstName;
-        address.lastName = user.lastName;
-        address.email = user.email;
-        address.phoneNumber = user.phoneNumber;
-
-        Provider.of<CartModel>(context, listen: false).setAddress(address);
-        final c = Country(id: result.country, name: result.country);
-        states = await Services().widget.loadStates(c);
-        await saveDataToLocal(address);
-      }
     }
   }
 
@@ -236,7 +241,6 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   }
 
   Future smsCodeSent(String verId, [int? forceCodeResend]) {
-    print("sadasdasdasddsad $countryDIalCOde$phoneNumber");
     return Navigator.push(
       context,
       MaterialPageRoute(

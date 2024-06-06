@@ -52,11 +52,13 @@ post_install do |installer|
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
           '$(inherited)',
 
-          ## dart: PermissionGroup.camera
           'PERMISSION_CAMERA=1',
 
-          ## dart: PermissionGroup.photos
           'PERMISSION_PHOTOS=1'
+
+          'PERMISSION_LOCATION=1',
+
+          'PERMISSION_LOCATION_WHENINUSE=0',
         ]
       else
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [

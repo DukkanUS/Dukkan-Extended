@@ -15,7 +15,18 @@ import 'common/tools/flash.dart';
 import 'data/boxes.dart';
 import 'generated/l10n.dart';
 import 'models/index.dart'
-    show Address, AppModel, CartModel, CategoryModel, FilterAttributeModel, FilterTagModel, ListingLocationModel, NotificationModel, ProductPriceModel, TagModel, UserModel;
+    show
+        Address,
+        AppModel,
+        CartModel,
+        CategoryModel,
+        FilterAttributeModel,
+        FilterTagModel,
+        ListingLocationModel,
+        NotificationModel,
+        ProductPriceModel,
+        TagModel,
+        UserModel;
 import 'modules/dynamic_layout/config/app_config.dart';
 import 'modules/dynamic_layout/helper/helper.dart';
 import 'screens/app_error.dart';
@@ -44,6 +55,7 @@ class _AppInitState extends BaseScreen<AppInit> {
   late AppConfig? appConfig;
 
   AppModel get appModel => Provider.of<AppModel>(context, listen: false);
+
   OnBoardingConfig get onBoardingConfig =>
       appModel.appConfig?.onBoardingConfig ?? kOnBoardingConfig;
 
@@ -53,7 +65,7 @@ class _AppInitState extends BaseScreen<AppInit> {
   void getDataFromLocal() {
     var listData = List<Address>.from(UserBox().addresses);
     final indexRemote =
-    listData.indexWhere((element) => element.isShow == false);
+        listData.indexWhere((element) => element.isShow == false);
     if (indexRemote != -1) {
       remoteAddress = listData[indexRemote];
     }
@@ -76,14 +88,14 @@ class _AppInitState extends BaseScreen<AppInit> {
       }
     }
     UserBox().addresses = listAddress;
-    await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context).pushReplacementNamed(RouteList.dashboard);
+    await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
+        .pushReplacementNamed(RouteList.dashboard);
   }
 
   Future<void> loadInitData() async {
     try {
       printLog('[AppState] Init Data 💫');
       isLoggedIn = UserBox().isLoggedIn;
-
 
       /// set the server config at first loading
       /// Load App model config
@@ -220,66 +232,67 @@ class _AppInitState extends BaseScreen<AppInit> {
         replacement: true,
       );
       return;
-    }
-    else
-      {
-        getDataFromLocal();
-        if(isLoggedIn && listAddress.isEmpty){
-          var user = Provider.of<UserModel>(context, listen: false).user;
-          final result = await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => PlacePicker(
+    } else {
+      getDataFromLocal();
+      if (isLoggedIn && listAddress.isEmpty) {
+        var user = Provider.of<UserModel>(context, listen: false).user;
+        await Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => PlacePicker(
                 kIsWeb
                     ? kGoogleApiKey.web
                     : isIos
-                    ? kGoogleApiKey.ios
-                    : kGoogleApiKey.android,
-                // fromRegister: true,
-              ),
-            ),
-          );
+                        ? kGoogleApiKey.ios
+                        : kGoogleApiKey.android,
+                onPop: (validContext, result) async {
+              if (result is LocationResult) {
+                try {
+                  address = Address();
+                  address?.country = result.country;
+                  address?.apartment = result.apartment;
+                  address?.street = result.street;
+                  address?.state = result.state;
+                  address?.city = result.city;
+                  address?.zipCode = result.zip;
+                  if (result.latLng?.latitude != null &&
+                      result.latLng?.latitude != null) {
+                    address?.mapUrl =
+                        'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                    address?.latitude = result.latLng?.latitude.toString();
+                    address?.longitude = result.latLng?.longitude.toString();
+                  }
+                  address?.firstName = user?.firstName;
+                  address?.lastName = user?.lastName;
+                  address?.email = user?.email;
+                  address?.phoneNumber = user?.phoneNumber;
 
-          if (result is LocationResult) {
-            try{
-              address = Address();
-              address?.country = result.country;
-              address?.apartment = result.apartment;
-              address?.street = result.street;
-              address?.state = result.state;
-              address?.city = result.city;
-              address?.zipCode = result.zip;
-              if (result.latLng?.latitude != null &&
-                  result.latLng?.latitude != null) {
-                address?.mapUrl =
-                'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-                address?.latitude = result.latLng?.latitude.toString();
-                address?.longitude = result.latLng?.longitude.toString();
+                  if (address != null) {
+                    Provider.of<CartModel>(validContext, listen: false)
+                        .setAddress(address);
+                    await saveDataToLocal();
+                    return;
+                  } else {
+                    await FlashHelper.errorMessage(
+                      validContext,
+                      message: S.of(validContext).pleaseInput,
+                    );
+                  }
+                } catch (e) {
+                  log('fuckk :: $e');
+                  await FlashHelper.errorMessage(
+                    validContext,
+                    message: e.toString(),
+                  );
+                }
               }
-              address?.firstName = user?.firstName;
-              address?.lastName = user?.lastName;
-              address?.email = user?.email;
-              address?.phoneNumber = user?.phoneNumber;
-
-              if (address != null) {
-                Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).setAddress(address);
-                await saveDataToLocal();
-                 return;
-              } else {
-                await FlashHelper.errorMessage(
-                  context,
-                  message: S.of(context).pleaseInput,
-                );
-              }
-            }catch(e){
-              log('fuckk :: $e');
-              await FlashHelper.errorMessage(
-                context,
-                message:e.toString(),
-              );
             }
-          }
-        }
+                // fromRegister: true,
+                ),
+          ),
+          (route) => false,
+        );
       }
+    }
 
     await Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
   }

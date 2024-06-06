@@ -91,7 +91,7 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
     getDataFromLocal();
     if(listAddress.isEmpty ){
       var user = Provider.of<UserModel>(context, listen: false).user;
-      final result = await Navigator.of(context).push(
+       await Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => PlacePicker(
             kIsWeb
@@ -99,50 +99,54 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
                 : isIos
                 ? kGoogleApiKey.ios
                 : kGoogleApiKey.android,
+            onPop: (validContext, result) async{
+              if (result is LocationResult) {
+                try{
+                  address = Address();
+                  address?.country = result.country;
+                  address?.apartment = result.apartment;
+                  address?.street = result.street;
+                  address?.state = result.state;
+                  address?.city = result.city;
+                  address?.zipCode = result.zip;
+                  if (result.latLng?.latitude != null &&
+                      result.latLng?.latitude != null) {
+                    address?.mapUrl =
+                    'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                    address?.latitude = result.latLng?.latitude.toString();
+                    address?.longitude = result.latLng?.longitude.toString();
+                  }
+                  address?.firstName = user?.firstName;
+                  address?.lastName = user?.lastName;
+                  address?.email = user?.email;
+                  address?.phoneNumber = ((googleLogin ?? false) || (appleLogin ?? false) || (facebookLogin ?? false)) ?  phonenumbereee : user?.phoneNumber;
+
+                  if (address != null) {
+                    Provider.of<CartModel>(validContext, listen: false).setAddress(address);
+                    await saveDataToLocal();
+                    return;
+                  } else {
+                    await FlashHelper.errorMessage(
+                      validContext,
+                      message: S.of(validContext).pleaseInput,
+                    );
+                  }
+                }catch(e){
+                  log('fuckk :: $e');
+                  await FlashHelper.errorMessage(
+                    validContext,
+                    message:e.toString(),
+                  );
+                }
+              }
+
+            },
             // fromRegister: true,
           ),
         ),
+         (route) => false,
       );
 
-      if (result is LocationResult) {
-        try{
-          address = Address();
-          address?.country = result.country;
-          address?.apartment = result.apartment;
-          address?.street = result.street;
-          address?.state = result.state;
-          address?.city = result.city;
-          address?.zipCode = result.zip;
-          if (result.latLng?.latitude != null &&
-              result.latLng?.latitude != null) {
-            address?.mapUrl =
-            'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-            address?.latitude = result.latLng?.latitude.toString();
-            address?.longitude = result.latLng?.longitude.toString();
-          }
-          address?.firstName = user?.firstName;
-          address?.lastName = user?.lastName;
-          address?.email = user?.email;
-          address?.phoneNumber = ((googleLogin ?? false) || (appleLogin ?? false) || (facebookLogin ?? false)) ?  phonenumbereee : user?.phoneNumber;
-
-          if (address != null) {
-            Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).setAddress(address);
-            await saveDataToLocal();
-            return;
-          } else {
-            await FlashHelper.errorMessage(
-              context,
-              message: S.of(context).pleaseInput,
-            );
-          }
-        }catch(e){
-          log('fuckk :: $e');
-          await FlashHelper.errorMessage(
-            context,
-            message:e.toString(),
-          );
-        }
-      }
     }
     else {
       final canPop = ModalRoute.of(context)!.canPop;

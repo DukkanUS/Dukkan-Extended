@@ -92,6 +92,26 @@ mixin AddressMixin on CartMixin {
     address = null;
   }
 
+  // int createAddressId() {
+  //   var listAddress = <Address?>[];
+  //
+  //   var listData = List<Address>.from(UserBox().addresses);
+  //   final indexRemote = listData.indexWhere((element) => element.isShow == false);
+  //   if (indexRemote != -1) {
+  //   }
+  //   listData.removeWhere((element) => element.isShow == false);
+  //   listAddress = listData;
+  //
+  //   int maxId = listAddress.isNotEmpty
+  //       ? listAddress.map<int>((e) => e!.id!).reduce((a, b) => a > b ? a : b)
+  //       : 0;
+  //
+  //   return maxId + 1;
+  // }
+
+
+
+
   void setAddress(data) {
     address = data;
     saveShippingAddress(data);
