@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:inspireui/inspireui.dart';
@@ -144,6 +145,33 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
     getDataFromLocal();
   }
 
+  void _showDeleteConfirmationDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you sure you want to delete this address?',style: TextStyle(fontSize: 16),),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                removeData(index, listAddress[index]!);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     InputBorder borderStyle = OutlineInputBorder(
@@ -176,7 +204,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                     const Text(
                       'Choose address',
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ],
                 ),
@@ -220,29 +248,31 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                 });
                               }
                             },
-                            child: const Row(
-                              children: [
-                                Icon(
-                                  CupertinoIcons.location_fill,
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'Use Current Location',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 12, right: 10,top: 10),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    CupertinoIcons.location_fill,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    'Use Current Location',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
                             )),
                     Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.only(left: 5, right: 5),
                         child: ListView.builder(
                             itemCount: listAddress.length,
-                            // shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return MaterialButton(
                                 onPressed: () {
@@ -252,25 +282,48 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                 },
                                 child: Row(
                                   children: [
-                                    Text(
-                                      listAddress[index]?.street ?? '',
-                                      style: TextStyle(
-                                          fontWeight:
-                                              (Provider.of<CartModel>(context)
-                                                          .address
-                                                          ?.street ==
-                                                      listAddress[index]
-                                                          ?.street)
-                                                  ? FontWeight.bold
-                                                  : null),
+                                     RadioButton(
+                                      isActive: (Provider.of<CartModel>(context)
+                                          .address
+                                          ?.street ==
+                                          listAddress[index]
+                                              ?.street),
+                                      radius: 10,
+                                      color: Colors.black,
                                     ),
-                                    const Spacer(),
+                                    Expanded(
+                                      child: ListTile(
+                                        title: Text(
+                                          "${listAddress[index]?.street ?? ''}, ${listAddress[index]?.apartment ?? ''}",
+                                          style: TextStyle(
+                                              fontWeight:
+                                                  (Provider.of<CartModel>(context)
+                                                              .address
+                                                              ?.street ==
+                                                          listAddress[index]
+                                                              ?.street)
+                                                      ? FontWeight.bold
+                                                      : null),
+                                        ),
+                                        subtitle: Text(
+                                          '${listAddress[index]?.country ?? ''}, ${listAddress[index]?.state ?? ''} ${listAddress[index]?.zipCode ?? ''}'
+                                        ),
+                                      ),
+                                    ),
+                                    (Provider.of<CartModel>(context)
+                                        .address
+                                        ?.street !=
+                                        listAddress[index]
+                                            ?.street)
+                                        ?
                                     IconButton(
                                         onPressed: () {
-                                          removeData(
-                                              index, listAddress[index]!);
+                                          if (listAddress[index] != null) {
+                                            _showDeleteConfirmationDialog(context, index);
+                                          }
                                         },
                                         icon: const Icon(Icons.delete))
+                                        : const SizedBox.shrink()
                                   ],
                                 ),
                               );
@@ -347,17 +400,18 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                         borderRadius: BorderRadius.circular(20),
                                         borderSide: const BorderSide(
                                             color: Colors
-                                                .black), // Enabled border color
+                                                .black),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(20),
                                         borderSide: const BorderSide(
                                             color: Colors
-                                                .black), // Focused border color
+                                                .black),
                                       ),
                                       labelText: 'Street Address',
                                       labelStyle:
                                           const TextStyle(color: Colors.black),
+                                      floatingLabelBehavior: FloatingLabelBehavior.never,
                                     ),
                                     textInputAction: TextInputAction.next,
                                   ),
@@ -367,7 +421,6 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                   TextFormField(
                                     controller: _apartmentController,
                                     style: const TextStyle(color: Colors.black),
-                                    // Text color
                                     decoration: InputDecoration(
                                       contentPadding:
                                           const EdgeInsets.symmetric(
@@ -381,9 +434,8 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                           borderSide: const BorderSide(
                                               color: Colors.black, width: .1)),
                                       focusedBorder: borderStyle,
+                                      floatingLabelBehavior: FloatingLabelBehavior.never,
                                       labelText: 'Apt. floor, suite, etc',
-                                      // labelStyle: const TextStyle(
-                                      //     color: Colors.black),
                                     ),
                                     textInputAction: TextInputAction.next,
                                   ),
@@ -411,6 +463,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                             ),
                                             enabledBorder: borderStyle,
                                             focusedBorder: borderStyle,
+                                            floatingLabelBehavior: FloatingLabelBehavior.never,
                                             labelText: 'Zip Code',
                                             labelStyle: const TextStyle(
                                                 color: Colors.black),
@@ -434,7 +487,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                                     horizontal: 10),
                                             border: InputBorder.none,
                                             labelText: 'Country',
-                                            // Added missing label
+                                            floatingLabelBehavior: FloatingLabelBehavior.never,
                                             labelStyle:
                                                 TextStyle(color: Colors.black),
                                           ),
@@ -797,11 +850,10 @@ class _SearchInputState extends State<SearchInput> {
         ),
         enabledBorder: borderStyle,
         focusedBorder: borderStyle,
-        labelText: 'Search',
+        labelText: 'Add a new address',
+        floatingLabelBehavior: FloatingLabelBehavior.never,
         labelStyle: const TextStyle(color: Colors.black),
 
-        hintText: S.of(context).searchPlace,
-        hintStyle: const TextStyle(color: Colors.black),
       ),
     );
   }
