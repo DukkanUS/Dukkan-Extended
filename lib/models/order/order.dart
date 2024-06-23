@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../../app.dart';
 import '../../common/config.dart';
 import '../../common/constants.dart';
 import '../../common/tools.dart';
+import '../../custom/providers/delivery_time.dart';
 import '../../data/boxes.dart';
 import '../../generated/l10n.dart';
 import '../../modules/dynamic_layout/helper/helper.dart';
@@ -896,9 +899,8 @@ class Order {
         params['subtotal'] = cartModel.getSubTotal();
         params['total'] = cartModel.getTotal();
       }
-
+      params['meta_data'] = [];
       if (kAdvanceConfig.enableDeliveryDateOnCheckout) {
-        params['meta_data'] = [];
         if (cartModel.selectedDate != null) {
           params['meta_data'].addAll([
             {
@@ -924,6 +926,8 @@ class Order {
               .add({'key': '_wcfmd_delvery_times', 'value': value});
         }
       }
+      params['meta_data'].add({'key': 'Delivery Time', 'value': Provider.of<DeliveryTime>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).deliveryTime});
+
     } catch (e, trace) {
       printLog(e.toString());
       printLog(trace.toString());

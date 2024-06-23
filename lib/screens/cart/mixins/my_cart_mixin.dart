@@ -16,6 +16,7 @@ import '../../../services/service_config.dart';
 import '../../../services/services.dart';
 import '../../../widgets/product/product_bottom_sheet.dart';
 import '../../checkout/checkout_screen.dart';
+import '../../checkout/custom/single_page_checkout_screen.dart';
 
 mixin MyCartMixin<T extends StatefulWidget> on State<T> {
   bool isLoading = false;
@@ -121,7 +122,8 @@ mixin MyCartMixin<T extends StatefulWidget> on State<T> {
         MainTabControlDelegate.getInstance().changeToDefaultTab();
       }
     } else if (isLoggedIn || kPaymentConfig.guestCheckout) {
-      doCheckout();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SingleCheckoutPgeScreen(),));
+      // doCheckout();
     } else {
       _loginWithResult(context);
     }

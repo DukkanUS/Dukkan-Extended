@@ -149,10 +149,10 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                   address.latitude = result.latLng?.latitude.toString();
                   address.longitude = result.latLng?.longitude.toString();
                 }
-                address.firstName = user.firstName;
-                address.lastName = user.lastName;
-                address.email = user.email;
-                address.phoneNumber = user.phoneNumber;
+                address.firstName = firstName;
+                address.lastName = lastName;
+                address.email = _emailController.text;
+                address.phoneNumber = '$countryDIalCOde$phoneNumber';
 
                 Provider.of<CartModel>(validContext, listen: false)
                     .setAddress(address);
@@ -385,24 +385,23 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 17.0),
-                                    child: CountryCodePicker(
-                                      countryFilter: const ['US', 'JO'],
-                                      initialSelection: 'JO',
-                                      onInit: (code) {
-                                        countryDIalCOde = code?.dialCode!;
-                                      },
-                                      onChanged: (code) {
-                                        countryDIalCOde =
-                                            code.dialCode?.toString() ?? '';
-                                      },
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .background,
-                                      dialogBackgroundColor: Theme.of(context)
-                                          .dialogBackgroundColor,
-                                    ),
+                                  CountryCodePicker(
+                                    hideSearch: true,
+                                    showFlag: false,
+                                    countryFilter: const ['US', 'JO'],
+                                    initialSelection: 'JO',
+                                    onInit: (code) {
+                                      countryDIalCOde = code?.dialCode!;
+                                    },
+                                    onChanged: (code) {
+                                      countryDIalCOde =
+                                          code.dialCode?.toString() ?? '';
+                                    },
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                    dialogBackgroundColor: Theme.of(context)
+                                        .dialogBackgroundColor,
                                   ),
                                   const SizedBox(width: 8.0),
                                   Expanded(

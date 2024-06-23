@@ -215,6 +215,7 @@ dependencies:
   meta_seo: 3.0.9
   geolocator: ^11.1.0
   intl_utils: ^2.8.7
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_lints: 3.0.1

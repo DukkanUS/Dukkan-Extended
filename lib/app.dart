@@ -16,6 +16,7 @@ import 'common/constants.dart';
 import 'common/events.dart';
 import 'common/theme/index.dart';
 import 'common/tools.dart';
+import 'custom/providers/delivery_time.dart';
 import 'custom/providers/registration_provider.dart';
 import 'generated/l10n.dart';
 import 'generated/languages/index.dart';
@@ -421,6 +422,8 @@ class AppState extends State<App>
                 ),
                 ChangeNotifierProvider<ListBlogModel>(
                     create: (_) => ListBlogModel()),
+                ChangeNotifierProvider<DeliveryTime>(
+                    create: (_) => DeliveryTime()),
                 ChangeNotifierProvider<FilterAttributeModel>.value(
                     value: _filterModel),
                 ChangeNotifierProvider<FilterTagModel>.value(
