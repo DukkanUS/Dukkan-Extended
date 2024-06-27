@@ -85,6 +85,12 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
 
   var countryDIalCOde;
 
+  @override
+  void initState() {
+    Future.delayed(Duration.zero).then((_) => getDataFromLocal());
+    super.initState();
+  }
+
   void getDataFromLocal() {
     var listData = List<Address>.from(UserBox().addresses);
     final indexRemote =
@@ -167,6 +173,9 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
         ),
         (route) => false,
       );
+    }else{
+      await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
+          .pushReplacementNamed(RouteList.dashboard);
     }
   }
 
@@ -249,6 +258,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
           phoneNumber: '$countryDIalCOde$phoneNumber',
           resendToken: forceCodeResend,
           onVerfiySuccesTORENAME: (_) async {
+            await context.read<UserModel>().saveVerifyStatus(status: true);
             await _submitRegister(
               firstName: firstName,
               lastName: lastName,
@@ -405,7 +415,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                                   ),
                                   const SizedBox(width: 8.0),
                                   Expanded(
-                                    child: TextFormField(
+                                    child: CustomTextField(
                                       key: const Key('registerPhoneField'),
                                       focusNode: phoneNumberNode,
                                       autofillHints: const [

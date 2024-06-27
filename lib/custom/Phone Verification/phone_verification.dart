@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:inspireui/inspireui.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -129,127 +130,140 @@ class PhoneVerificationState<T extends PhoneVerification> extends State<T>
     final appModel = Provider.of<AppModel>(context, listen: false);
     final themeConfig = appModel.themeConfig;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
+    return WillPopScopeWidget(
+      onWillPop: () async{
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        elevation: 0.0,
-        actions: !Services().widget.isRequiredLogin &&
-            !ModalRoute.of(context)!.canPop
-            ? [
-          IconButton(
-              onPressed: _onClose,
-              icon: const Icon(Icons.close, size: 25))
-        ]
-            : null,
-      ),
-      body: SafeArea(
-        child: Consumer<LoginSmsViewModel>(
-          builder: (context, viewmodel, child) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(height: 80.0),
-                  FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: FluxImage(
-                      imageUrl: themeConfig.logo,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(height: 120.0),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 17.0),
-                        child: CountryCodePicker(
-                          countryFilter: const ['US','JO'],
-                          onChanged: (CountryCode? countryCode) =>
-                              viewModel.updateCountryCode(
-                                code: countryCode?.code,
-                                dialCode: countryCode?.dialCode,
-                                name: countryCode?.name,
-                              ),
-                          // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                          initialSelection: viewModel.countryCode,
-                          onInit: (countryCode) => viewModel.loadConfig(
-                            code: countryCode?.code,
-                            dialCode: countryCode?.dialCode,
-                            name: countryCode?.name,
-                          ),
-                          //Get the country information relevant to the initial selection
-                          backgroundColor:
-                          Theme.of(context).colorScheme.background,
-                          dialogBackgroundColor:
-                          Theme.of(context).dialogBackgroundColor,
-                        ),
+        appBar: AppBar(
+          leading: GestureDetector(),
+          backgroundColor: Theme.of(context).colorScheme.background,
+          elevation: 0.0,
+          // actions: !Services().widget.isRequiredLogin &&
+          //     !ModalRoute.of(context)!.canPop
+          //     ? [
+          //   IconButton(
+          //       onPressed: _onClose,
+          //       icon: const Icon(Icons.close, size: 25))
+          // ]
+          //     : null,
+        ),
+        body: SafeArea(
+          child: Consumer<LoginSmsViewModel>(
+            builder: (context, viewmodel, child) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(height: 80.0),
+                    FractionallySizedBox(
+                      widthFactor: 0.8,
+                      child: FluxImage(
+                        imageUrl: themeConfig.logo,
+                        fit: BoxFit.contain,
                       ),
-                      const SizedBox(width: 8.0),
-                      Expanded(
-                        child: TextField(
-                          decoration:
-                          InputDecoration(labelText: S.of(context).phone),
-                          keyboardType: TextInputType.phone,
-                          controller: _controller,
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 60),
-                  StaggerAnimation(
-                    titleButton: S.of(context).sendSMSCode,
-                    buttonController:
-                    _loginButtonController.view as AnimationController,
-                    onTap: () => loginSMS(context),
-                  ),
-                  if (widget.enableRegister)
-                    Stack(
-                      alignment: AlignmentDirectional.center,
+                    ),
+                    const SizedBox(height: 120.0),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(
-                            height: 50.0,
-                            width: 200.0,
-                            child: Divider(color: Colors.grey.shade300)),
-                        Container(
-                            height: 30,
-                            width: 40,
-                            color: Theme.of(context).colorScheme.background),
-                        Text(
-                          S.of(context).or,
-                          style: TextStyle(
-                              fontSize: 12, color: Colors.grey.shade400),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 17.0),
+                          child: CountryCodePicker(
+                            countryFilter: const ['US','JO'],
+                            onChanged: (CountryCode? countryCode) =>
+                                viewModel.updateCountryCode(
+                                  code: countryCode?.code,
+                                  dialCode: countryCode?.dialCode,
+                                  name: countryCode?.name,
+                                ),
+                            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                            initialSelection: viewModel.countryCode,
+                            onInit: (countryCode) => viewModel.loadConfig(
+                              code: countryCode?.code,
+                              dialCode: countryCode?.dialCode,
+                              name: countryCode?.name,
+                            ),
+                            //Get the country information relevant to the initial selection
+                            backgroundColor:
+                            Theme.of(context).colorScheme.background,
+                            dialogBackgroundColor:
+                            Theme.of(context).dialogBackgroundColor,
+                          ),
+                        ),
+                        const SizedBox(width: 8.0),
+                        Expanded(
+                          child: TextField(
+                            decoration:
+                            InputDecoration(labelText: S.of(context).phone),
+                            keyboardType: TextInputType.phone,
+                            controller: _controller,
+                          ),
                         )
                       ],
                     ),
-                  if (widget.enableRegister)
-                    Column(
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(S.of(context).dontHaveAccount),
-                            GestureDetector(
-                              onTap: () {
-                                NavigateTools.navigateRegister(context);
-                              },
-                              child: Text(
-                                ' ${S.of(context).signup}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor,
+                    const SizedBox(height: 60),
+                    StaggerAnimation(
+                      titleButton: S.of(context).sendSMSCode,
+                      buttonController:
+                      _loginButtonController.view as AnimationController,
+                      onTap: () {
+                        try{
+                          loginSMS(context);
+                        }catch(e,trace){
+                          printLog(e.toString());
+                          printLog(trace.toString());
+                        }
+                      },
+                    ),
+                    if (widget.enableRegister)
+                      Stack(
+                        alignment: AlignmentDirectional.center,
+                        children: <Widget>[
+                          SizedBox(
+                              height: 50.0,
+                              width: 200.0,
+                              child: Divider(color: Colors.grey.shade300)),
+                          Container(
+                              height: 30,
+                              width: 40,
+                              color: Theme.of(context).colorScheme.background),
+                          Text(
+                            S.of(context).or,
+                            style: TextStyle(
+                                fontSize: 12, color: Colors.grey.shade400),
+                          )
+                        ],
+                      ),
+                    if (widget.enableRegister)
+                      Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(S.of(context).dontHaveAccount),
+                              GestureDetector(
+                                onTap: () {
+                                  NavigateTools.navigateRegister(context);
+                                },
+                                child: Text(
+                                  ' ${S.of(context).signup}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            );
-          },
+                            ],
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -467,8 +481,10 @@ class _CustomVerifyPhoneNumberState extends State<CustomVerifyPhoneNumber>
 
         throw Exception(S.of(context).invalidSMSCode);
       }
-    } catch (e) {
+    } catch (e,trace) {
       await _stopAnimation();
+      printLog(e.toString());
+      printLog(trace.toString());
       _failMessage(S.of(context).invalidSMSCode, context);
     }
   }

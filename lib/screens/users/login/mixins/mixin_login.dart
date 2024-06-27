@@ -22,6 +22,7 @@ import '../../../base_screen.dart';
 import '../../../login_sms/login_sms_screen.dart';
 import '../../../login_sms/login_sms_viewmodel.dart';
 import '../../forgot_password_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 
 typedef LoginSocialFunction = Future<void> Function({
   required Function(User user) success,
@@ -88,6 +89,8 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
 
   Future<void> redirectingAfterLoginSuccess({bool? googleLogin ,bool? appleLogin, bool? facebookLogin, String? phonenumbereee }) async {
 
+   await  context.read<UserModel>().saveVerifyStatus(status: true);
+
     getDataFromLocal();
     if(listAddress.isEmpty ){
       var user = Provider.of<UserModel>(context, listen: false).user;
@@ -149,15 +152,8 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
 
     }
     else {
-      final canPop = ModalRoute.of(context)!.canPop;
-      if (canPop) {
-        // When not required login
-        Navigator.of(context).pop();
-      } else {
-        // When required login
-        await Navigator.of(App.fluxStoreNavigatorKey.currentContext!)
-            .pushReplacementNamed(RouteList.dashboard);
-      }
+      await Navigator.of(App.fluxStoreNavigatorKey.currentContext!)
+          .pushReplacementNamed(RouteList.dashboard);
     }
   }
 

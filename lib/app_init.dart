@@ -10,8 +10,10 @@ import 'app.dart';
 import 'common/config.dart';
 import 'common/config/models/onboarding_config.dart';
 import 'common/constants.dart';
+import 'common/events.dart';
 import 'common/tools.dart';
 import 'common/tools/flash.dart';
+import 'custom/Phone Verification/phone_verification.dart';
 import 'data/boxes.dart';
 import 'generated/l10n.dart';
 import 'models/index.dart'
@@ -233,68 +235,89 @@ class _AppInitState extends BaseScreen<AppInit> {
       );
       return;
     } else {
-      getDataFromLocal();
-      if (isLoggedIn && listAddress.isEmpty) {
-        var user = Provider.of<UserModel>(context, listen: false).user;
-        await Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => PlacePicker(
-                kIsWeb
-                    ? kGoogleApiKey.web
-                    : isIos
-                        ? kGoogleApiKey.ios
-                        : kGoogleApiKey.android,
-                onPop: (validContext, result) async {
-              if (result is LocationResult) {
-                try {
-                  address = Address();
-                  address?.country = result.country;
-                  address?.apartment = result.apartment;
-                  address?.street = result.street;
-                  address?.state = result.state;
-                  address?.city = result.city;
-                  address?.zipCode = result.zip;
-                  if (result.latLng?.latitude != null &&
-                      result.latLng?.latitude != null) {
-                    address?.mapUrl =
-                        'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-                    address?.latitude = result.latLng?.latitude.toString();
-                    address?.longitude = result.latLng?.longitude.toString();
-                  }
-                  address?.firstName = user?.firstName;
-                  address?.lastName = user?.lastName;
-                  address?.email = user?.email;
-                  address?.phoneNumber = user?.phoneNumber;
+      var isPhoneVerified = UserBox().isPhoneVerified;
+      if (isLoggedIn && isPhoneVerified) {
+        getDataFromLocal();
+        if (listAddress.isEmpty) {
+          var user = Provider.of<UserModel>(context, listen: false).user;
+          await Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => PlacePicker(
+                  kIsWeb
+                      ? kGoogleApiKey.web
+                      : isIos
+                          ? kGoogleApiKey.ios
+                          : kGoogleApiKey.android,
+                  onPop: (validContext, result) async {
+                if (result is LocationResult) {
+                  try {
+                    address = Address();
+                    address?.country = result.country;
+                    address?.apartment = result.apartment;
+                    address?.street = result.street;
+                    address?.state = result.state;
+                    address?.city = result.city;
+                    address?.zipCode = result.zip;
+                    if (result.latLng?.latitude != null &&
+                        result.latLng?.latitude != null) {
+                      address?.mapUrl =
+                          'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                      address?.latitude = result.latLng?.latitude.toString();
+                      address?.longitude = result.latLng?.longitude.toString();
+                    }
+                    address?.firstName = user?.firstName;
+                    address?.lastName = user?.lastName;
+                    address?.email = user?.email;
+                    address?.phoneNumber = user?.phoneNumber;
 
-                  if (address != null) {
-                    Provider.of<CartModel>(validContext, listen: false)
-                        .setAddress(address);
-                    await saveDataToLocal();
-                    return;
-                  } else {
+                    if (address != null) {
+                      Provider.of<CartModel>(validContext, listen: false)
+                          .setAddress(address);
+                      await saveDataToLocal();
+                      return;
+                    } else {
+                      await FlashHelper.errorMessage(
+                        validContext,
+                        message: S.of(validContext).pleaseInput,
+                      );
+                    }
+                  } catch (e) {
+                    log('fuckk :: $e');
                     await FlashHelper.errorMessage(
                       validContext,
-                      message: S.of(validContext).pleaseInput,
+                      message: e.toString(),
                     );
                   }
-                } catch (e) {
-                  log('fuckk :: $e');
-                  await FlashHelper.errorMessage(
-                    validContext,
-                    message: e.toString(),
-                  );
                 }
               }
-            }
-                // fromRegister: true,
-                ),
-          ),
-          (route) => false,
-        );
+                  // fromRegister: true,
+                  ),
+            ),
+            (route) => false,
+          );
+        } else {
+          await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
+              .pushReplacementNamed(RouteList.dashboard);
+        }
+      } else {
+        if (isLoggedIn) {
+          await Navigator.of(context).pushNamed(RouteList.verifyPhoneNumber,
+              arguments: PhoneVerificationArguments(
+                  (phone) =>
+                      redirectingAfterLoginSuccess(phonenumbereee: phone),
+                  _updateEventBus));
+        } else {
+          await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
+              .pushReplacementNamed(RouteList.dashboard);
+        }
       }
     }
 
-    await Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
+    // await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context).pushReplacementNamed(RouteList.dashboard);
+  }
+
+  void _updateEventBus() {
+    eventBus.fire(const EventLoggedIn());
   }
 
   void checkToShowNextScreen() {
@@ -327,5 +350,72 @@ class _AppInitState extends BaseScreen<AppInit> {
       actionDone: checkToShowNextScreen,
       duration: duration,
     );
+  }
+
+  Future<void> redirectingAfterLoginSuccess({String? phonenumbereee}) async {
+    await context.read<UserModel>().saveVerifyStatus(status: true);
+
+    getDataFromLocal();
+    if (listAddress.isEmpty) {
+      var user = Provider.of<UserModel>(context, listen: false).user;
+      await Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => PlacePicker(
+            kIsWeb
+                ? kGoogleApiKey.web
+                : isIos
+                    ? kGoogleApiKey.ios
+                    : kGoogleApiKey.android,
+            onPop: (validContext, result) async {
+              if (result is LocationResult) {
+                try {
+                  address = Address();
+                  address?.country = result.country;
+                  address?.apartment = result.apartment;
+                  address?.street = result.street;
+                  address?.state = result.state;
+                  address?.city = result.city;
+                  address?.zipCode = result.zip;
+                  if (result.latLng?.latitude != null &&
+                      result.latLng?.latitude != null) {
+                    address?.mapUrl =
+                        'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                    address?.latitude = result.latLng?.latitude.toString();
+                    address?.longitude = result.latLng?.longitude.toString();
+                  }
+                  address?.firstName = user?.firstName;
+                  address?.lastName = user?.lastName;
+                  address?.email = user?.email;
+                  address?.phoneNumber = phonenumbereee ?? user?.phoneNumber;
+
+                  if (address != null) {
+                    Provider.of<CartModel>(validContext, listen: false)
+                        .setAddress(address);
+                    await saveDataToLocal();
+                    return;
+                  } else {
+                    await FlashHelper.errorMessage(
+                      validContext,
+                      message: S.of(validContext).pleaseInput,
+                    );
+                  }
+                } catch (e) {
+                  log('fuckk :: $e');
+                  await FlashHelper.errorMessage(
+                    validContext,
+                    message: e.toString(),
+                  );
+                }
+              }
+            },
+            // fromRegister: true,
+          ),
+        ),
+        (route) => false,
+      );
+    } else {
+      await Navigator.of(App.fluxStoreNavigatorKey.currentContext!)
+          .pushReplacementNamed(RouteList.dashboard);
+    }
   }
 }

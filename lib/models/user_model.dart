@@ -159,6 +159,23 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<void> saveVerifyStatus({required bool status}) async {
+    try {
+      UserBox().phoneVerifyStatus = status;
+    } catch (err) {
+      printLog(err);
+    }
+  }
+
+  Future<bool> isVerified() async {
+    try {
+      return UserBox().isPhoneVerified;
+    } catch (err) {
+      printLog(err);
+      return false;
+    }
+  }
+
   Future<void> saveUser(User? user) async {
     try {
       if (Services().firebase.isEnabled && ServerConfig().isVendorType()) {

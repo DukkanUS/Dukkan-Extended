@@ -12,6 +12,16 @@ extension UserGeneralSettingsExtension on UserBox {
     box.put(BoxKeys.isLoggedIn, value);
   }
 
+  set phoneVerifyStatus(bool value) {
+    box.put(BoxKeys.verfiredPhonenumderkey, value);
+  }
+
+ bool get isPhoneVerified {
+   return box.get(BoxKeys.verfiredPhonenumderkey,defaultValue: false);
+
+ }
+
+
   bool get hasAgreedPrivacy {
     return box.get(
       BoxKeys.hasAgreedPrivacy,

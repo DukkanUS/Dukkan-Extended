@@ -24,6 +24,7 @@ class BoxKeys {
   static const String popupBannerLastUpdatedTime = 'popupBannerLastUpdatedTime';
   static const String hasSelectedSite = 'hasSelectedSite';
   static const String selectedSiteConfig = 'selectedSiteConfig';
+  static const String verfiredPhonenumderkey = 'verfiredPhonenumderkey';
 
   /// [SettingsBox] - Locale Settings.
   static const String currencyCode = 'currencyCode';

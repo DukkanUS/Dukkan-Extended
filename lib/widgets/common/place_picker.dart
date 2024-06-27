@@ -61,9 +61,10 @@ class AutoCompleteItem {
 
 class PlacePicker extends StatefulWidget {
   final String? apiKey;
+  final bool isForDialog;
   final Future<void> Function(BuildContext context, dynamic result)? onPop;
 
-  const PlacePicker(this.apiKey, {this.onPop});
+  const PlacePicker(this.apiKey, {this.onPop, this.isForDialog = false});
 
   @override
   State<StatefulWidget> createState() => PlacePickerState();
@@ -283,11 +284,8 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                 child: Row(
                                   children: [
                                      RadioButton(
-                                      isActive: (Provider.of<CartModel>(context)
-                                          .address
-                                          ?.street ==
-                                          listAddress[index]
-                                              ?.street),
+                                      isActive: ((Provider.of<CartModel>(context).address?.street == listAddress[index]?.street) &&
+                                          (Provider.of<CartModel>(context).address?.apartment == listAddress[index]?.apartment)),
                                       radius: 10,
                                       color: Colors.black,
                                     ),
@@ -297,11 +295,8 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                           "${listAddress[index]?.street ?? ''}, ${listAddress[index]?.apartment ?? ''}",
                                           style: TextStyle(
                                               fontWeight:
-                                                  (Provider.of<CartModel>(context)
-                                                              .address
-                                                              ?.street ==
-                                                          listAddress[index]
-                                                              ?.street)
+                                              ((Provider.of<CartModel>(context).address?.street == listAddress[index]?.street) &&
+                                                  (Provider.of<CartModel>(context).address?.apartment == listAddress[index]?.apartment))
                                                       ? FontWeight.bold
                                                       : null),
                                         ),
@@ -310,11 +305,8 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                         ),
                                       ),
                                     ),
-                                    (Provider.of<CartModel>(context)
-                                        .address
-                                        ?.street !=
-                                        listAddress[index]
-                                            ?.street)
+                                    !((Provider.of<CartModel>(context).address?.street == listAddress[index]?.street) &&
+                                        (Provider.of<CartModel>(context).address?.apartment == listAddress[index]?.apartment))
                                         ?
                                     IconButton(
                                         onPressed: () {
@@ -564,7 +556,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
     place = place.replaceAll(' ', '+');
     var endpoint =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?'
-        'key=${widget.apiKey}&input={$place}&sessiontoken=$sessionToken';
+        'key=${widget.apiKey}&input=$place&components=country:us&sessiontoken=$sessionToken';
 
     if (locationResult != null) {
       endpoint +=
@@ -631,7 +623,7 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
 
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: 155,
+        top: widget.isForDialog ? 200 : 120,
         bottom: 60,
         width: MediaQuery.of(context).size.width,
         child: Container(
@@ -695,19 +687,21 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
           if (types.contains('route') || types.contains('neighborhood')) {
             if (street!.isEmpty) street = item['long_name'];
           }
-          if (types.contains('administrative_area_level_1'))
+          if (types.contains('administrative_area_level_1')) {
             state = item['short_name'];
+          }
           if (types.contains('administrative_area_level_2') ||
               types.contains('administrative_area_level_3')) {
             if (city!.isEmpty) city = item['long_name'];
           }
           if (types.contains('locality')) {
             if (locality!.isEmpty) locality = item['short_name'];
+            country = (locality ?? '');
           }
           if (types.contains('route')) {
             if (road!.isEmpty) road = item['long_name'];
           }
-          if (types.contains('country')) country = item['short_name'];
+          // if (types.contains('country')) country = item['short_name'];
           if (types.contains('postal_code')) {
             if (zip!.isEmpty) zip = item['long_name'];
           }
@@ -848,8 +842,8 @@ class _SearchInputState extends State<SearchInput> {
           borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(color: Colors.black),
         ),
-        enabledBorder: borderStyle,
-        focusedBorder: borderStyle,
+        enabledBorder: borderStyle.copyWith(borderSide: const BorderSide(width: 1)),
+        focusedBorder: borderStyle.copyWith(borderSide: const BorderSide(width: 1)),
         labelText: 'Add a new address',
         floatingLabelBehavior: FloatingLabelBehavior.never,
         labelStyle: const TextStyle(color: Colors.black),
@@ -874,7 +868,7 @@ Future<LocationResult?> showPlacePicker(
     builder: (context) {
       return SizedBox(
         height: MediaQuery.of(context).size.height * 0.85,
-        child: PlacePicker(apiKey),
+        child: PlacePicker(apiKey,isForDialog: true,),
       );
     },
   );
