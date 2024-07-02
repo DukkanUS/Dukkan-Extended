@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:inspireui/utils/logs.dart';
+import 'package:provider/provider.dart';
 import 'package:quiver/strings.dart';
 
+import '../../../app.dart';
 import '../../../common/config.dart';
+import '../../../custom/providers/update_user_remote_address.dart';
 import '../../../data/boxes.dart';
 import '../../../services/index.dart';
 import '../../entities/address.dart';
@@ -115,6 +119,12 @@ mixin AddressMixin on CartMixin {
   void setAddress(data) {
     address = data;
     saveShippingAddress(data);
+    try{
+      Provider.of<UpdateUserRemoteAddress>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).updateProfileAddress();
+    }catch(e,trace){
+      printLog(e.toString());
+      printLog(trace.toString());
+    }
   }
 
   Future<Address?> getAddress() async {

@@ -212,75 +212,78 @@ class _LogoState extends State<Logo> {
             ),
           Expanded(
             flex: 8,
-            child: MaterialButton(
-              onPressed: () async {
-                final apiKey = kIsWeb
-                    ? kGoogleApiKey.web
-                    : isIos
-                        ? kGoogleApiKey.ios
-                        : kGoogleApiKey.android;
+            child: Visibility(
+              visible: UserBox().isLoggedIn,
+              child: MaterialButton(
+                onPressed: () async {
+                  final apiKey = kIsWeb
+                      ? kGoogleApiKey.web
+                      : isIos
+                          ? kGoogleApiKey.ios
+                          : kGoogleApiKey.android;
 
-                await showPlacePicker(context, apiKey).then((result) async {
-                  if (result is LocationResult) {
-                    var address = Address();
-                    address.country = result.country;
-                    address.apartment = result.apartment;
-                    address.street = result.street;
-                    address.state = result.state;
-                    address.city = result.city;
-                    address.zipCode = result.zip;
-                    if (result.latLng?.latitude != null &&
-                        result.latLng?.longitude != null) {
-                      address.mapUrl =
-                          'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-                      address.latitude = result.latLng?.latitude.toString();
-                      address.longitude = result.latLng?.longitude.toString();
+                  await showPlacePicker(context, apiKey).then((result) async {
+                    if (result is LocationResult) {
+                      var address = Address();
+                      address.country = result.country;
+                      address.apartment = result.apartment;
+                      address.street = result.street;
+                      address.state = result.state;
+                      address.city = result.city;
+                      address.zipCode = result.zip;
+                      if (result.latLng?.latitude != null &&
+                          result.latLng?.longitude != null) {
+                        address.mapUrl =
+                            'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                        address.latitude = result.latLng?.latitude.toString();
+                        address.longitude = result.latLng?.longitude.toString();
+                      }
+
+                      address.firstName = user?.firstName;
+                      address.lastName = user?.lastName;
+                      address.email = user?.email;
+                      address.phoneNumber = user?.phoneNumber;
+
+                      Provider.of<CartModel>(context, listen: false)
+                          .setAddress(address);
+                      final c = Country(id: result.country, name: result.country);
+                      states = await Services().widget.loadStates(c);
+                      await saveDataToLocal(address);
                     }
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      (currentAddress == null || currentAddress == '') ? 'Choose address' : currentAddress,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Icon(Icons.arrow_drop_down_sharp)
 
-                    address.firstName = user?.firstName;
-                    address.lastName = user?.lastName;
-                    address.email = user?.email;
-                    address.phoneNumber = user?.phoneNumber;
-
-                    Provider.of<CartModel>(context, listen: false)
-                        .setAddress(address);
-                    final c = Country(id: result.country, name: result.country);
-                    states = await Services().widget.loadStates(c);
-                    await saveDataToLocal(address);
-                  }
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    (currentAddress == null || currentAddress == '') ? 'Choose address' : currentAddress,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const Icon(Icons.arrow_drop_down_sharp)
-
-                  // if (config.showLogo) Center(child: renderLogo()),
-                  // if (textConfig != null) ...[
-                  //   if (config.showLogo) const SizedBox(width: 5),
-                  //   Expanded(
-                  //     child: Align(
-                  //       alignment: textConfig.alignment,
-                  //       child: Text(
-                  //         textConfig.text,
-                  //         style: TextStyle(
-                  //           fontSize: textConfig.fontSize,
-                  //           color: Theme.of(context).colorScheme.onBackground,
-                  //           fontWeight: FontWeight.bold,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   )
-                  // ],
-                ],
+                    // if (config.showLogo) Center(child: renderLogo()),
+                    // if (textConfig != null) ...[
+                    //   if (config.showLogo) const SizedBox(width: 5),
+                    //   Expanded(
+                    //     child: Align(
+                    //       alignment: textConfig.alignment,
+                    //       child: Text(
+                    //         textConfig.text,
+                    //         style: TextStyle(
+                    //           fontSize: textConfig.fontSize,
+                    //           color: Theme.of(context).colorScheme.onBackground,
+                    //           fontWeight: FontWeight.bold,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   )
+                    // ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -41,7 +41,7 @@ class Address {
   Address.fromJson(Map parsedJson) {
     firstName = parsedJson['first_name'] ?? '';
     lastName = parsedJson['last_name'] ?? '';
-    apartment = parsedJson['company'] ?? '';
+    apartment = parsedJson['address_2'] ?? '';
     street = parsedJson['address_1'] ?? '';
     block = parsedJson['address_2'] ?? '';
     city = parsedJson['city'] ?? '';
@@ -103,7 +103,7 @@ class Address {
       'first_name': firstName,
       'last_name': lastName,
       'address_1': street ?? '',
-      'address_2': block ?? '',
+      'address_2': apartment ?? '',
       'company': apartment ?? '',
       'city': city,
       'state': state,
@@ -139,7 +139,7 @@ class Address {
       lastName = json['last_name'];
       street = json['address_1'];
       block = json['address_2'];
-      apartment = json['company'];
+      apartment = json['address_2'];
       city = json['city'];
       state = json['state'];
       country = json['country'];
@@ -181,7 +181,7 @@ class Address {
       'zone_id': state,
       'country_id': countryId ?? country,
       'address_1': street ?? '',
-      'address_2': block ?? '',
+      'address_2': apartment ?? '',
       'company': apartment ?? '',
       'postcode': zipCode,
       'city': city,
@@ -208,7 +208,7 @@ class Address {
       'first_name': firstName,
       'last_name': lastName,
       'address_1': street ?? '',
-      'address_2': block ?? '',
+      'address_2': apartment ?? '',
       'company': apartment ?? '',
       'city': city,
       'state': state,
@@ -227,7 +227,7 @@ class Address {
       lastName = json['lastName'];
       street = json['address1'];
       block = json['address2'];
-      apartment = json['company'];
+      apartment = json['address_2'];
       city = json['city'];
       state = json['province'];
       country = json['country'];
@@ -246,7 +246,7 @@ class Address {
         'country': country,
         'address1': street,
         'address2': block,
-        'company': apartment,
+        'address_2': apartment,
         'zip': zipCode,
         'city': city,
         'firstName': firstName,
@@ -262,7 +262,7 @@ class Address {
       lastName = json['shipping_lastname'];
       street = json['shipping_address_1'];
       block = json['shipping_address_2'];
-      apartment = json['shipping_company'];
+      apartment = json['shipping_address_2'];
       city = json['shipping_city'];
       state = json['shipping_zone'];
       country = json['shipping_country'];
@@ -278,7 +278,7 @@ class Address {
     try {
       firstName = json['first_name'];
       lastName = json['last_name'];
-      apartment = json['company'];
+      apartment = json['address_2'];
       street = json['street_1'];
       block = json['street_2'];
       city = json['city'];

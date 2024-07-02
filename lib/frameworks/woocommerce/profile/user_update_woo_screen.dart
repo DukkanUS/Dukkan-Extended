@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,12 +7,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../common/constants.dart';
+import '../../../common/events.dart';
 import '../../../common/tools.dart';
 import '../../../common/tools/flash.dart';
+import '../../../custom/Phone Verification/phone_verification.dart';
+import '../../../custom/providers/registration_provider.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/entities/user.dart';
 import '../../../models/user_model.dart';
 import '../../../modules/dynamic_layout/helper/helper.dart';
+import '../../../screens/login_sms/verify.dart';
 import '../../../services/index.dart';
 import '../../../widgets/common/index.dart';
 import 'user_update_model.dart';
@@ -22,6 +28,8 @@ class UserUpdateWooScreen extends StatefulWidget {
 }
 
 class _UserUpdateScreenState extends State<UserUpdateWooScreen> {
+  var isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel>(context, listen: false);
@@ -41,30 +49,38 @@ class _UserUpdateScreenState extends State<UserUpdateWooScreen> {
             materialTapTargetSize: MaterialTapTargetSize.padded,
             onPressed: () async {
               try {
-                final result = await model.updateProfile();
-                if (result == null) {
-                  return FlashHelper.errorMessage(
-                    context,
-                    message: S.of(context).updateFailed,
-                    duration: const Duration(seconds: 2),
+                if (model.userPhone.text != user.user?.phoneNumber) {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  await customUpdate(
+                      phone: model.userPhone.text, model: model, user: user);
+                } else {
+                  final result = await model.updateProfile();
+                  if (result == null) {
+                    return FlashHelper.errorMessage(
+                      context,
+                      message: S.of(context).updateFailed,
+                      duration: const Duration(seconds: 2),
+                    );
+                  }
+                  unawaited(
+                    FlashHelper.message(
+                      context,
+                      message: S.of(context).updateSuccess,
+                      duration: const Duration(seconds: 2),
+                    ),
                   );
-                }
-                unawaited(
-                  FlashHelper.message(
-                    context,
-                    message: S.of(context).updateSuccess,
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-                user.user = User.fromWooJson(
-                  result as Map<String, dynamic>,
-                  user.user!.cookie,
-                );
-                await user.setUser(user.user);
-                if (mounted) {
-                  final navigator = Navigator.of(context);
-                  if (navigator.canPop()) {
-                    navigator.pop();
+                  user.user = User.fromWooJson(
+                    result as Map<String, dynamic>,
+                    user.user!.cookie,
+                  );
+                  await user.setUser(user.user);
+                  if (mounted) {
+                    final navigator = Navigator.of(context);
+                    if (navigator.canPop()) {
+                      navigator.pop();
+                    }
                   }
                 }
               } catch (e) {
@@ -77,9 +93,16 @@ class _UserUpdateScreenState extends State<UserUpdateWooScreen> {
                 );
               }
             },
-            label: Text(
-              S.of(context).update,
-            ),
+            label: (isLoading)
+                ? const SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ))
+                : Text(
+                    S.of(context).update,
+                  ),
           ),
         ),
         body: GestureDetector(
@@ -348,6 +371,7 @@ class _UserUpdateScreenState extends State<UserUpdateWooScreen> {
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: 16),
                                 Text(S.of(context).phoneNumber,
                                     style: TextStyle(
                                       fontSize: 16,
@@ -374,212 +398,212 @@ class _UserUpdateScreenState extends State<UserUpdateWooScreen> {
                                     ),
                                   ),
                                 ),
-                                if (!ServerConfig().isListingType) ...[
-                                  const SizedBox(height: 16),
-                                  Text(S.of(context).streetName,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).primaryColorLight,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Consumer<UserUpdateModel>(
-                                      builder: (_, model, __) => TextField(
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none),
-                                        controller: model.shippingAddress1,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(S.of(context).streetNameBlock,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).primaryColorLight,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Consumer<UserUpdateModel>(
-                                      builder: (_, model, __) => TextField(
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none),
-                                        controller: model.shippingAddress2,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(S.of(context).city,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).primaryColorLight,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Consumer<UserUpdateModel>(
-                                      builder: (_, model, __) => TextField(
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none),
-                                        controller: model.shippingCity,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(S.of(context).stateProvince,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).primaryColorLight,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Consumer<UserUpdateModel>(
-                                      builder: (_, model, __) => TextField(
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none),
-                                        controller: model.shippingState,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(S.of(context).country,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).primaryColorLight,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Consumer<UserUpdateModel>(
-                                      builder: (_, model, __) => TextField(
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none),
-                                        controller: model.shippingCountry,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(S.of(context).zipCode,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).primaryColorLight,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Consumer<UserUpdateModel>(
-                                      builder: (_, model, __) => TextField(
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none),
-                                        controller: model.shippingPostcode,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(S.of(context).streetNameApartment,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).primaryColorLight,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Consumer<UserUpdateModel>(
-                                      builder: (_, model, __) => TextField(
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none),
-                                        controller: model.shippingCompany,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                const SizedBox(height: 50),
+                                // if (!ServerConfig().isListingType) ...[
+                                //   const SizedBox(height: 16),
+                                //   Text(S.of(context).streetName,
+                                //       style: TextStyle(
+                                //         fontSize: 16,
+                                //         fontWeight: FontWeight.w600,
+                                //         color: Theme.of(context)
+                                //             .colorScheme
+                                //             .secondary,
+                                //       )),
+                                //   const SizedBox(height: 8),
+                                //   Container(
+                                //     padding: const EdgeInsets.symmetric(
+                                //         horizontal: 10),
+                                //     decoration: BoxDecoration(
+                                //       borderRadius: BorderRadius.circular(5),
+                                //       border: Border.all(
+                                //         color:
+                                //             Theme.of(context).primaryColorLight,
+                                //         width: 1.5,
+                                //       ),
+                                //     ),
+                                //     child: Consumer<UserUpdateModel>(
+                                //       builder: (_, model, __) => TextField(
+                                //         decoration: const InputDecoration(
+                                //             border: InputBorder.none),
+                                //         controller: model.shippingAddress1,
+                                //       ),
+                                //     ),
+                                //   ),
+                                //   // const SizedBox(height: 16),
+                                //   // Text(S.of(context).streetNameBlock,
+                                //   //     style: TextStyle(
+                                //   //       fontSize: 16,
+                                //   //       fontWeight: FontWeight.w600,
+                                //   //       color: Theme.of(context)
+                                //   //           .colorScheme
+                                //   //           .secondary,
+                                //   //     )),
+                                //   // const SizedBox(height: 8),
+                                //   // Container(
+                                //   //   padding: const EdgeInsets.symmetric(
+                                //   //       horizontal: 10),
+                                //   //   decoration: BoxDecoration(
+                                //   //     borderRadius: BorderRadius.circular(5),
+                                //   //     border: Border.all(
+                                //   //       color:
+                                //   //           Theme.of(context).primaryColorLight,
+                                //   //       width: 1.5,
+                                //   //     ),
+                                //   //   ),
+                                //   //   child: Consumer<UserUpdateModel>(
+                                //   //     builder: (_, model, __) => TextField(
+                                //   //       decoration: const InputDecoration(
+                                //   //           border: InputBorder.none),
+                                //   //       controller: model.shippingAddress2,
+                                //   //     ),
+                                //   //   ),
+                                //   // ),
+                                //   // const SizedBox(height: 16),
+                                //   // Text(S.of(context).city,
+                                //   //     style: TextStyle(
+                                //   //       fontSize: 16,
+                                //   //       fontWeight: FontWeight.w600,
+                                //   //       color: Theme.of(context)
+                                //   //           .colorScheme
+                                //   //           .secondary,
+                                //   //     )),
+                                //   // const SizedBox(height: 8),
+                                //   // Container(
+                                //   //   padding: const EdgeInsets.symmetric(
+                                //   //       horizontal: 10),
+                                //   //   decoration: BoxDecoration(
+                                //   //     borderRadius: BorderRadius.circular(5),
+                                //   //     border: Border.all(
+                                //   //       color:
+                                //   //           Theme.of(context).primaryColorLight,
+                                //   //       width: 1.5,
+                                //   //     ),
+                                //   //   ),
+                                //   //   child: Consumer<UserUpdateModel>(
+                                //   //     builder: (_, model, __) => TextField(
+                                //   //       decoration: const InputDecoration(
+                                //   //           border: InputBorder.none),
+                                //   //       controller: model.shippingCity,
+                                //   //     ),
+                                //   //   ),
+                                //   // ),
+                                //   // const SizedBox(height: 16),
+                                //   // Text(S.of(context).stateProvince,
+                                //   //     style: TextStyle(
+                                //   //       fontSize: 16,
+                                //   //       fontWeight: FontWeight.w600,
+                                //   //       color: Theme.of(context)
+                                //   //           .colorScheme
+                                //   //           .secondary,
+                                //   //     )),
+                                //   // const SizedBox(height: 8),
+                                //   // Container(
+                                //   //   padding: const EdgeInsets.symmetric(
+                                //   //       horizontal: 10),
+                                //   //   decoration: BoxDecoration(
+                                //   //     borderRadius: BorderRadius.circular(5),
+                                //   //     border: Border.all(
+                                //   //       color:
+                                //   //           Theme.of(context).primaryColorLight,
+                                //   //       width: 1.5,
+                                //   //     ),
+                                //   //   ),
+                                //   //   child: Consumer<UserUpdateModel>(
+                                //   //     builder: (_, model, __) => TextField(
+                                //   //       decoration: const InputDecoration(
+                                //   //           border: InputBorder.none),
+                                //   //       controller: model.shippingState,
+                                //   //     ),
+                                //   //   ),
+                                //   // ),
+                                //   // const SizedBox(height: 16),
+                                //   // Text(S.of(context).country,
+                                //   //     style: TextStyle(
+                                //   //       fontSize: 16,
+                                //   //       fontWeight: FontWeight.w600,
+                                //   //       color: Theme.of(context)
+                                //   //           .colorScheme
+                                //   //           .secondary,
+                                //   //     )),
+                                //   // const SizedBox(height: 8),
+                                //   // Container(
+                                //   //   padding: const EdgeInsets.symmetric(
+                                //   //       horizontal: 10),
+                                //   //   decoration: BoxDecoration(
+                                //   //     borderRadius: BorderRadius.circular(5),
+                                //   //     border: Border.all(
+                                //   //       color:
+                                //   //           Theme.of(context).primaryColorLight,
+                                //   //       width: 1.5,
+                                //   //     ),
+                                //   //   ),
+                                //   //   child: Consumer<UserUpdateModel>(
+                                //   //     builder: (_, model, __) => TextField(
+                                //   //       decoration: const InputDecoration(
+                                //   //           border: InputBorder.none),
+                                //   //       controller: model.shippingCountry,
+                                //   //     ),
+                                //   //   ),
+                                //   // ),
+                                //   // const SizedBox(height: 16),
+                                //   // Text(S.of(context).zipCode,
+                                //   //     style: TextStyle(
+                                //   //       fontSize: 16,
+                                //   //       fontWeight: FontWeight.w600,
+                                //   //       color: Theme.of(context)
+                                //   //           .colorScheme
+                                //   //           .secondary,
+                                //   //     )),
+                                //   // const SizedBox(height: 8),
+                                //   // Container(
+                                //   //   padding: const EdgeInsets.symmetric(
+                                //   //       horizontal: 10),
+                                //   //   decoration: BoxDecoration(
+                                //   //     borderRadius: BorderRadius.circular(5),
+                                //   //     border: Border.all(
+                                //   //       color:
+                                //   //           Theme.of(context).primaryColorLight,
+                                //   //       width: 1.5,
+                                //   //     ),
+                                //   //   ),
+                                //   //   child: Consumer<UserUpdateModel>(
+                                //   //     builder: (_, model, __) => TextField(
+                                //   //       decoration: const InputDecoration(
+                                //   //           border: InputBorder.none),
+                                //   //       controller: model.shippingPostcode,
+                                //   //     ),
+                                //   //   ),
+                                //   // ),
+                                //   // const SizedBox(height: 16),
+                                //   // Text(S.of(context).streetNameApartment,
+                                //   //     style: TextStyle(
+                                //   //       fontSize: 16,
+                                //   //       fontWeight: FontWeight.w600,
+                                //   //       color: Theme.of(context)
+                                //   //           .colorScheme
+                                //   //           .secondary,
+                                //   //     )),
+                                //   // const SizedBox(height: 8),
+                                //   // Container(
+                                //   //   padding: const EdgeInsets.symmetric(
+                                //   //       horizontal: 10),
+                                //   //   decoration: BoxDecoration(
+                                //   //     borderRadius: BorderRadius.circular(5),
+                                //   //     border: Border.all(
+                                //   //       color:
+                                //   //           Theme.of(context).primaryColorLight,
+                                //   //       width: 1.5,
+                                //   //     ),
+                                //   //   ),
+                                //   //   child: Consumer<UserUpdateModel>(
+                                //   //     builder: (_, model, __) => TextField(
+                                //   //       decoration: const InputDecoration(
+                                //   //           border: InputBorder.none),
+                                //   //       controller: model.shippingCompany,
+                                //   //     ),
+                                //   //   ),
+                                //   // ),
+                                // ],
+                                // const SizedBox(height: 50),
                               ],
                             ),
                           ),
@@ -610,5 +634,109 @@ class _UserUpdateScreenState extends State<UserUpdateWooScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> customUpdate(
+      {required String phone,
+      required UserUpdateModel model,
+      required UserModel user}) async {
+    Future smsCodeSent(String verId, [int? forceCodeResend]) {
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CustomVerifyCode(
+            verId: verId,
+            phoneNumber: phone,
+            resendToken: forceCodeResend,
+            onVerfiySuccesTORENAME: (_) async {
+              await context.read<UserModel>().saveVerifyStatus(status: true);
+
+              setState(() {
+                isLoading = false;
+              });
+              final result = await model.updateProfile();
+              if (result == null) {
+                return FlashHelper.errorMessage(
+                  context,
+                  message: S.of(context).updateFailed,
+                  duration: const Duration(seconds: 2),
+                );
+              }
+              unawaited(
+                FlashHelper.message(
+                  context,
+                  message: S.of(context).updateSuccess,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+              user.user = User.fromWooJson(
+                result as Map<String, dynamic>,
+                user.user!.cookie,
+              );
+             try{
+               await user.setUser(user.user);
+             }catch(e,trace){
+               printLog(e.toString());
+               printLog(trace.toString());
+              }
+              if (mounted) {
+                final navigator = Navigator.of(context);
+                if (navigator.canPop()) {
+                  navigator.pop();
+                }
+              }
+            },
+          ),
+        ),
+      );
+    }
+
+    try {
+      unawaited(Services().firebase.verifyPhoneNumber(
+            phoneNumber: phone,
+            codeAutoRetrievalTimeout: autoRetrieve,
+            verificationCompleted: (value) => log(
+                '🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴'),
+            verificationFailed: verifyFailed,
+            codeSent: smsCodeSent,
+          ));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  void verifyFailed(exception) {
+    Provider.of<RegistrationProvider>(context, listen: false).stopLoading();
+    _showMessage(exception.toString());
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void _showMessage(
+    String text, {
+    bool isError = true,
+  }) {
+    if (!mounted) {
+      return;
+    }
+    Provider.of<RegistrationProvider>(context, listen: false).stopLoading();
+    setState(() {
+      isLoading = false;
+    });
+    // Navigator.of(context).pop();
+    FlashHelper.message(
+      context,
+      message: text,
+      isError: isError,
+    );
+  }
+
+  Future autoRetrieve(String verId) {
+    return Future(() => null);
+  }
+
+  void _updateEventBus() {
+    eventBus.fire(const EventLoggedIn());
   }
 }

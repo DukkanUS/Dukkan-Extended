@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:random_string/random_string.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
 
@@ -11,7 +12,9 @@ import '../common/constants.dart';
 import '../data/boxes.dart';
 import '../generated/l10n.dart';
 import '../services/index.dart';
+import 'cart/cart_base.dart';
 import 'entities/user.dart';
+import 'package:firebase_auth/firebase_auth.dart' as x;
 
 abstract class UserModelDelegate {
   void onLoaded(User? user);
@@ -60,6 +63,19 @@ class UserModel with ChangeNotifier {
                     : String.fromCharCodes(result.credential!.identityToken!),
                 firstName: result.credential?.fullName?.givenName,
                 lastName: result.credential?.fullName?.familyName);
+
+
+            var userCredential =
+            await x.FirebaseAuth.instance.signInWithCredential(
+              x.GoogleAuthProvider.credential(
+                accessToken: result.credential!.authorizationCode!.toString(),
+                idToken: result.credential!.identityToken!.toString(),
+              ),
+            );
+            var isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
+            if (!isNewUser) {
+              await Provider.of<UserModel>(context,listen: false).saveVerifyStatus(status: true);
+            }
 
             Services().firebase.loginFirebaseApple(
                   authorizationCode: result.credential!.authorizationCode!,
@@ -147,6 +163,19 @@ class UserModel with ChangeNotifier {
         fail!(S.of(context).loginCanceled);
       } else {
         var auth = await res.authentication;
+
+        var userCredential =
+        await x.FirebaseAuth.instance.signInWithCredential(
+          x.GoogleAuthProvider.credential(
+            accessToken: auth.accessToken,
+            idToken: auth.idToken,
+          ),
+        );
+        var isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
+        if (!isNewUser) {
+          await Provider.of<UserModel>(context,listen: false).saveVerifyStatus(status: true);
+        }
+
         Services().firebase.loginFirebaseGoogle(token: auth.accessToken);
         user = await _service.api.loginGoogle(token: auth.accessToken);
         await saveUser(user);
@@ -173,6 +202,23 @@ class UserModel with ChangeNotifier {
     } catch (err) {
       printLog(err);
       return false;
+    }
+  }
+
+  Future<void> saveOrderNotesToLocal({required String value}) async {
+    try {
+      UserBox().saveOrderNotesToLocal = value;
+    } catch (err) {
+      printLog(err);
+    }
+  }
+
+  Future<String> getOrderNotesFromLocal() async {
+    try {
+      return UserBox().orderNotesFromLocal;
+    } catch (err) {
+      printLog(err);
+      return '';
     }
   }
 

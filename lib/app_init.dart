@@ -305,7 +305,7 @@ class _AppInitState extends BaseScreen<AppInit> {
               arguments: PhoneVerificationArguments(
                   (phone) =>
                       redirectingAfterLoginSuccess(phonenumbereee: phone),
-                  _updateEventBus));
+                  _updateEventBus,() async =>{},));
         } else {
           await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
               .pushReplacementNamed(RouteList.dashboard);

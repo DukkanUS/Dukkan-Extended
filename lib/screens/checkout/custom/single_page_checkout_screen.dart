@@ -279,9 +279,11 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                     borderRadius:
                                     BorderRadius.circular(5),
                                   ),
-                                  child: TextField(
-                                    onChanged: (value) {
+                                  child: TextFormField(
+                                    initialValue: UserBox().orderNotesFromLocal,
+                                    onChanged: (value) async{
                                       cartModel.setOrderNotes(value);
+                                      await context.read<UserModel>().saveOrderNotesToLocal(value: value);
                                     },
                                     maxLines: 5,
                                     style: const TextStyle(fontSize: 13),

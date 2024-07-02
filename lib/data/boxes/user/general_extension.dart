@@ -13,12 +13,21 @@ extension UserGeneralSettingsExtension on UserBox {
   }
 
   set phoneVerifyStatus(bool value) {
-    box.put(BoxKeys.verfiredPhonenumderkey, value);
+    box.put(BoxKeys.verifiedPhoneNumberKey, value);
   }
 
  bool get isPhoneVerified {
-   return box.get(BoxKeys.verfiredPhonenumderkey,defaultValue: false);
+   return box.get(BoxKeys.verifiedPhoneNumberKey,defaultValue: false);
 
+ }
+
+
+ set saveOrderNotesToLocal(String value){
+   box.put(BoxKeys.savedOrderNotes, value);
+ }
+
+ String get orderNotesFromLocal {
+    return box.get(BoxKeys.savedOrderNotes,defaultValue: '');
  }
 
 

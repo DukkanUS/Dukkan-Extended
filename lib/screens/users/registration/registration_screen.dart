@@ -68,7 +68,12 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       GlobalKey<ScaffoldMessengerState>();
   final TextEditingController _emailController = TextEditingController();
 
-  String? firstName, lastName, emailAddress, phoneNumber, password;
+  String? firstName,
+      lastName,
+      emailAddress,
+      phoneNumber,
+      password,
+      confirmPassword;
   RegisterType? _registerType = RegisterType.customer;
   bool isChecked = true;
 
@@ -82,6 +87,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   final phoneNumberNode = FocusNode();
   final emailNode = FocusNode();
   final passwordNode = FocusNode();
+  final confirmPasswordNode = FocusNode();
 
   var countryDIalCOde;
 
@@ -173,7 +179,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
         ),
         (route) => false,
       );
-    }else{
+    } else {
       await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
           .pushReplacementNamed(RouteList.dashboard);
     }
@@ -198,7 +204,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       return;
     }
     Provider.of<RegistrationProvider>(context, listen: false).stopLoading();
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
     FlashHelper.message(
       context,
       message: text,
@@ -283,6 +289,7 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
         lastName == null ||
         emailAddress == null ||
         password == null ||
+        confirmPassword == null ||
         (showPhoneNumberWhenRegister &&
             requirePhoneNumberWhenRegister &&
             phoneNumber == null)) {
@@ -298,6 +305,9 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
       if (password?.isNotEmpty ?? false) {
         if (password!.length < 8) {
           _showMessage(S.of(context).errorPasswordFormat);
+          return;
+        } else if (password != confirmPassword) {
+          _showMessage(S.of(context).passwordsDoNotMatch);
           return;
         }
       }
@@ -410,8 +420,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                                     backgroundColor: Theme.of(context)
                                         .colorScheme
                                         .background,
-                                    dialogBackgroundColor: Theme.of(context)
-                                        .dialogBackgroundColor,
+                                    dialogBackgroundColor:
+                                        Theme.of(context).dialogBackgroundColor,
                                   ),
                                   const SizedBox(width: 8.0),
                                   Expanded(
@@ -457,6 +467,19 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                               decoration: InputDecoration(
                                 labelText: S.of(context).enterYourPassword,
                                 hintText: S.of(context).enterYourPassword,
+                              ),
+                            ),
+                            const SizedBox(height: 20.0),
+                            CustomTextField(
+                              key: const Key('confirmRegisterPasswordField'),
+                              focusNode: confirmPasswordNode,
+                              autofillHints: const [AutofillHints.password],
+                              showEyeIcon: true,
+                              obscureText: true,
+                              onChanged: (value) => confirmPassword = value,
+                              decoration: InputDecoration(
+                                labelText: S.of(context).confirmPassword,
+                                hintText: S.of(context).confirmPassword,
                               ),
                             ),
                             const SizedBox(height: 20.0),

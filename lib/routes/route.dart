@@ -82,6 +82,7 @@ class Routes {
         create: (context) => LoginSmsViewModel(Services().firebase),
         child: PhoneVerification(
           onVerifySuccessCallBack: args.onVerifySuccessCallBack,
+          updatePhoneNumber: args.updatePhoneNumber,
         ),
       );
     },

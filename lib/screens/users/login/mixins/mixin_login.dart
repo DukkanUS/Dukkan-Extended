@@ -85,11 +85,41 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
     }
     UserBox().addresses = listAddress;
     await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context).pushReplacementNamed(RouteList.dashboard);
+  }  Future<void> saveDataToLocal2() async {
+    var listAddress = <Address>[];
+    final address = this.address;
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
   }
 
   Future<void> redirectingAfterLoginSuccess({bool? googleLogin ,bool? appleLogin, bool? facebookLogin, String? phonenumbereee }) async {
 
    await  context.read<UserModel>().saveVerifyStatus(status: true);
+   if(_userModel.user?.shipping?.address1?.isNotEmpty ?? false){
+
+     try{
+       address = Address();
+       address?.street =_userModel.user?.shipping?.address1;
+       address?.apartment = _userModel.user?.shipping?.address2;
+       address?.city = _userModel.user?.shipping?.city;
+       address?.zipCode = _userModel.user?.shipping?.postCode;
+       address?.state =_userModel.user?.shipping?.state;
+       Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).setAddress(address);
+       await saveDataToLocal2();
+     }catch(e,trace){
+       printLog(e.toString());
+       printLog(trace.toString());
+     }
+
+   }
 
     getDataFromLocal();
     if(listAddress.isEmpty ){
@@ -152,21 +182,38 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
 
     }
     else {
+      /// set address is not setting
       await Navigator.of(App.fluxStoreNavigatorKey.currentContext!)
           .pushReplacementNamed(RouteList.dashboard);
     }
   }
 
-  void loginDone({bool? googleLogin ,bool? appleLogin, bool? facebookLogin }) {
+  Future<void> loginDone({bool? googleLogin ,bool? appleLogin, bool? facebookLogin }) async {
     if((googleLogin ?? false) || (appleLogin ?? false) || (facebookLogin ?? false)) {
-      Navigator.of(context).pushNamed(RouteList.verifyPhoneNumber,
+      if(UserBox().isPhoneVerified){
+        _updateEventBus();
+        await redirectingAfterLoginSuccess(googleLogin: googleLogin,appleLogin: appleLogin,facebookLogin: facebookLogin);
+      }else {
+        await Navigator.of(context).pushNamed(RouteList.verifyPhoneNumber,
         arguments: PhoneVerificationArguments((phone) =>
             redirectingAfterLoginSuccess(googleLogin: googleLogin,appleLogin: appleLogin,facebookLogin: facebookLogin,phonenumbereee: phone),
-          _updateEventBus));
+          _updateEventBus,() async {
+            try{
+            printLog('udhuighsudhhghsfduhgu');
+            await Services().api.updateUserInfo({'phone':'${Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).address?.phoneNumber}'}, App.fluxStoreNavigatorKey.currentState!.context.read<UserModel>().user?.cookie);
+
+            }catch(e,trace){
+          printLog(e.toString());
+          printLog(trace.toString());
+          }
+          },));
+
+      }
     }else{
       _updateEventBus();
-      redirectingAfterLoginSuccess(googleLogin: googleLogin,appleLogin: appleLogin,facebookLogin: facebookLogin);
+      await redirectingAfterLoginSuccess(googleLogin: googleLogin,appleLogin: appleLogin,facebookLogin: facebookLogin);
     }
+
   }
 
   void loginWithFacebook(context) async {

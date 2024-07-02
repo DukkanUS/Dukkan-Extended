@@ -26,7 +26,8 @@ import '../providers/registration_provider.dart';
 class PhoneVerificationArguments {
   final Future<void> Function(String test)? onVerifySuccessCallBack;
   final VoidCallback? updateBusEvent;
-  PhoneVerificationArguments(this.onVerifySuccessCallBack, this.updateBusEvent);
+  final Future<void> Function()? updatePhoneNumber;
+  PhoneVerificationArguments(this.onVerifySuccessCallBack, this.updateBusEvent, this.updatePhoneNumber);
 }
 
 
@@ -34,9 +35,10 @@ class PhoneVerification extends StatefulWidget {
   final bool enableRegister;
   final Future<void> Function(String test)? onVerifySuccessCallBack;
   final VoidCallback? updateBusEvent;
+  final VoidCallback? updatePhoneNumber;
 
 
-  const PhoneVerification({this.enableRegister = false, this.onVerifySuccessCallBack, this.updateBusEvent});
+  const PhoneVerification({this.enableRegister = false, this.onVerifySuccessCallBack, this.updateBusEvent, this.updatePhoneNumber});
 
 
   @override
@@ -74,6 +76,7 @@ class PhoneVerificationState<T extends PhoneVerification> extends State<T>
 
                 },
               updateBusEvent: widget.updateBusEvent,
+              updatePhoneNumber: widget.updatePhoneNumber,
             ),
           ),
         );
@@ -322,6 +325,7 @@ class CustomVerifyPhoneNumber extends StatefulWidget {
   final int? resendToken;
   final Function(String, User?)? callback;
   final VoidCallback? updateBusEvent;
+  final VoidCallback? updatePhoneNumber;
   final Future<void> Function(String test)? onVerifySuccessTORENAME;
 
   const CustomVerifyPhoneNumber({
@@ -329,7 +333,7 @@ class CustomVerifyPhoneNumber extends StatefulWidget {
     this.phoneNumber,
     this.verifySuccessStream,
     this.resendToken,
-    this.callback, this.onVerifySuccessTORENAME, this.updateBusEvent,
+    this.callback, this.onVerifySuccessTORENAME, this.updateBusEvent, this.updatePhoneNumber,
   });
 
   @override
@@ -474,6 +478,9 @@ class _CustomVerifyPhoneNumberState extends State<CustomVerifyPhoneNumber>
         }
         if(widget.onVerifySuccessTORENAME != null) {
           await widget.onVerifySuccessTORENAME!(widget.phoneNumber ?? '');
+        }
+        if(widget.updatePhoneNumber != null){
+          widget.updatePhoneNumber!();
         }
         await _stopAnimation();
       } else {

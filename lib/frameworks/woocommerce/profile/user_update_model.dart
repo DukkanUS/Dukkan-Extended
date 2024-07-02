@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../app.dart';
 import '../../../common/constants.dart';
 import '../../../common/tools/image_tools.dart';
+import '../../../models/cart/cart_base.dart';
 import '../../../models/entities/user.dart';
 import '../../../services/index.dart';
 
@@ -39,7 +42,7 @@ class UserUpdateModel extends ChangeNotifier {
     userDisplayName.text = _user!.name!;
     userFirstName.text = _user!.firstName!;
     userLastName.text = _user!.lastName!;
-    userPhone.text = _user!.phoneNumber!;
+    userPhone.text = (_user!.phoneNumber! == '')? Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).address?.phoneNumber ?? '' : _user!.phoneNumber! ;
 
     avatar = _user!.picture;
 
@@ -127,4 +130,5 @@ class UserUpdateModel extends ChangeNotifier {
       rethrow;
     }
   }
+
 }

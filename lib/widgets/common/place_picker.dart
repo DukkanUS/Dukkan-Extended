@@ -17,6 +17,7 @@ import '../../data/boxes.dart';
 import '../../generated/l10n.dart';
 import '../../models/cart/cart_base.dart';
 import '../../models/entities/address.dart';
+import '../../models/user_model.dart';
 import '../../screens/common/google_map_mixin.dart';
 
 class Uuid {
@@ -285,14 +286,14 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                   children: [
                                      RadioButton(
                                       isActive: ((Provider.of<CartModel>(context).address?.street == listAddress[index]?.street) &&
-                                          (Provider.of<CartModel>(context).address?.apartment == listAddress[index]?.apartment)),
+                                          ((Provider.of<CartModel>(context).address?.apartment == listAddress[index]?.apartment || Provider.of<UserModel>(context).user?.shipping?.address2 == listAddress[index]?.apartment))),
                                       radius: 10,
                                       color: Colors.black,
                                     ),
                                     Expanded(
                                       child: ListTile(
                                         title: Text(
-                                          "${listAddress[index]?.street ?? ''}, ${listAddress[index]?.apartment ?? ''}",
+                                          "${listAddress[index]?.street ?? ''}${((listAddress[index]?.apartment?.isNotEmpty ?? false) ? ', ${listAddress[index]?.apartment ?? ''}' : '')}",
                                           style: TextStyle(
                                               fontWeight:
                                               ((Provider.of<CartModel>(context).address?.street == listAddress[index]?.street) &&
@@ -301,12 +302,12 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                                                       : null),
                                         ),
                                         subtitle: Text(
-                                          '${listAddress[index]?.country ?? ''}, ${listAddress[index]?.state ?? ''} ${listAddress[index]?.zipCode ?? ''}'
+                                          '${(listAddress[index]?.country?.isNotEmpty ?? false) ? '${listAddress[index]?.country},' : ''} ${listAddress[index]?.state ?? ''} ${listAddress[index]?.zipCode ?? ''}'
                                         ),
                                       ),
                                     ),
                                     !((Provider.of<CartModel>(context).address?.street == listAddress[index]?.street) &&
-                                        (Provider.of<CartModel>(context).address?.apartment == listAddress[index]?.apartment))
+                                        ((Provider.of<CartModel>(context).address?.apartment == listAddress[index]?.apartment || Provider.of<UserModel>(context).user?.shipping?.address2 == listAddress[index]?.apartment)))
                                         ?
                                     IconButton(
                                         onPressed: () {

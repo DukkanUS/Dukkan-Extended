@@ -18,6 +18,7 @@ import 'common/theme/index.dart';
 import 'common/tools.dart';
 import 'custom/providers/delivery_time.dart';
 import 'custom/providers/registration_provider.dart';
+import 'custom/providers/update_user_remote_address.dart';
 import 'generated/l10n.dart';
 import 'generated/languages/index.dart';
 import 'generated/overrides/app_localizations.dart';
@@ -422,6 +423,8 @@ class AppState extends State<App>
                 ),
                 ChangeNotifierProvider<ListBlogModel>(
                     create: (_) => ListBlogModel()),
+                ChangeNotifierProvider<UpdateUserRemoteAddress>(
+                    create: (_) => UpdateUserRemoteAddress()),
                 ChangeNotifierProvider<DeliveryTime>(
                     create: (_) => DeliveryTime()),
                 ChangeNotifierProvider<FilterAttributeModel>.value(
