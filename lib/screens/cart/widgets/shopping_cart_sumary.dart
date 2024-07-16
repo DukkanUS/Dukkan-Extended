@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import '../../../common/config.dart';
 import '../../../common/config/models/cart_config.dart';
 import '../../../common/tools.dart';
+import '../../../custom/custom_controllers/auto_apply_coupons_controller.dart';
+import '../../../custom/custom_entities/auto_apply_coupons/custom_coupon_entity.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/index.dart' show AppModel, CartModel, Coupons, Discount;
 import '../../../services/index.dart';
@@ -19,12 +21,14 @@ import 'point_reward.dart';
 
 class ShoppingCartSummary extends StatefulWidget {
   final bool showPrice;
+  final bool hideCoupon;
   final bool showRecurringTotals;
   final CartStyle cartStyle;
   final OrderSummaryStyle style;
 
   const ShoppingCartSummary({
     this.showPrice = true,
+    this.hideCoupon = false,
     this.showRecurringTotals = true,
     this.cartStyle = CartStyle.normal,
     this.style = OrderSummaryStyle.normal,
@@ -214,7 +218,7 @@ class _ShoppingCartSummaryState extends State<ShoppingCartSummary> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              if (enableCoupon) _renderCouponCode(isApplyCouponSuccess),
+              if (enableCoupon & !widget.hideCoupon) _renderCouponCode(isApplyCouponSuccess),
               if (isApplyCouponSuccess)
                 Padding(
                   padding: const EdgeInsets.only(
@@ -312,7 +316,75 @@ class _ShoppingCartSummaryState extends State<ShoppingCartSummary> {
                   ),
                 ),
               if (widget.showRecurringTotals)
-                Services().widget.renderRecurringTotals(context)
+                Services().widget.renderRecurringTotals(context),
+              (widget.hideCoupon) ? const SizedBox.shrink() :  //region auto apply coupons feature
+
+              FutureBuilder<CustomCouponDetailsEntity?>(
+                builder: (context, snapShot) {
+                  if (snapShot.connectionState == ConnectionState.waiting) {
+                    return SizedBox.shrink();
+                  } else if (snapShot.hasData && snapShot.data != null) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0,
+                        vertical: 10.0,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColorLight),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12.0,
+                            horizontal: 15.0,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${S.of(context).totalWithAutoApply}:',
+                                      style: largeAmountStyle,
+                                    ),
+                                  ),
+                                  cartModel.calculatingDiscount
+                                      ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                    ),
+                                  )
+                                      : Text(
+                                    PriceTools.getCurrencyFormatted(
+                                        cartModel.getTotal()! -
+                                            cartModel.getShippingCost()! -
+                                            (snapShot.data
+                                                ?.totalDiscount ??
+                                                0),
+                                        currencyRate,
+                                        currency: cartModel.isWalletCart()
+                                            ? defaultCurrency
+                                            ?.currencyCode
+                                            : currency)!,
+                                    style: largeAmountStyle,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+                future: AutoApplyCouponController.getAutoApplyCouponsDetails(
+                    cartModel),
+              ),
+              //endregion
+
             ],
           ),
         ),

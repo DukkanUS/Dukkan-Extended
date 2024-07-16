@@ -1,5 +1,10 @@
 {
 	"@@locale": "en",
+	"updateDialogTitle": "The App needs to be updated",
+	"updateDialogText": "You must update this app from store in order to use it.",
+	"underMaintenanceText": "Under Maintenance",
+	"underMaintenanceContent": "we've got something special in store for you, please check back soon.",
+	"totalWithAutoApply": "Total after discount",
 	"seeAll": "See All",
 	"featureProducts": "Feature Products",
 	"bagsCollections": "Gears Collections",

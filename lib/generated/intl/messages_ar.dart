@@ -1376,6 +1376,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "totalPrice": MessageLookupByLibrary.simpleMessage("السعر الكلي"),
         "totalProducts": m41,
         "totalTax": MessageLookupByLibrary.simpleMessage("مجموع الضريبة"),
+        "totalWithAutoApply":
+            MessageLookupByLibrary.simpleMessage("المجموع بعد الخصم"),
         "trackingNumberIs":
             MessageLookupByLibrary.simpleMessage("رقم التتبع هو"),
         "trackingPage": MessageLookupByLibrary.simpleMessage("صفحة التتبع"),
@@ -1403,9 +1405,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "typing": MessageLookupByLibrary.simpleMessage("كتابة ..."),
         "ukrainian": MessageLookupByLibrary.simpleMessage("الأوكراني"),
         "unavailable": MessageLookupByLibrary.simpleMessage("غير متوفر"),
+        "underMaintenanceContent": MessageLookupByLibrary.simpleMessage(
+            "لدينا شيء خاص في متجرنا لك، يرجى التحقق مرة أخرى قريبًا."),
+        "underMaintenanceText":
+            MessageLookupByLibrary.simpleMessage("تحت الصيانة"),
         "undo": MessageLookupByLibrary.simpleMessage("تراجع"),
         "unpaid": MessageLookupByLibrary.simpleMessage("غير مدفوع"),
         "update": MessageLookupByLibrary.simpleMessage("تحديث"),
+        "updateDialogText": MessageLookupByLibrary.simpleMessage(
+            "يجب عليك تحديث التطبيق من المتجر من اجل الاستمرار في استخدامه."),
+        "updateDialogTitle":
+            MessageLookupByLibrary.simpleMessage("التطبيق يحتاج الى تحديث"),
         "updateFailed": MessageLookupByLibrary.simpleMessage("فشل التحديث!"),
         "updateInfo": MessageLookupByLibrary.simpleMessage("تحديث المعلومات"),
         "updatePassword":

@@ -4,9 +4,12 @@ import 'package:provider/provider.dart';
 
 import '../../common/config.dart';
 import '../../common/constants.dart';
+import '../../common/tools/price_tools.dart';
+import '../../custom/custom_controllers/auto_apply_coupons_controller.dart';
+import '../../custom/custom_entities/auto_apply_coupons/custom_coupon_entity.dart';
 import '../../generated/l10n.dart';
 import '../../models/entities/address.dart';
-import '../../models/index.dart' show CartModel, Product, TaxModel, UserModel;
+import '../../models/index.dart' show AppModel, CartModel, Product, TaxModel, UserModel;
 import '../../modules/dynamic_layout/helper/helper.dart';
 import '../../services/index.dart';
 import '../../widgets/common/common_safe_area.dart';
@@ -60,6 +63,7 @@ class _ReviewState extends BaseScreen<ReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currencyRate = Provider.of<AppModel>(context).currencyRate;
     final taxModel = Provider.of<TaxModel>(context);
     final isDesktop = Layout.isDisplayDesktop(context);
 
@@ -231,6 +235,56 @@ class _ReviewState extends BaseScreen<ReviewScreen> {
                               decoration: TextDecoration.underline,
                             ),
                       ),
+                      //region auto apply coupons feature
+
+                      FutureBuilder<CustomCouponDetailsEntity?>(
+                        builder: (context,snapShot) {
+                          if(snapShot.connectionState == ConnectionState.waiting)
+                          {
+                            return SizedBox.shrink();
+                          }
+                          else if(snapShot.hasData && snapShot.data!=null) {
+                            return               Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    'S.of(context).totalWithAutoApply',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                  Text(
+                                    PriceTools.getCurrencyFormatted(
+                                        (model.getTotal()??0)-(snapShot.data?.totalDiscount??0)
+                                            -((snapShot.data?.isFreeShipping ?? false) ? model.getShippingCost() ?? 0:0), currencyRate,
+                                        currency: model.currencyCode)!,
+                                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      fontSize: 20,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+
+                          }
+                          else
+                          {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                        future: AutoApplyCouponController.getAutoApplyCouponsDetails(model),
+
+                      ),
+
+                      //endregion
+
                       Services().widget.renderRecurringTotals(context),
                       if (kEnableCustomerNote) ...[
                         const SizedBox(height: 20),

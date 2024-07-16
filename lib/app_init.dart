@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fstore/widgets/common/place_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'app.dart';
@@ -14,27 +13,19 @@ import 'common/events.dart';
 import 'common/tools.dart';
 import 'common/tools/flash.dart';
 import 'custom/Phone Verification/phone_verification.dart';
+import 'custom/custom_controllers/app_controller.dart';
+import 'custom/custom_controllers/auto_apply_coupons_controller.dart';
+import 'custom/providers/address_validation.dart';
 import 'data/boxes.dart';
 import 'generated/l10n.dart';
 import 'models/index.dart'
-    show
-        Address,
-        AppModel,
-        CartModel,
-        CategoryModel,
-        FilterAttributeModel,
-        FilterTagModel,
-        ListingLocationModel,
-        NotificationModel,
-        ProductPriceModel,
-        TagModel,
-        UserModel;
+    show Address, AppModel, CartModel, CategoryModel, FilterAttributeModel, FilterTagModel, ListingLocationModel, NotificationModel, ProductPriceModel, ShippingMethodModel, TagModel, UserModel;
 import 'modules/dynamic_layout/config/app_config.dart';
 import 'modules/dynamic_layout/helper/helper.dart';
 import 'screens/app_error.dart';
 import 'screens/base_screen.dart';
-import 'screens/blog/models/list_blog_model.dart';
 import 'services/index.dart';
+import 'widgets/common/place_picker.dart';
 import 'widgets/common/splash_screen.dart';
 
 class AppInit extends StatefulWidget {
@@ -77,6 +68,11 @@ class _AppInitState extends BaseScreen<AppInit> {
     setState(() {});
   }
 
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false);
+
   Future<void> saveDataToLocal() async {
     var listAddress = <Address>[];
     final address = this.address;
@@ -107,6 +103,19 @@ class _AppInitState extends BaseScreen<AppInit> {
 
       /// Load layout config
       appConfig = await appModel.loadAppConfig(config: kLayoutConfig);
+
+      //region force update feature
+
+      ///initialize AppController
+      await AppController.initialize();
+
+      //endregion
+
+      //region auto apply coupons feature
+
+      ///initialize AutoApplyCouponController
+      await AutoApplyCouponController.initialize();
+      //endregion
 
       Future.delayed(Duration.zero, () {
         /// Load more Category/Blog/Attribute Model beforehand
@@ -273,6 +282,17 @@ class _AppInitState extends BaseScreen<AppInit> {
                     if (address != null) {
                       Provider.of<CartModel>(validContext, listen: false)
                           .setAddress(address);
+
+                        if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                          await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                          Provider.of<AddressValidation>(validContext,listen: false).setValid();
+                        }
+                        else
+                        {
+                          Provider.of<AddressValidation>(validContext,listen: false).setInvalid();
+                          await cartModel.removeShippingMethod();
+                          ///no supported method for such address.
+                        }
                       await saveDataToLocal();
                       return;
                     } else {
@@ -282,7 +302,6 @@ class _AppInitState extends BaseScreen<AppInit> {
                       );
                     }
                   } catch (e) {
-                    log('fuckk :: $e');
                     await FlashHelper.errorMessage(
                       validContext,
                       message: e.toString(),
@@ -296,6 +315,8 @@ class _AppInitState extends BaseScreen<AppInit> {
             (route) => false,
           );
         } else {
+          Provider.of<AddressValidation>(context,listen: false).isValid =  UserBox().isAddressValid;
+
           await Navigator.of(App.fluxStoreNavigatorKey.currentState!.context)
               .pushReplacementNamed(RouteList.dashboard);
         }
@@ -387,10 +408,19 @@ class _AppInitState extends BaseScreen<AppInit> {
                   address?.lastName = user?.lastName;
                   address?.email = user?.email;
                   address?.phoneNumber = phonenumbereee ?? user?.phoneNumber;
-
                   if (address != null) {
                     Provider.of<CartModel>(validContext, listen: false)
                         .setAddress(address);
+                    if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                      await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                      Provider.of<AddressValidation>(validContext,listen: false).setValid();
+                    }
+                    else
+                    {
+                      Provider.of<AddressValidation>(validContext,listen: false).setInvalid();
+                      await cartModel.removeShippingMethod();
+                      ///no supported method for such address.
+                    }
                     await saveDataToLocal();
                     return;
                   } else {
@@ -400,7 +430,6 @@ class _AppInitState extends BaseScreen<AppInit> {
                     );
                   }
                 } catch (e) {
-                  log('fuckk :: $e');
                   await FlashHelper.errorMessage(
                     validContext,
                     message: e.toString(),

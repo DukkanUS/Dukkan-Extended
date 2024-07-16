@@ -38,7 +38,7 @@ Map<String, dynamic> environment = {
   "advanceConfig": {
     "DefaultLanguage": "en",
     "DetailedBlogLayout": "halfSizeImageType",
-    "EnablePointReward": false,
+    "EnablePointReward": true,
     "hideOutOfStock": false,
     "HideEmptyTags": true,
     "HideEmptyCategories": true,
@@ -563,7 +563,7 @@ Map<String, dynamic> environment = {
     "showOnScreens": ["profile"],
     "hideOnScreens": [],
     "enableVendorChat": true,
-    "EnableSmartChat": true,
+    "EnableSmartChat": false,
     "UseRealtimeChat": false,
     "version": "2"
   },
@@ -629,7 +629,7 @@ Map<String, dynamic> environment = {
   "loadingIcon": {"size": 30, "type": "fadingCube"},
   "splashScreen": {
     "duration": 2000,
-    "image": "assets/images/splashscreen.flr",
+    "image": "assets/images/logo.png",
     "animationName": "fluxstore",
     "backgroundColor": "#ffffff",
     "paddingBottom": 0,
@@ -637,7 +637,7 @@ Map<String, dynamic> environment = {
     "paddingRight": 0,
     "boxFit": "contain",
     "paddingTop": 0,
-    "type": "flare",
+    "type": "zoom-in",
     "paddingLeft": 0
   },
   "orderConfig": {"version": 1},

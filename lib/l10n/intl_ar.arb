@@ -1,5 +1,10 @@
 {
 	"@@locale": "ar",
+	"updateDialogTitle": "التطبيق يحتاج الى تحديث",
+	"updateDialogText": "يجب عليك تحديث التطبيق من المتجر من اجل الاستمرار في استخدامه.",
+	"underMaintenanceText": "تحت الصيانة",
+	"underMaintenanceContent": "لدينا شيء خاص في متجرنا لك، يرجى التحقق مرة أخرى قريبًا.",
+	"totalWithAutoApply": "المجموع بعد الخصم",
 	"seeAll": "اظهار الكل",
 	"featureProducts": "منتجات مميزة",
 	"bagsCollections": "مجموعات الحقائب",

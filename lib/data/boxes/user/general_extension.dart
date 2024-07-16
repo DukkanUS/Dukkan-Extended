@@ -8,6 +8,15 @@ extension UserGeneralSettingsExtension on UserBox {
     );
   }
 
+
+  set setAddressValidationStatus(bool value) {
+    box.put(BoxKeys.addressValidationStatusKey, value);
+  }
+
+  bool get isAddressValid{
+    return box.get(BoxKeys.addressValidationStatusKey,defaultValue: false);
+  }
+
   set isLoggedIn(bool value) {
     box.put(BoxKeys.isLoggedIn, value);
   }

@@ -120,6 +120,12 @@ mixin AddressMixin on CartMixin {
     address = data;
     saveShippingAddress(data);
     try{
+
+
+
+
+
+
       Provider.of<UpdateUserRemoteAddress>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).updateProfileAddress();
     }catch(e,trace){
       printLog(e.toString());
@@ -155,4 +161,10 @@ mixin AddressMixin on CartMixin {
   Future<void> setShippingMethod(ShippingMethod data) async {
     shippingMethod = data;
   }
+
+
+  Future<void> removeShippingMethod() async {
+    shippingMethod = null;
+  }
+
 }

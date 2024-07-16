@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../common/config.dart';
 import '../../../common/constants.dart';
+import '../../../custom/providers/address_validation.dart';
 import '../../../data/boxes.dart';
 import '../../../models/index.dart';
 import '../../../services/services.dart';
@@ -174,6 +175,12 @@ class _LogoState extends State<Logo> {
     return const SizedBox();
   }
 
+
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(context, listen: false);
+
   Future<void> saveDataToLocal(Address? address) async {
     var listAddress = <Address>[];
     if (address != null) {
@@ -212,80 +219,95 @@ class _LogoState extends State<Logo> {
             ),
           Expanded(
             flex: 8,
-            child: Visibility(
-              visible: UserBox().isLoggedIn,
-              child: MaterialButton(
-                onPressed: () async {
-                  final apiKey = kIsWeb
-                      ? kGoogleApiKey.web
-                      : isIos
-                          ? kGoogleApiKey.ios
-                          : kGoogleApiKey.android;
+            child: (UserBox().isLoggedIn) ?  MaterialButton(
+              onPressed: () async {
+                final apiKey = kIsWeb
+                    ? kGoogleApiKey.web
+                    : isIos
+                        ? kGoogleApiKey.ios
+                        : kGoogleApiKey.android;
 
-                  await showPlacePicker(context, apiKey).then((result) async {
-                    if (result is LocationResult) {
-                      var address = Address();
-                      address.country = result.country;
-                      address.apartment = result.apartment;
-                      address.street = result.street;
-                      address.state = result.state;
-                      address.city = result.city;
-                      address.zipCode = result.zip;
-                      if (result.latLng?.latitude != null &&
-                          result.latLng?.longitude != null) {
-                        address.mapUrl =
-                            'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
-                        address.latitude = result.latLng?.latitude.toString();
-                        address.longitude = result.latLng?.longitude.toString();
-                      }
-
-                      address.firstName = user?.firstName;
-                      address.lastName = user?.lastName;
-                      address.email = user?.email;
-                      address.phoneNumber = user?.phoneNumber;
-
-                      Provider.of<CartModel>(context, listen: false)
-                          .setAddress(address);
-                      final c = Country(id: result.country, name: result.country);
-                      states = await Services().widget.loadStates(c);
-                      await saveDataToLocal(address);
+                await showPlacePicker(context, apiKey).then((result) async {
+                  if (result is LocationResult) {
+                    var address = Address();
+                    address.country = result.country;
+                    address.apartment = result.apartment;
+                    address.street = result.street;
+                    address.state = result.state;
+                    address.city = result.city;
+                    address.zipCode = result.zip;
+                    if (result.latLng?.latitude != null &&
+                        result.latLng?.longitude != null) {
+                      address.mapUrl =
+                          'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                      address.latitude = result.latLng?.latitude.toString();
+                      address.longitude = result.latLng?.longitude.toString();
                     }
-                  });
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      (currentAddress == null || currentAddress == '') ? 'Choose address' : currentAddress,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const Icon(Icons.arrow_drop_down_sharp)
 
-                    // if (config.showLogo) Center(child: renderLogo()),
-                    // if (textConfig != null) ...[
-                    //   if (config.showLogo) const SizedBox(width: 5),
-                    //   Expanded(
-                    //     child: Align(
-                    //       alignment: textConfig.alignment,
-                    //       child: Text(
-                    //         textConfig.text,
-                    //         style: TextStyle(
-                    //           fontSize: textConfig.fontSize,
-                    //           color: Theme.of(context).colorScheme.onBackground,
-                    //           fontWeight: FontWeight.bold,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   )
-                    // ],
-                  ],
-                ),
+                    address.firstName = user?.firstName;
+                    address.lastName = user?.lastName;
+                    address.email = user?.email;
+                    address.phoneNumber = user?.phoneNumber;
+
+                    Provider.of<CartModel>(context, listen: false)
+                        .setAddress(address);
+                    final c = Country(id: result.country, name: result.country);
+                    states = await Services().widget.loadStates(c);
+                    if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                      await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                      Provider.of<AddressValidation>(context,listen: false).setValid();
+                      setState(() {});
+                    }
+                    else
+                    {
+                      Provider.of<AddressValidation>(context,listen: false).setInvalid();
+                      await cartModel.removeShippingMethod();
+                      setState(() {});
+                      ///no supported method for such address.
+                    }
+                    await saveDataToLocal(address);
+                  }
+                });
+              },
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        (currentAddress == null || currentAddress == '') ? 'Choose address' : currentAddress,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const Icon(Icons.arrow_drop_down_sharp)
+
+                      // if (config.showLogo) Center(child: renderLogo()),
+                      // if (textConfig != null) ...[
+                      //   if (config.showLogo) const SizedBox(width: 5),
+                      //   Expanded(
+                      //     child: Align(
+                      //       alignment: textConfig.alignment,
+                      //       child: Text(
+                      //         textConfig.text,
+                      //         style: TextStyle(
+                      //           fontSize: textConfig.fontSize,
+                      //           color: Theme.of(context).colorScheme.onBackground,
+                      //           fontWeight: FontWeight.bold,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   )
+                      // ],
+                    ],
+                  ),
+                !Provider.of<AddressValidation>(context).isValid ?
+                const Text('(Your Address Is Out Of Service Area)',style: TextStyle(color: Colors.red,fontSize: 10),)
+                : const SizedBox.shrink()],
               ),
-            ),
+            ) : Image.asset('assets/images/logo.png',height: 30,),
           ),
           if (widget.config.showSearch)
             LogoIcon(

@@ -6,6 +6,7 @@ import '../../app.dart';
 import '../../common/config.dart';
 import '../../common/constants.dart';
 import '../../common/tools.dart';
+import '../../custom/custom_controllers/auto_apply_coupons_controller.dart';
 import '../../custom/providers/delivery_time.dart';
 import '../../data/boxes.dart';
 import '../../generated/l10n.dart';
@@ -783,12 +784,12 @@ class Order {
       }
       if (paid) params['status'] = 'processing';
 
-      if (cartModel.address != null &&
-          cartModel.address!.mapUrl != null &&
-          cartModel.address!.mapUrl!.isNotEmpty &&
-          kPaymentConfig.enableAddressLocationNote) {
-        params['customer_note'] = 'URL:${cartModel.address!.mapUrl!}';
-      }
+      // if (cartModel.address != null &&
+      //     cartModel.address!.mapUrl != null &&
+      //     cartModel.address!.mapUrl!.isNotEmpty &&
+      //     kPaymentConfig.enableAddressLocationNote) {
+      //   params['customer_note'] = 'URL:${cartModel.address!.mapUrl!}';
+      // }
       if (kEnableCustomerNote &&
           cartModel.notes != null &&
           cartModel.notes!.isNotEmpty) {
@@ -800,6 +801,8 @@ class Order {
       }
 
       if (kPaymentConfig.enableAddress && cartModel.address != null) {
+        // Provider.of<UserModel>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).user?.billing?.email = cartModel.user?.email ?? cartModel.address?.email ?? '';
+        // params['billing'] = Provider.of<UserModel>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).user?.billing?.toJson();
         params['billing'] = cartModel.address!.toJson();
         if (ServerConfig().type == ConfigType.wcfm) {
           params['shipping'] = cartModel.address!.toWCFMJson();
@@ -808,6 +811,7 @@ class Order {
         }
         params['billing'].removeWhere((key, value) => value == null);
         params['shipping'].removeWhere((key, value) => value == null);
+        params['shipping'].removeWhere((key, value) => key == 'country');
       }
 
       var isMultiVendor = ServerConfig().isVendorType();
@@ -884,6 +888,29 @@ class Order {
           'amount': '${cartModel.getCODExtraFee()}'
         });
       }
+      //region auto apply coupons feature
+      var coupons = AutoApplyCouponController.toApplyCoupons;
+      params['coupon_lines'] = <Map<String, String?>>[];
+
+      if(coupons != null)
+      {
+        for(var c in coupons) {
+          if(c.code != null) {
+            (params['coupon_lines'] as List<Map<String, String?>>).add({'code':c.code});
+          }
+        }
+      }
+      ///if the user applied coupon in cart
+      if (cartModel.couponObj != null) {
+        (params['coupon_lines'] as List<Map<String, String?>>).add({'code':cartModel.couponObj!.code});
+      }
+      ///comment this block
+      // if (cartModel.couponObj != null) {
+      //   params['coupon_lines'] = [
+      //     {'code': cartModel.couponObj!.code}
+      //   ];
+      // }
+      //endregion
       if (feeLines.isNotEmpty) {
         params['fee_lines'] = feeLines;
       }
@@ -926,8 +953,20 @@ class Order {
               .add({'key': '_wcfmd_delvery_times', 'value': value});
         }
       }
-      params['meta_data'].add({'key': 'Delivery Time', 'value': Provider.of<DeliveryTime>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).deliveryTime});
-
+      params['meta_data'].add({
+        'key': 'Delivery Time',
+        'value': Provider.of<DeliveryTime>(
+                App.fluxStoreNavigatorKey.currentState!.context,
+                listen: false)
+            .deliveryTime
+      });
+      if (cartModel.address != null &&
+          cartModel.address!.mapUrl != null &&
+          cartModel.address!.mapUrl!.isNotEmpty &&
+          kPaymentConfig.enableAddressLocationNote) {
+        params['meta_data'].add(
+            {'key': 'mapUrl', 'value': 'URL:${cartModel.address!.mapUrl!}'});
+      }
     } catch (e, trace) {
       printLog(e.toString());
       printLog(trace.toString());

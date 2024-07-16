@@ -79,6 +79,9 @@ class WooCommerceAPI {
     if (version == 3) {
       url = '${this.url!}/wp-json/wc/v3/$endpoint';
     }
+    if (version == -101) {
+      url = '${this.url!}/wp-json/$endpoint';
+    }
     var containsQueryParams = url.contains('?');
 
     // If website is HTTPS based, no need for OAuth, just return the URL with CS and CK as query params

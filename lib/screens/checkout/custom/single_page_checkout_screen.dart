@@ -9,6 +9,9 @@ import 'package:shimmer/shimmer.dart';
 import '../../../common/config.dart';
 import '../../../common/constants.dart';
 import '../../../common/tools/price_tools.dart';
+import '../../../custom/custom_controllers/auto_apply_coupons_controller.dart';
+import '../../../custom/custom_entities/auto_apply_coupons/custom_coupon_entity.dart';
+import '../../../custom/providers/address_validation.dart';
 import '../../../custom/providers/delivery_time.dart';
 import '../../../data/boxes.dart';
 import '../../../generated/l10n.dart';
@@ -36,7 +39,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   bool _isDatePickerExpanded = true;
   String? _selectedTimePeriod;
 
-  int? selectedIndex = 0;
+  // int? selectedIndex = 0;
   bool isLoading = false;
   Order? newOrder;
 
@@ -47,6 +50,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
 
   bool _isPaymentExpanded = false;
   bool _isPhoneNumberExpanded = false;
+  // bool _isBillingAddressExpanded = false;
   bool _isNotesExpanded = true;
   bool _isOrderPreviewExpanded = false;
   List<CountryState>? states = [];
@@ -54,30 +58,31 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   @override
   void initState() {
     Future.delayed(Duration.zero).then((_) async {
-      await context.read<ShippingMethodModel>().getShippingMethods(
-          langCode: Provider.of<AppModel>(context, listen: false).langCode,
-          cartModel: Provider.of<CartModel>(context, listen: false));
+      ///fetch the shipping methods
+     await Provider.of<ShippingMethodModel>(context, listen: false)
+          .getShippingMethods(
+          cartModel: Provider.of<CartModel>(context, listen: false), token: context.read<UserModel>().user?.cookie, langCode: Provider.of<AppModel>(context, listen: false).langCode);
+     /// set the shipping method for the selected address or will show that the selected address is not supported yet
+
+     if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+       Provider.of<AddressValidation>(context,listen: false).setValid();
+       await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+     }
+     else
+       {
+         Provider.of<AddressValidation>(context,listen: false).setInvalid();
+         await cartModel.removeShippingMethod();
+
+         ///no supported method for such address.
+       }
+
+     ///fetch the payment methods for the selected shipping
       await Provider.of<PaymentMethodModel>(context, listen: false)
           .getPaymentMethods(
               cartModel: cartModel,
               shippingMethod: cartModel.shippingMethod,
               langCode: Provider.of<AppModel>(context, listen: false).langCode);
-
-      final shippingMethod = cartModel.shippingMethod;
-      final shippingMethods = shippingMethodModel.shippingMethods;
-      if (shippingMethods != null &&
-          shippingMethods.isNotEmpty &&
-          shippingMethod != null) {
-        final index = shippingMethods
-            .indexWhere((element) => element.id == shippingMethod.id);
-        if (index > -1) {
-          setState(() {
-            selectedIndex = index;
-          });
-        }
-      }
     });
-
     super.initState();
   }
 
@@ -109,6 +114,21 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
 
   @override
   Widget build(BuildContext context) {
+    // final textFieldDecoration = InputDecoration(
+    //   border: OutlineInputBorder(
+    //     borderRadius: BorderRadius.circular(20),
+    //     borderSide: const BorderSide(color: Colors.black),
+    //   ),
+    //   focusedBorder: OutlineInputBorder(
+    //     borderRadius: BorderRadius.circular(20),
+    //     borderSide: const BorderSide(color: Colors.black),
+    //   ),
+    //   enabledBorder: OutlineInputBorder(
+    //     borderRadius: BorderRadius.circular(20),
+    //     borderSide: const BorderSide(color: Colors.black),
+    //   ),
+    //   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+    // );
     final cartModel = Provider.of<CartModel>(context);
     final paymentMethodModel = Provider.of<PaymentMethodModel>(context);
     var user = Provider.of<UserModel>(context, listen: false).user;
@@ -127,9 +147,21 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                 backgroundColor: bgColor,
                 onPressed: (paymentMethodModel.message?.isNotEmpty ?? false)
                     ? null
-                    : () => isPaying || selectedId == null
+                    : () =>
+                isPaying || selectedId == null
                         ? showSnackbar
-                        : placeOrder(paymentMethodModel, cartModel),
+                        : {
+                  if(shippingMethodModel.shippingMethods?.isNotEmpty ?? false) {
+                    if(shippingMethodModel.shippingMethods!.where((sm) => sm.title.toString().contains(cartModel.address?.zipCode.toString() ?? '****')).isNotEmpty){
+                      cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first),
+                      placeOrder(paymentMethodModel, cartModel)
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Selected address is not supported yet',style: TextStyle(fontWeight: FontWeight.bold),),backgroundColor: Colors.red,))
+                    }
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No shipping methods in the meantime',style: TextStyle(fontWeight: FontWeight.bold),),backgroundColor: Colors.red,))
+                  }
+                },
                 label: Row(
                   children: [
                     Icon(
@@ -208,6 +240,20 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   states =
                                       await Services().widget.loadStates(c);
                                   await saveDataToLocal(address);
+
+                                  if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                                    await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                                    Provider.of<AddressValidation>(context,listen: false).setValid();
+                                    setState(() {});
+                                  }
+                                  else
+                                  {
+                                    Provider.of<AddressValidation>(context,listen: false).setInvalid();
+                                      await cartModel.removeShippingMethod();
+                                      setState(() {});
+                                    ///no supported method for such address.
+                                  }
+
                                 }
                               });
                             },
@@ -231,6 +277,63 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                             ),
                           ),
                         ),
+
+
+                        // /// Billing Address
+                        // (Provider.of<CartModel>(context).address?.street?.isNotEmpty ?? false)
+                        //     ? GestureDetector(
+                        //   onTap: () {
+                        //     setState(() {
+                        //       _isBillingAddressExpanded = !_isBillingAddressExpanded;
+                        //     });
+                        //   },
+                        //   child: ExpansionPanelList(
+                        //     expansionCallback:
+                        //         (int index, bool isExpanded) {
+                        //       setState(() {
+                        //         _isBillingAddressExpanded = isExpanded;
+                        //       });
+                        //     },
+                        //     children: [
+                        //       ExpansionPanel(
+                        //         headerBuilder: (BuildContext context,
+                        //             bool isExpanded) {
+                        //           return  ListTile(
+                        //             title: Row(
+                        //               children: [
+                        //                 Icon(
+                        //                   Icons.location_on,
+                        //                   color: Colors.black,
+                        //                 ),
+                        //                 SizedBox(
+                        //                   width: 10,
+                        //                 ),
+                        //                 Text('${shippingMethodModel.shippingMethods?.first}',style: TextStyle(fontWeight: FontWeight.bold),),
+                        //               ],
+                        //             ),
+                        //           );
+                        //         },
+                        //         body: Padding(
+                        //           padding: const EdgeInsets.symmetric(horizontal: 20),
+                        //           child: Column(
+                        //             children: [
+                        //               TextFormField(
+                        //                 key: const Key('name'),
+                        //                 initialValue: user?.billing?.address1,
+                        //                 onChanged: (val){
+                        //                   user?.billing?.address1 = val;
+                        //                 },
+                        //                 decoration: textFieldDecoration,
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         isExpanded: _isBillingAddressExpanded,
+                        //       ),
+                        //     ],
+                        //   ),
+                        // )
+                        //     : const SizedBox.shrink(),
 
                         /// Delivery Instructions
                         (kEnableCustomerNote)
@@ -594,7 +697,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                         ),
 
                         const SizedBox(height: 20),
-                        const ShoppingCartSummary(showPrice: false),
+                        const ShoppingCartSummary(showPrice: false,hideCoupon: true,),
                         const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -691,6 +794,54 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                             ],
                           ),
                         ),
+                        //region auto apply coupons feature
+                        FutureBuilder<CustomCouponDetailsEntity?>(
+                          builder: (context,snapShot) {
+                            if(snapShot.connectionState == ConnectionState.waiting)
+                            {
+                              return const SizedBox.shrink();
+                            }
+                            else if(snapShot.hasData && snapShot.data!=null) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      S.of(context).totalWithAutoApply,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Theme.of(context).colorScheme.secondary),
+                                    ),
+                                    Text(
+                                      PriceTools.getCurrencyFormatted(
+
+                                          (cartModel.getTotal()??0)-(snapShot.data?.totalDiscount??0)
+                                              -((snapShot.data?.isFreeShipping ?? false) ? cartModel.getShippingCost() ?? 0:0)
+                                          , currencyRate,
+                                          currency: cartModel.currencyCode)!,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Theme.of(context).colorScheme.secondary,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+
+                            }
+                            else
+                            {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                          future: AutoApplyCouponController.getAutoApplyCouponsDetails(cartModel),
+
+                        ),
+                        //endregion
                         const SizedBox(height: 150),
                       ],
                     ),

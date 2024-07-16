@@ -13,10 +13,13 @@ import 'package:inspireui/inspireui.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom/helper.dart';
+import '../../custom/providers/address_validation.dart';
 import '../../data/boxes.dart';
 import '../../generated/l10n.dart';
+import '../../models/app_model.dart';
 import '../../models/cart/cart_base.dart';
 import '../../models/entities/address.dart';
+import '../../models/shipping_method_model.dart';
 import '../../models/user_model.dart';
 import '../../screens/common/google_map_mixin.dart';
 
@@ -72,6 +75,10 @@ class PlacePicker extends StatefulWidget {
 }
 
 class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(context, listen: false);
   var isFetchingLocation = false;
   List<Address?> listAddress = [];
   Address? remoteAddress;
@@ -124,6 +131,10 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
 
   @override
   void initState() {
+    Future.delayed(Duration.zero).then((value) async =>  ///fetch the shipping methods
+    await Provider.of<ShippingMethodModel>(context, listen: false)
+        .getShippingMethods(
+        cartModel: Provider.of<CartModel>(context, listen: false), token: context.read<UserModel>().user?.cookie, langCode: Provider.of<AppModel>(context, listen: false).langCode));
     getDataFromLocal();
     super.initState();
   }
@@ -277,10 +288,22 @@ class PlacePickerState extends State<PlacePicker> with GoogleMapMixin {
                             itemCount: listAddress.length,
                             itemBuilder: (context, index) {
                               return MaterialButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   Provider.of<CartModel>(context, listen: false)
                                       .setAddress(listAddress[index]);
                                   Navigator.of(context).pop();
+                                  if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                                    await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                                    Provider.of<AddressValidation>(context,listen: false).setValid();
+                                    setState(() {});
+                                  }
+                                  else
+                                  {
+                                    Provider.of<AddressValidation>(context,listen: false).setInvalid();
+                                    await cartModel.removeShippingMethod();
+                                    setState(() {});
+                                    ///no supported method for such address.
+                                  }
                                 },
                                 child: Row(
                                   children: [

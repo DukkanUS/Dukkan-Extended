@@ -492,10 +492,13 @@ abstract class BaseFrameworks {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  child: Services().widget.renderShippingPaymentTitle(
-                        context,
-                        model.shippingMethod!.title.toString(),
-                      ),
+                  child: Text('Shipping',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: isDesktop ? 16 : null,
+                    ),
+                  ),
                 ),
                 Text(
                   PriceTools.getCurrencyFormatted(

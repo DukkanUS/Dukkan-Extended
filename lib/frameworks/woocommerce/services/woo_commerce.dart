@@ -86,6 +86,24 @@ class WooCommerceService extends BaseServices {
         : '$endPoint?is_all_data=${true}';
   }
 
+  @override
+  Future<Coupons> getAutoApplyCoupons() async {
+    try {
+      var response = await wcApi
+          .getAsync('mobileintegration/AutoCoupons/get',
+          version: -101, refreshCache: true)
+          .timeout(const Duration(seconds: 10));
+
+      if (response is Map && isNotBlank(response['message'])) {
+        throw Exception(response['message']);
+      }
+      return Coupons.getListCoupons(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
   String buildUrlByLang(String endPoint, {bool isForceUseLang = false}) {
     if (isForceUseLang || kAdvanceConfig.isMultiLanguages) {
       return endPoint.contains('?')
@@ -820,11 +838,18 @@ class WooCommerceService extends BaseServices {
           body: convert.jsonEncode(params),
           headers: {'Content-Type': 'application/json'});
 
+      log('$domain/wp-json/api/flutter_woo/shipping_methods');
+
+      log(params.toString());
+      log(convert.jsonEncode(params));
+
+
       if (response.statusCode == 502) {
         return getShippingMethodsByWooApi();
       }
 
       final body = convert.jsonDecode(response.body);
+      log('fuck:: $body');
       checkExpiredCookie(response);
       if (response.statusCode == 200) {
         for (var item in body) {

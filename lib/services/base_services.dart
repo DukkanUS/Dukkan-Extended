@@ -63,6 +63,9 @@ abstract class BaseServices {
           {required config, userId, bool refreshCache = false}) async =>
       const <Product>[];
 
+  Future<Coupons>? getAutoApplyCoupons() => null;
+
+
   Future<List<Product>?> fetchProductsByCategory({
     String? categoryId,
     String? tagId,

@@ -50,6 +50,56 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `The App needs to be updated`
+  String get updateDialogTitle {
+    return Intl.message(
+      'The App needs to be updated',
+      name: 'updateDialogTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You must update this app from store in order to use it.`
+  String get updateDialogText {
+    return Intl.message(
+      'You must update this app from store in order to use it.',
+      name: 'updateDialogText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Under Maintenance`
+  String get underMaintenanceText {
+    return Intl.message(
+      'Under Maintenance',
+      name: 'underMaintenanceText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `we've got something special in store for you, please check back soon.`
+  String get underMaintenanceContent {
+    return Intl.message(
+      'we\'ve got something special in store for you, please check back soon.',
+      name: 'underMaintenanceContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total after discount`
+  String get totalWithAutoApply {
+    return Intl.message(
+      'Total after discount',
+      name: 'totalWithAutoApply',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `See All`
   String get seeAll {
     return Intl.message(

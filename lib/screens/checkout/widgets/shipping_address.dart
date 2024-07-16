@@ -11,10 +11,11 @@ import '../../../common/config.dart';
 import '../../../common/config/models/address_field_config.dart';
 import '../../../common/constants.dart';
 import '../../../common/tools/flash.dart';
+import '../../../custom/providers/address_validation.dart';
 import '../../../data/boxes.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/index.dart'
-    show Address, AppModel, CartModel, City, Country, CountryState, UserModel;
+    show Address, AppModel, CartModel, City, Country, CountryState, ShippingMethodModel, UserModel;
 import '../../../modules/dynamic_layout/helper/helper.dart';
 import '../../../services/index.dart';
 import '../../../widgets/common/common_safe_area.dart';
@@ -323,6 +324,11 @@ class _ShippingAddressState extends State<ShippingAddress> {
     }
   }
 
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(context, listen: false);
+
 
   Future<void> saveDataToLocal() async {
     var listAddress = <Address>[];
@@ -454,6 +460,16 @@ class _ShippingAddressState extends State<ShippingAddress> {
                             loadAddressFields(address);
                             final c = Country(id: result.country, name: result.country);
                             states = await Services().widget.loadStates(c);
+                            if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                              await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                              Provider.of<AddressValidation>(context,listen: false).setValid();
+                            }
+                            else
+                            {
+                              Provider.of<AddressValidation>(context,listen: false).setInvalid();
+                              await cartModel.removeShippingMethod();
+                            }
+
                             await saveDataToLocal();
                             setState(() {});
                           }

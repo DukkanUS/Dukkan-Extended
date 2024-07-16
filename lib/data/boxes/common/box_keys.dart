@@ -25,6 +25,7 @@ class BoxKeys {
   static const String hasSelectedSite = 'hasSelectedSite';
   static const String selectedSiteConfig = 'selectedSiteConfig';
   static const String verifiedPhoneNumberKey = 'verifiedPhoneNumberKey';
+  static const String addressValidationStatusKey = 'setAddressValidationStatus';
   static const String savedOrderNotes = 'saveOrderNotes';
 
   /// [SettingsBox] - Locale Settings.

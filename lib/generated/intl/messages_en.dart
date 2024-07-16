@@ -1398,6 +1398,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "totalPrice": MessageLookupByLibrary.simpleMessage("Total price"),
         "totalProducts": m41,
         "totalTax": MessageLookupByLibrary.simpleMessage("Total tax"),
+        "totalWithAutoApply":
+            MessageLookupByLibrary.simpleMessage("Total after discount"),
         "trackingNumberIs":
             MessageLookupByLibrary.simpleMessage("Tracking number is"),
         "trackingPage": MessageLookupByLibrary.simpleMessage("Tracking page"),
@@ -1430,9 +1432,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "typing": MessageLookupByLibrary.simpleMessage("Typing..."),
         "ukrainian": MessageLookupByLibrary.simpleMessage("Ukrainian"),
         "unavailable": MessageLookupByLibrary.simpleMessage("Unavailable"),
+        "underMaintenanceContent": MessageLookupByLibrary.simpleMessage(
+            "we\'ve got something special in store for you, please check back soon."),
+        "underMaintenanceText":
+            MessageLookupByLibrary.simpleMessage("Under Maintenance"),
         "undo": MessageLookupByLibrary.simpleMessage("Undo"),
         "unpaid": MessageLookupByLibrary.simpleMessage("Unpaid"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
+        "updateDialogText": MessageLookupByLibrary.simpleMessage(
+            "You must update this app from store in order to use it."),
+        "updateDialogTitle":
+            MessageLookupByLibrary.simpleMessage("The App needs to be updated"),
         "updateFailed": MessageLookupByLibrary.simpleMessage("Update failed!"),
         "updateInfo": MessageLookupByLibrary.simpleMessage("Update Info"),
         "updatePassword":

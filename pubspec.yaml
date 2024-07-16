@@ -217,6 +217,8 @@ dependencies:
   intl_utils: ^2.8.7
   shimmer: ^3.0.0
   firebase_auth: ^4.17.6
+  package_info_plus: ^4.2.0
+  device_info_plus: ^9.1.2
 
 dev_dependencies:
   flutter_lints: 3.0.1
@@ -239,6 +241,7 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/images/app_icon.png"
 
 flutter:

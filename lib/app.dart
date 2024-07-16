@@ -16,6 +16,7 @@ import 'common/constants.dart';
 import 'common/events.dart';
 import 'common/theme/index.dart';
 import 'common/tools.dart';
+import 'custom/providers/address_validation.dart';
 import 'custom/providers/delivery_time.dart';
 import 'custom/providers/registration_provider.dart';
 import 'custom/providers/update_user_remote_address.dart';
@@ -425,6 +426,8 @@ class AppState extends State<App>
                     create: (_) => ListBlogModel()),
                 ChangeNotifierProvider<UpdateUserRemoteAddress>(
                     create: (_) => UpdateUserRemoteAddress()),
+                ChangeNotifierProvider<AddressValidation>(
+                    create: (_) => AddressValidation()),
                 ChangeNotifierProvider<DeliveryTime>(
                     create: (_) => DeliveryTime()),
                 ChangeNotifierProvider<FilterAttributeModel>.value(

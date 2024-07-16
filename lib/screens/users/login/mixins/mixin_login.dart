@@ -10,6 +10,7 @@ import '../../../../common/constants.dart';
 import '../../../../common/events.dart';
 import '../../../../common/tools/flash.dart';
 import '../../../../custom/Phone Verification/phone_verification.dart';
+import '../../../../custom/providers/address_validation.dart';
 import '../../../../data/boxes.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../models/index.dart';
@@ -70,6 +71,11 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
     listAddress = listData;
     setState(() {});
   }
+
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false);
 
   Future<void> saveDataToLocal() async {
     var listAddress = <Address>[];
@@ -156,6 +162,15 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
 
                   if (address != null) {
                     Provider.of<CartModel>(validContext, listen: false).setAddress(address);
+                    if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                      await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                      Provider.of<AddressValidation>(validContext,listen: false).setValid();
+                    }
+                    else
+                    {
+                      Provider.of<AddressValidation>(validContext,listen: false).setInvalid();
+                      await cartModel.removeShippingMethod();
+                    }
                     await saveDataToLocal();
                     return;
                   } else {
@@ -165,7 +180,6 @@ mixin LoginMixin<T extends StatefulWidget> on BaseScreen<T> {
                     );
                   }
                 }catch(e){
-                  log('fuckk :: $e');
                   await FlashHelper.errorMessage(
                     validContext,
                     message:e.toString(),

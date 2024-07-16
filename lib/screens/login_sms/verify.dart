@@ -12,6 +12,7 @@ import '../../common/config.dart';
 import '../../common/constants.dart';
 import '../../common/tools.dart';
 import '../../common/tools/flash.dart';
+import '../../custom/providers/address_validation.dart';
 import '../../custom/providers/registration_provider.dart';
 import '../../data/boxes.dart';
 import '../../generated/l10n.dart';
@@ -360,6 +361,11 @@ class _VerifyCodeState extends State<VerifyCode>
     setState(() {});
   }
 
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(context, listen: false);
+
   Future<void> saveDataToLocal() async {
     var listAddress = <Address>[];
     final address = this.address;
@@ -430,6 +436,18 @@ class _VerifyCodeState extends State<VerifyCode>
 
                   if (address != null) {
                     Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).setAddress(address);
+                    if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                      await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                      Provider.of<AddressValidation>(context,listen: false).setValid();
+                      setState(() {});
+                    }
+                    else
+                    {
+                      Provider.of<AddressValidation>(context,listen: false).setInvalid();
+                      await cartModel.removeShippingMethod();
+                      setState(() {});
+                      ///no supported method for such address.
+                    }
                     await saveDataToLocal();
                     return;
                   } else {

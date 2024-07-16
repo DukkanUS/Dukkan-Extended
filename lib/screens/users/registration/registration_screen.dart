@@ -12,19 +12,12 @@ import '../../../common/config.dart';
 import '../../../common/constants.dart';
 import '../../../common/tools.dart';
 import '../../../common/tools/flash.dart';
+import '../../../custom/providers/address_validation.dart';
 import '../../../custom/providers/registration_provider.dart';
 import '../../../data/boxes.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/index.dart'
-    show
-        Address,
-        AppModel,
-        CartModel,
-        Country,
-        CountryState,
-        PointModel,
-        User,
-        UserModel;
+    show Address, AppModel, CartModel, Country, CountryState, PointModel, ShippingMethodModel, User, UserModel;
 import '../../../modules/dynamic_layout/helper/helper.dart';
 import '../../../modules/vendor_on_boarding/screen_index.dart';
 import '../../../routes/flux_navigate.dart';
@@ -110,6 +103,11 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
     setState(() {});
   }
 
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false);
+
   Future<void> saveDataToLocal(Address? address) async {
     var listAddress = <Address>[];
     if (address != null) {
@@ -170,6 +168,15 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                     .setAddress(address);
                 final c = Country(id: result.country, name: result.country);
                 states = await Services().widget.loadStates(c);
+                if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                  await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                  Provider.of<AddressValidation>(validContext,listen: false).setValid();
+                }
+                else
+                {
+                  Provider.of<AddressValidation>(validContext,listen: false).setInvalid();
+                  await cartModel.removeShippingMethod();
+                }
                 await saveDataToLocal(address);
               }
             },

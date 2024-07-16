@@ -64,13 +64,13 @@ class UserModel with ChangeNotifier {
                 firstName: result.credential?.fullName?.givenName,
                 lastName: result.credential?.fullName?.familyName);
 
+            var credential = x.OAuthProvider("apple.com").credential(
+              idToken: String.fromCharCodes(result.credential!.identityToken!),
+              accessToken: String.fromCharCodes(result.credential!.authorizationCode!),
+            );
 
-            var userCredential =
-            await x.FirebaseAuth.instance.signInWithCredential(
-              x.GoogleAuthProvider.credential(
-                accessToken: result.credential!.authorizationCode!.toString(),
-                idToken: result.credential!.identityToken!.toString(),
-              ),
+            var userCredential = await x.FirebaseAuth.instance.signInWithCredential(
+              credential,
             );
             var isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
             if (!isNewUser) {
@@ -199,6 +199,23 @@ class UserModel with ChangeNotifier {
   Future<bool> isVerified() async {
     try {
       return UserBox().isPhoneVerified;
+    } catch (err) {
+      printLog(err);
+      return false;
+    }
+  }
+
+  Future<void> saveAddressValidationStatus({required bool status}) async {
+    try {
+      UserBox().setAddressValidationStatus = status;
+    } catch (err) {
+      printLog(err);
+    }
+  }
+
+  Future<bool> isAddressValid() async {
+    try {
+      return UserBox().isAddressValid;
     } catch (err) {
       printLog(err);
       return false;

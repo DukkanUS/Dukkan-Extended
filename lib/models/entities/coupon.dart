@@ -13,6 +13,47 @@ import '../order/order.dart';
 
 class Coupons {
   List<Coupon> coupons = [];
+  //region auto apply coupons feature
+  static Future<List<Discount>?> getDiscountList({
+    required CartModel cartModel,
+    required List<String?> couponCodes,
+  }) async {
+    try {
+      final endpoint = '${ServerConfig().url}/wp-json/api/flutter_woo/coupon1';
+      var params = Order().toJson(
+          cartModel, cartModel.user != null ? cartModel.user!.id : null, false);
+      params['coupon_lines'] = <Map<String, String?>>[];
+      for (var code in couponCodes) {
+        if (code != null) {
+          (params['coupon_lines'] as List<Map<String, String?>>)
+              .add({'code': code});
+        }
+      }
+
+      final response = await httpPost(
+        endpoint.toUri()!,
+        body: json.encode(params),
+      );
+
+      final body = json.decode(response.body) ?? {};
+      if (response.statusCode == HttpStatus.ok) {
+        Iterable l = json.decode(response.body);
+        var discounts = List<Discount>.from(l.map((e) {
+          return Discount.fromJson(e);
+        }).toList());
+
+        return discounts;
+      } else if (body['message'] != null) {
+        throw Exception(body['message']);
+      }
+    } catch (err) {
+      rethrow;
+    }
+    return null;
+  }
+
+
+  //endregion
 
   static Future<Discount?> getDiscount({
     required CartModel cartModel,
