@@ -200,15 +200,15 @@ class _OrderHistoryDetailScreenState
                         leading: S.of(context).paymentMethod,
                         trailing: order.paymentMethodTitle!,
                       ),
-                    if (order.paymentMethodTitle?.isNotEmpty ?? false)
-                      const SizedBox(height: 10),
-                    (order.shippingMethodTitle?.isNotEmpty ?? false) &&
-                            kPaymentConfig.enableShipping
-                        ? _CustomListTile(
-                            leading: S.of(context).shippingMethod,
-                            trailing: order.shippingMethodTitle!,
-                          )
-                        : const SizedBox(),
+                    // if (order.paymentMethodTitle?.isNotEmpty ?? false)
+                    //   const SizedBox(height: 10),
+                    // (order.shippingMethodTitle?.isNotEmpty ?? false) &&
+                    //         kPaymentConfig.enableShipping
+                    //     ? _CustomListTile(
+                    //         leading: S.of(context).shippingMethod,
+                    //         trailing: order.shippingMethodTitle!,
+                    //       )
+                    //     : const SizedBox(),
                     if (order.totalShipping != null) const SizedBox(height: 10),
                     if (order.totalShipping != null)
                       _CustomListTile(

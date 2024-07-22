@@ -550,7 +550,7 @@ class WooWidget extends BaseFrameworks
       if (order.createdAt!
           .add(Duration(days: kPaymentConfig.refundPeriod!.toInt()))
           .isAfter(DateTime.now())) {
-        isOrderRefundable = true;
+        isOrderRefundable = false;
       }
     }
     return Row(

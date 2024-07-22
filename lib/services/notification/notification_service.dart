@@ -15,15 +15,12 @@ abstract class NotificationService {
   }
 
   NotificationService() {
-    // var initSetting = const InitializationSettings(
-    //   android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-    //   iOS: IOSInitializationSettings(),
-    // );
+    var initSetting = const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(),
+    );
     //
-    // flutterLocalNotificationsPlugin.initialize(initSetting,
-    //     onSelectNotification: (String? payload) async {
-    //   /// Handle payload here
-    // });
+    flutterLocalNotificationsPlugin.initialize(initSetting,);
 
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<

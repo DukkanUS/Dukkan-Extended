@@ -5,7 +5,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inspireui/inspireui.dart';
-import 'package:new_version_plus/new_version_plus.dart';
+// import 'package:new_version_plus/new_version_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../common/config.dart';
@@ -104,13 +104,13 @@ class MainTabsState extends CustomOverlayState<MainTabs>
       InAppUpdateForAndroid().checkForUpdate();
     } else if (kAdvanceConfig.versionCheck.enable) {
       final versionCheck = kAdvanceConfig.versionCheck;
-      final newVersion = NewVersionPlus(
-        iOSId: versionCheck.iosId,
-        iOSAppStoreCountry: versionCheck.iOSAppStoreCountry,
-        androidId: versionCheck.androidId,
-        androidPlayStoreCountry: versionCheck.androidPlayStoreCountry,
-      );
-      newVersion.showAlertIfNecessary(context: context);
+      // final newVersion = NewVersionPlus(
+      //   iOSId: versionCheck.iosId,
+      //   iOSAppStoreCountry: versionCheck.iOSAppStoreCountry,
+      //   androidId: versionCheck.androidId,
+      //   androidPlayStoreCountry: versionCheck.androidPlayStoreCountry,
+      // );
+      // newVersion.showAlertIfNecessary(context: context);
     }
 
     if (appSetting.ageRestrictionConfig.enable &&

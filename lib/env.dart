@@ -317,7 +317,8 @@ Map<String, dynamic> environment = {
     "EnableOnePageCheckout": false,
     "EnableAlphanumericZipCode": true,
     "allowSearchingAddress": true,
-    "ShowOrderNotes": false
+    "ShowOrderNotes": false,
+    "EnableRefundCancel": true,
   },
   "payments": {
     "expresspay_apple_pay": "assets/icons/payment/apple-pay-mark.svg",
@@ -629,9 +630,9 @@ Map<String, dynamic> environment = {
   "loadingIcon": {"size": 30, "type": "fadingCube"},
   "splashScreen": {
     "duration": 2000,
-    "image": "assets/images/logo.png",
+    "image": "assets/images/Splash_Screen-removebg-preview.png",
     "animationName": "fluxstore",
-    "backgroundColor": "#ffffff",
+    "backgroundColor": "#EDFFE2",
     "paddingBottom": 0,
     "enable": true,
     "paddingRight": 0,
