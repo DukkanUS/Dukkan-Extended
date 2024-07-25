@@ -630,7 +630,7 @@ Map<String, dynamic> environment = {
   "loadingIcon": {"size": 30, "type": "fadingCube"},
   "splashScreen": {
     "duration": 2000,
-    "image": "assets/images/Splash_Screen-removebg-preview.png",
+    "image": "assets/images/splashscreen.json",
     "animationName": "fluxstore",
     "backgroundColor": "#EDFFE2",
     "paddingBottom": 0,
@@ -638,7 +638,7 @@ Map<String, dynamic> environment = {
     "paddingRight": 0,
     "boxFit": "contain",
     "paddingTop": 0,
-    "type": "zoom-in",
+    "type": "lottie",
     "paddingLeft": 0
   },
   "orderConfig": {"version": 1},

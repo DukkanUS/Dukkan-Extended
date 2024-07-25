@@ -1,0 +1,95 @@
+[33mcommit f381d40abfc3c37f98538cf4ddff38c219e1c049[m[33m ([m[1;36mHEAD -> [m[1;32mbugs_fixes_v2[m[33m, [m[1;31morigin/bugs_fixes_v2[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Mon Jul 22 15:25:46 2024 +0300
+
+    fix_notifications
+
+[33mcommit a0d8e6ce47309a61de112a055f8855a3e30dd5ed[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Tue Jul 16 17:44:11 2024 +0300
+
+    bugs_fixes_v2
+
+[33mcommit e177fc45456cc8a3085bfd07c8b57d9e8f59fa79[m[33m ([m[1;31morigin/bugs_fixes[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Tue Jul 2 14:39:28 2024 +0300
+
+    confirm password, verify change phone number, remote address, verify once
+
+[33mcommit 1bfcc4cbcdbf9fa5fffe843386ddfc17ef06fd5b[m[33m ([m[1;31morigin/single_checkout[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Thu Jun 27 17:02:49 2024 +0300
+
+    implement single checkout and fix address bugs
+
+[33mcommit 2152847601e80f14b42f6116c1c73029c9defaa4[m[33m ([m[1;31morigin/address_congig_v1[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Sun Jun 23 16:16:53 2024 +0300
+
+    srart single checkout
+
+[33mcommit e0c5ad866d5be28a625955934124781a128472cb[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Mon Jun 10 15:09:32 2024 +0300
+
+    notes v1
+
+[33mcommit 01de63ae656d004f22f42c84258c330c2ef8867e[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Thu Jun 6 16:36:08 2024 +0300
+
+    address config v3
+
+[33mcommit c948612f8f39c2ae5e8989ea5789c7d8c8389157[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Tue Jun 4 17:41:15 2024 +0300
+
+    address congig v2
+
+[33mcommit b2aca077ccfe5086e0c93ae864ce10fc1d8eb00f[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Mon Jun 3 20:58:46 2024 +0300
+
+    address_congig_v1
+
+[33mcommit 8eb6560032ff70c4491c8705730344aeb969cc29[m[33m ([m[1;31morigin/registration_with_otp_for_social_login[m[33m, [m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Mon May 27 16:16:58 2024 +0300
+
+    add phone verification for social login
+
+[33mcommit 868417b5436d8598e4d4e68585ed05d97878f994[m[33m ([m[1;31morigin/registration_with_otp[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Thu May 23 17:50:59 2024 +0300
+
+    registration_with_otp
+
+[33mcommit 4e08c1a6221c80b21132dea66918e9e26fce0b2d[m[33m ([m[1;31morigin/google_login[m[33m)[m
+Author: Bilal <b.sultan@evokey.tech>
+Date:   Sun May 19 13:28:05 2024 +0300
+
+    google_login_and_dynamic_link
+
+[33mcommit 52f5a6c4769911dc3b175e9240d4bc61b13166f8[m[33m ([m[1;31morigin/google_pay[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Thu May 16 13:42:25 2024 +0300
+
+    Setup Google Pay, Strip, Paid Membership
+
+[33mcommit 88088532911b63c2d3d6df58e53ba8fa58007241[m[33m ([m[1;31morigin/ios_config[m[33m)[m
+Author: Bilal <b.sultan@evokey.tech>
+Date:   Thu May 16 08:41:51 2024 +0300
+
+    ios_config
+
+[33mcommit ced811298a11c5bbb8636188c351bd51eb216b99[m[33m ([m[1;31morigin/android_config[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Wed May 15 11:47:36 2024 +0300
+
+    android config
+
+[33mcommit f83d4e40f85be6c20735349068b2f61128acf034[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: abdallah <a.samhouri@evokey.tech>
+Date:   Wed May 15 10:32:33 2024 +0300
+
+    Original Code

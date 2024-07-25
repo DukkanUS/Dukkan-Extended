@@ -1290,6 +1290,7 @@ class WooCommerceService extends BaseServices {
         /// we may handle if Invalid cookie here
       }
     } catch (err) {
+      ///logout if end session
       //This error exception is about your Rest API is not config correctly so that not return the correct JSON format, please double check the document from this link https://docs.inspireui.com/fluxstore/woocommerce-setup/
       rethrow;
     }
@@ -1399,6 +1400,29 @@ class WooCommerceService extends BaseServices {
       rethrow;
     }
   }
+
+
+  static Future<List<String>> fetchDeliveryHours() async {
+    try {
+      final response = await httpGet(
+          Uri.parse('https://dukkan.us/wp-json/custom/v1/delivery-periods'),
+          headers: {
+            'accept': 'application/json',
+            'Cache-Control': 'no-cache'
+          } );
+
+      if (response.statusCode == 200) {
+        return List<String>.from(json.decode(response.body));
+      } else {
+        throw Exception('Failed to load working hours');
+      }
+    } on Exception catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+
 
   Future<Stream<Product>> streamProductsLayout({required config}) async {
     try {

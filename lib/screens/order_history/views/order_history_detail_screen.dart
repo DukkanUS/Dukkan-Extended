@@ -128,6 +128,9 @@ class _OrderHistoryDetailScreenState
           ),
           backgroundColor: Theme.of(context).colorScheme.background,
           elevation: 0.0,
+          actions: [
+            Center(child: Services().widget.reOrderButton(order)),
+          ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -358,6 +361,34 @@ class _OrderHistoryDetailScreenState
                     .renderButtons(context, order, cancelOrder, refundOrder),
 
               const SizedBox(height: 20),
+
+              if (order.status == OrderStatus.processing &&
+                  kPaymentConfig.enableRefundCancel)
+                Column(
+                  children: <Widget>[
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ButtonTheme(
+                            height: 45,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white, backgroundColor: HexColor('#056C99'),
+                                ),
+                                onPressed: refundOrder,
+                                child: Text(
+                                    S.of(context).refundRequest.toUpperCase(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700))),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+
               if (isPending && kPaymentConfig.showTransactionDetails) ...[
                 if (order.bacsInfo.isNotEmpty && order.paymentMethod == 'bacs')
                   Text(

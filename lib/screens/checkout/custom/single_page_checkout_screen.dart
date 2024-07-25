@@ -58,6 +58,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   @override
   void initState() {
     Future.delayed(Duration.zero).then((_) async {
+      unawaited(context.read<DeliveryTime>().fetchDeliveryHours());
       ///fetch the shipping methods
      await Provider.of<ShippingMethodModel>(context, listen: false)
           .getShippingMethods(
@@ -437,15 +438,26 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                     ),
                                   );
                                 },
-                                body: Column(
-                                  children: [
-                                    _buildTimeOption('9AM - 12PM'),
-                                    const SizedBox(height: 10),
-                                    _buildTimeOption('12PM - 3PM'),
-                                    const SizedBox(height: 10),
-                                    _buildTimeOption('3PM - 6PM'),
-                                    const SizedBox(height: 10),
-                                  ],
+                                body: context.watch<DeliveryTime>().isFetchWorkingHours ?
+                                SizedBox(
+                                    height: 100,
+                                    child: SizedBox(
+                                      height: 100,
+                                      child: Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: Colors.grey[100]!,
+                                        child: Container(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )):
+                                Column(
+                                  children: context.watch<DeliveryTime>().workingHours.map((e) => Column(
+                                    children: [
+                                      _buildTimeOption(e.toString()),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  )).toList(),
                                 ),
                                 isExpanded: _isDatePickerExpanded,
                               ),
