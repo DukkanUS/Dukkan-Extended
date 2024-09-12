@@ -36,21 +36,17 @@ class CartItemNormalWidget extends StatelessWidget {
           key: ValueKey(stateUI.product.id),
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (stateUI.onRemove != null)
-              IconButton(
-                icon: const Icon(Icons.remove_circle_outline),
-                onPressed: stateUI.onRemove,
-              ),
             Expanded(
               child: GestureDetector(
                 onTap: () =>
                     stateUI.onTapProduct(context, product: stateUI.product),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    const SizedBox(width: 10,),
                     SizedBox(
-                      width: widthImageFeature, //constraints.maxWidth * 0.25,
-                      height: heightImageFeature, //constraints.maxWidth * 0.3,
+                      width: MediaQuery.sizeOf(context).height * 0.1, //widthImageFeature, //constraints.maxWidth * 0.25,
+                      height: MediaQuery.sizeOf(context).height * 0.1,//heightImageFeature, //constraints.maxWidth * 0.3,
                       child: ImageResize(url: stateUI.imageFeature),
                     ),
                     const SizedBox(width: 16.0),
@@ -60,23 +56,57 @@ class CartItemNormalWidget extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              stateUI.product.name!,
-                              style: TextStyle(
-                                color: theme.colorScheme.secondary,
-                              ),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 7),
-                            if (stateUI.showPrice(context))
-                              Text(
-                                stateUI.price!,
-                                style: TextStyle(
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 180,
+                                child: Text(
+                                  stateUI.product.name!,
+                                  style: TextStyle(
                                     color: theme.colorScheme.secondary,
-                                    fontSize: 14),
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            const SizedBox(height: 10),
+                              const SizedBox(width: 10),
+                              if (stateUI.showQuantity)
+                                QuantitySelection(
+                                  enabled: stateUI.inStock &&
+                                      stateUI.onChangeQuantity != null,
+                                  width: 60,
+                                  height: 32,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  limitSelectQuantity: stateUI.isOnBackorder
+                                      ? kCartDetail['maxAllowQuantity']
+                                      : stateUI.limitQuantity,
+                                  value: stateUI.quantity,
+                                  onChanged: stateUI.onChangeQuantity,
+                                  style: QuantitySelectionStyle.normal,
+                                ),
+
+                              const SizedBox(width: 10),
+                              if (stateUI.showPrice(context))
+                                Text(
+                                  stateUI.price!,
+                                  style: TextStyle(
+                                      color: theme.colorScheme.secondary,
+                                      fontSize: 14),
+                                ),
+                            ],
+                          ),
+                            if (stateUI.onRemove != null)
+                              GestureDetector(
+                                onTap: (){
+                                  stateUI.onRemove;
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.delete_forever_outlined, color: Color(0xffEA4335),),
+                                    Text('Remove',style: TextStyle(color: Color(0xffEA4335)),)
+                                  ],
+                                ),
+                              ),
                             if (stateUI.product.options != null &&
                                 stateUI.cartItemMetaData?.options != null)
                               Services().widget.renderOptionsCartItem(
@@ -109,20 +139,6 @@ class CartItemNormalWidget extends StatelessWidget {
                                     price: stateUI
                                         .cartItemMetaData?.variation?.price,
                                   ),
-                            if (stateUI.showQuantity)
-                              QuantitySelection(
-                                enabled: stateUI.inStock &&
-                                    stateUI.onChangeQuantity != null,
-                                width: 60,
-                                height: 32,
-                                color: Theme.of(context).colorScheme.secondary,
-                                limitSelectQuantity: stateUI.isOnBackorder
-                                    ? kCartDetail['maxAllowQuantity']
-                                    : stateUI.limitQuantity,
-                                value: stateUI.quantity,
-                                onChanged: stateUI.onChangeQuantity,
-                                style: QuantitySelectionStyle.normal,
-                              ),
                             if (stateUI.product.store != null &&
                                 (stateUI.product.store?.name != null &&
                                     stateUI.product.store!.name!
@@ -173,7 +189,7 @@ class CartItemNormalWidget extends StatelessWidget {
         if (stateUI.enableBottomDivider == true)
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Divider(color: kGrey200, height: 1),
+            child: Divider(color: kGrey200, height: 2),
           ),
       ],
     );

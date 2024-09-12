@@ -33,6 +33,11 @@ class _NotificationScreenState extends State<NotificationScreen>
     return renderScaffold(
       routeName: RouteList.notify,
       secondAppBar: AppBar(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20))),
+        toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
         title: Text(
           S.of(context).listMessages,
           style: const TextStyle(color: Colors.white),
@@ -40,6 +45,13 @@ class _NotificationScreenState extends State<NotificationScreen>
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_sharp,
+            color: Colors.white,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
       child: Selector<NotificationModel,

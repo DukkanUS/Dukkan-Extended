@@ -122,6 +122,42 @@ mixin ProductVariantMixin on BaseFrameworks {
         const SizedBox(height: 5.0),
       );
 
+      listWidget.add(
+        Row(
+          children: <Widget>[
+            if (kProductDetail.showStockStatus) ...[
+              Text(
+                '${S.of(context).availability}: ',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              (productVariation != null
+                  ? (productVariation.backordersAllowed ?? false)
+                  : product.backordersAllowed)
+                  ? Text(
+                S.of(context).backOrder,
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: kStockColor.backorder,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+                  : Text(
+                inStock
+                    ? '${S.of(context).inStock}$stockQuantity'
+                    : S.of(context).outOfStock,
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: inStock
+                      ? kStockColor.inStock
+                      : kStockColor.outOfStock,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            ],
+          ],
+        ),
+      );
+      listWidget.add(
+        const SizedBox(height: 5.0),
+      );
       final sku = productVariation != null ? productVariation.sku : product.sku;
 
       listWidget.add(
@@ -146,43 +182,9 @@ mixin ProductVariantMixin on BaseFrameworks {
         ),
       );
 
-      listWidget.add(
-        const SizedBox(height: 5.0),
-      );
 
-      listWidget.add(
-        Row(
-          children: <Widget>[
-            if (kProductDetail.showStockStatus) ...[
-              Text(
-                '${S.of(context).availability}: ',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              (productVariation != null
-                      ? (productVariation.backordersAllowed ?? false)
-                      : product.backordersAllowed)
-                  ? Text(
-                      S.of(context).backOrder,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: kStockColor.backorder,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    )
-                  : Text(
-                      inStock
-                          ? '${S.of(context).inStock}$stockQuantity'
-                          : S.of(context).outOfStock,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: inStock
-                                ? kStockColor.inStock
-                                : kStockColor.outOfStock,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    )
-            ],
-          ],
-        ),
-      );
+
+
       if (productVariation?.description?.isNotEmpty ?? false) {
         listWidget.add(Services()
             .widget
@@ -216,13 +218,13 @@ mixin ProductVariantMixin on BaseFrameworks {
     required bool isInAppPurchaseChecking,
     bool showQuantity = true,
     Widget Function(bool Function(int) onChanged, int maxQuantity)?
-        builderQuantitySelection,
+    builderQuantitySelection,
   }) {
     final theme = Theme.of(context);
 
     final inStock = (productVariation != null
-            ? productVariation.inStock
-            : product.inStock) ??
+        ? productVariation.inStock
+        : product.inStock) ??
         false;
 
     final allowBackorder = productVariation != null
@@ -230,142 +232,69 @@ mixin ProductVariantMixin on BaseFrameworks {
         : product.backordersAllowed;
 
     final allowToBuy = inStock || allowBackorder;
-
-    // External products always only display the buy now button
-    final isExternal = product.type == 'external' ? true : false;
-
-    // `configurable` type is used for magento only
-    final isVariationLoading =
-        (product.isVariableProduct || product.type == 'configurable') &&
-            productVariation == null &&
-            mapAttribute == null;
-
-    var backgroundColor = theme.primaryColor;
-
-    // If [alwaysShowBuyButton] is true, the buy now button is always displayed
-    // instead of buy or out of stock
     final alwaysShowBuyButton = kProductDetail.alwaysShowBuyButton;
 
-    var text = S.of(context).unavailable;
-
-    if (isVariationLoading) {
-      text = S.of(context).loading;
-    } else if (isInAppPurchaseChecking) {
-      text = S.of(context).checking;
-    } else if (isExternal ||
-        alwaysShowBuyButton ||
-        (allowToBuy && isAvailable)) {
-      text = S.of(context).buyNow;
-    } else if (!allowToBuy) {
-      text = S.of(context).outOfStock;
-    }
-
-    final buyOrOutOfStockButton = Container(
-      height: 44,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(3),
-        color: backgroundColor,
-      ),
-      child: Center(
-        child: Text(
-          text.toUpperCase(),
-          style: TextStyle(
-            color: backgroundColor.getColorBasedOnBackground,
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
-      ),
-    );
-
-    final files = product.files ?? [];
-    if ((product.isPurchased) &&
-        (product.isDownloadable ?? false) &&
-        files.isNotEmpty &&
-        (files.first?.isNotEmpty ?? false)) {
-      return [
-        Row(
-          children: [
+    return [
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          // Quantity Selection
+          if (builderQuantitySelection != null)
+            builderQuantitySelection((p0) => onChangeQuantity(p0), maxQuantity)
+          else
             Expanded(
-              child: InkWell(
-                onTap: () async => await Tools.launchURL(files.first,
-                    mode: LaunchMode.externalApplication),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Center(
-                      child: Text(
-                    S.of(context).download,
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: Colors.white,
-                        ),
-                  )),
+              child: Container(
+                height: 40,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: QuantitySelection(
+                  height: 40,
+                  expanded: true,
+                  value: quantity,
+                  color: theme.colorScheme.secondary,
+                  limitSelectQuantity: maxQuantity,
+                  style: QuantitySelectionStyle.style01,
+                  onChanged: (p0) {
+                    final result = onChangeQuantity(p0);
+                    return result ?? true;
+                  },
                 ),
               ),
             ),
-          ],
-        ),
-      ];
-    }
 
-    return [
-      if (!isExternal && kProductDetail.showStockQuantity && showQuantity) ...[
-        if (builderQuantitySelection != null)
-          builderQuantitySelection((p0) => onChangeQuantity(p0), maxQuantity)
-        else ...[
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '${S.of(context).selectTheQuantity}:',
-                  style: Theme.of(context).textTheme.titleMedium,
+          const SizedBox(width: 10), // Space between the counter and button
+
+          // Add to Cart Button
+          Expanded(
+            child: GestureDetector(
+              onTap: () => addToCart(buyNow: false, inStock: allowToBuy),
+              child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: theme.primaryColor,
                 ),
-              ),
-              Expanded(
-                child: Container(
-                  height: 25,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: QuantitySelection(
-                    height: 25,
-                    expanded: true,
-                    value: quantity,
-                    color: theme.colorScheme.secondary,
-                    limitSelectQuantity: maxQuantity,
-                    style: QuantitySelectionStyle.style01,
-                    onChanged: (p0) {
-                      final result = onChangeQuantity(p0);
-                      return result ?? true;
-                    },
+                child: Center(
+                  child: Text(
+                    S.of(context).addToCart.toUpperCase(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
-      ],
+      ),
       const SizedBox(height: 10),
-
-      /// Action Buttons: Buy Now and/or Add To Cart
-      actionButton(
-        isAvailable,
-        addToCart,
-        allowToBuy,
-        buyOrOutOfStockButton,
-        isExternal,
-        isVariationLoading,
-        isInAppPurchaseChecking,
-        context,
-        alwaysShowBuyButton: alwaysShowBuyButton,
-      )
     ];
   }
+
 
   /// Add to Cart & Buy Now function
   @override
@@ -505,19 +434,21 @@ Widget actionButton(
     disable: isInAppPurchaseChecking,
     child: Row(
       children: <Widget>[
-        Expanded(
-          child: GestureDetector(
-            // In the old UX ([alwaysShowBuyButton] is false) and the product is
-            // not available, the buy now button (Out of Stock or Unavailable
-            // buttons) cannot be clicked
-            //
-            // External product always can be clicked
-            onTap: (alwaysShowBuyButton || isExternal || isAvailable)
-                ? () => addToCart(buyNow: true, inStock: allowToBuy)
-                : null,
-            child: buyOrOutOfStockButton,
-          ),
-        ),
+        // Expanded(
+        //   child: GestureDetector(
+        //     // In the old UX ([alwaysShowBuyButton] is false) and the product is
+        //     // not available, the buy now button (Out of Stock or Unavailable
+        //     // buttons) cannot be clicked
+        //     //
+        //     // External product always can be clicked
+        //     onTap: (alwaysShowBuyButton || isExternal || isAvailable)
+        //         ? () => addToCart(buyNow: true, inStock: allowToBuy)
+        //         : null,
+        //     child: buyOrOutOfStockButton,
+        //   ),
+        // ),
+
+
 
         // Hide add to cart button if it is external or variation is loading
         if (!isExternal && !isVariationLoading)

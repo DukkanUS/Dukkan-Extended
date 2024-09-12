@@ -287,6 +287,9 @@ class NavigateTools {
   static void navigateHome(BuildContext context) {
     navigateToRootTab(context, RouteList.home);
   }
+  static void navigateToCart(BuildContext context) {
+    navigateToRootTab(context, RouteList.cart);
+  }
 
   static void navigateToDefaultTab(BuildContext context) {
     Navigator.popUntil(context, (route) => route.isFirst);

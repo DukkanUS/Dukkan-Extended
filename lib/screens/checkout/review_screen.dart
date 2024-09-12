@@ -251,7 +251,7 @@ class _ReviewState extends BaseScreen<ReviewScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'S.of(context).totalWithAutoApply',
+                                    S.of(context).totalWithAutoApply,
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Theme.of(context).colorScheme.secondary,

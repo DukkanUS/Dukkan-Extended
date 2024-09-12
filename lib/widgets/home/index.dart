@@ -1,15 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:inspireui/icons/constants.dart';
 import 'package:provider/provider.dart';
 
+import '../../app.dart';
 import '../../common/config.dart';
 import '../../common/constants.dart';
 import '../../common/tools.dart';
+import '../../custom/providers/address_validation.dart';
+import '../../data/boxes.dart';
 import '../../models/app_model.dart';
 import '../../models/cart/cart_base.dart';
+import '../../models/entities/address.dart';
+import '../../models/entities/country.dart';
+import '../../models/entities/country_state.dart';
 import '../../models/notification_model.dart';
+import '../../models/shipping_method_model.dart';
+import '../../models/user_model.dart';
 import '../../modules/dynamic_layout/config/logo_config.dart';
 import '../../modules/dynamic_layout/dynamic_layout.dart';
 import '../../modules/dynamic_layout/helper/helper.dart';
@@ -18,6 +27,7 @@ import '../../routes/flux_navigate.dart';
 import '../../screens/common/app_bar_mixin.dart';
 import '../../services/index.dart';
 import '../common/dialogs.dart';
+import '../common/place_picker.dart';
 import '../web_layout/web_layout.dart';
 import 'preview_overlay.dart';
 
@@ -48,6 +58,8 @@ class _HomeLayoutState extends State<HomeLayout> with AppBarMixin {
   dynamic verticalWidgetData;
   var _useNestedScrollView = true;
 
+  bool isLoggedIn = UserBox().isLoggedIn;
+
   bool isPreviewingAppBar = false;
 
   bool cleanCache = false;
@@ -72,6 +84,32 @@ class _HomeLayoutState extends State<HomeLayout> with AppBarMixin {
 
     super.initState();
   }
+  var user = Provider.of<UserModel>(App.fluxStoreNavigatorKey.currentState!.context, listen: false).user;
+
+  ShippingMethodModel get shippingMethodModel =>
+      Provider.of<ShippingMethodModel>(context, listen: false);
+
+  CartModel get cartModel => Provider.of<CartModel>(context, listen: false);
+
+  Future<void> saveDataToLocal(Address? address) async {
+    var listAddress = <Address>[];
+    if (address != null) {
+      listAddress.add(address);
+    }
+    var listData = UserBox().addresses;
+    if (listData.isNotEmpty) {
+      for (var item in listData) {
+        listAddress.add(item);
+      }
+    }
+    UserBox().addresses = listAddress;
+  }
+
+  List<Address?> listAddress = [];
+
+  List<CountryState>? states = [];
+  final currentAddress = Provider.of<CartModel>(App.fluxStoreNavigatorKey.currentState!.context).address?.street;
+
 
   @override
   void didUpdateWidget(HomeLayout oldWidget) {
@@ -118,73 +156,135 @@ class _HomeLayoutState extends State<HomeLayout> with AppBarMixin {
   }
 
   Widget renderAppBar() {
-    if (Layout.isDisplayDesktop(context)) {
-      return const SliverToBoxAdapter();
-    }
-
-    List<dynamic> horizonLayout = widget.configs['HorizonLayout'] ?? [];
-    Map logoConfig = horizonLayout.firstWhere(
-        (element) => element['layout'] == 'logo',
-        orElse: () => Map<String, dynamic>.from({}));
-    var config = LogoConfig.fromJson(logoConfig);
-
-    /// customize theme
-    // config
-    //   ..opacity = 0.9
-    //   ..iconBackground = HexColor('DDDDDD')
-    //   ..iconColor = HexColor('330000')
-    //   ..iconOpacity = 0.8
-    //   ..iconRadius = 40
-    //   ..iconSize = 24
-    //   ..cartIcon = MenuIcon(name: 'cart')
-    //   ..showSearch = false
-    //   ..showLogo = true
-    //   ..showCart = true
-    //   ..showMenu = true;
-
     return SliverAppBar(
-      pinned: widget.isPinAppBar,
-      snap: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20))),
+      toolbarHeight: (isLoggedIn) ? 140 : 100,
       floating: true,
-      titleSpacing: 0,
-      elevation: 0,
-      forceElevated: true,
-      backgroundColor: config.color ??
-          Theme.of(context).colorScheme.background.withOpacity(config.opacity),
-      title: PreviewOverlay(
-          index: 0,
-          config: logoConfig as Map<String, dynamic>?,
-          builder: (value) {
-            final appModel = Provider.of<AppModel>(context, listen: true);
-            return Selector<CartModel, int>(
-              selector: (_, cartModel) => cartModel.totalCartQuantity,
-              builder: (context, totalCart, child) {
-                return Selector<NotificationModel, int>(
-                  selector: (context, notificationModel) =>
-                      notificationModel.unreadCount,
-                  builder: (context, unreadCount, child) {
-                    return Logo(
-                      config: config,
-                      logo: appModel.themeConfig.logo,
-                      notificationCount: unreadCount,
-                      totalCart: totalCart,
-                      onSearch: () {
-                        FluxNavigate.pushNamed(RouteList.homeSearch);
-                      },
-                      onCheckout: () {
-                        FluxNavigate.pushNamed(RouteList.cart);
-                      },
-                      onTapNotifications: () {
-                        FluxNavigate.pushNamed(RouteList.notify);
-                      },
-                      onTapDrawerMenu: () =>
-                          NavigateTools.onTapOpenDrawerMenu(context),
-                    );
-                  },
+      backgroundColor: Theme.of(context).primaryColor,
+      centerTitle: true,
+      title: Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          children: [
+            SizedBox( height: MediaQuery.sizeOf(context).height * 0.045,width: MediaQuery.sizeOf(context).width * 0.35, child: Image.asset('assets/images/white_logo.png')),
+            (isLoggedIn) ?  SizedBox(height: MediaQuery.sizeOf(context).height * 0.04,child: MaterialButton(
+              onPressed: () async {
+                final apiKey = kIsWeb
+                    ? kGoogleApiKey.web
+                    : isIos
+                    ? kGoogleApiKey.ios
+                    : kGoogleApiKey.android;
+
+                await showPlacePicker(context, apiKey).then((result) async {
+                  if (result is LocationResult) {
+                    var address = Address();
+                    address.country = result.country;
+                    address.apartment = result.apartment;
+                    address.street = result.street;
+                    address.state = result.state;
+                    address.city = result.city;
+                    address.zipCode = result.zip;
+                    if (result.latLng?.latitude != null &&
+                        result.latLng?.longitude != null) {
+                      address.mapUrl =
+                      'https://maps.google.com/maps?q=${result.latLng?.latitude},${result.latLng?.longitude}&output=embed';
+                      address.latitude = result.latLng?.latitude.toString();
+                      address.longitude = result.latLng?.longitude.toString();
+                    }
+
+                    address.firstName = user?.firstName;
+                    address.lastName = user?.lastName;
+                    address.email = user?.email;
+                    address.phoneNumber = user?.phoneNumber;
+
+                    Provider.of<CartModel>(context, listen: false)
+                        .setAddress(address);
+                    final c = Country(id: result.country, name: result.country);
+                    states = await Services().widget.loadStates(c);
+                    if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
+                      await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
+                      Provider.of<AddressValidation>(context,listen: false).setValid();
+                      setState(() {});
+                    }
+                    else
+                    {
+                      Provider.of<AddressValidation>(context,listen: false).setInvalid();
+                      await cartModel.removeShippingMethod();
+                      setState(() {});
+                      ///no supported method for such address.
+                    }
+                    await saveDataToLocal(address);
+                  }
+                });
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 19,
+                        height: 19,
+                        child: Image.asset('assets/images/Pin.png'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Text(
+                          ((currentAddress == null) || (currentAddress == '' )) ? 'Choose address' : (currentAddress ?? ''),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios,color: Colors.white,size: 14,)
+                    ],
+                  ),
+                  !Provider.of<AddressValidation>(context).isValid ?
+                  const Text('(Your Address Is Out Of Service Area)',style: TextStyle(color: Colors.red,fontSize: 10),)
+                      : const SizedBox.shrink()],
+              ),
+            )) : const SizedBox.shrink(),
+            (isLoggedIn) ?  const SizedBox.shrink() : const SizedBox(height: 5,),
+            GestureDetector(
+              onTap: () {
+                FluxNavigate.pushNamed(
+                  RouteList.homeSearch,
+                  forceRootNavigator: true,
                 );
               },
-            );
-          }),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10), color: Colors.white),
+                height: MediaQuery.sizeOf(context).height * .042,
+                width: MediaQuery.sizeOf(context).width * .9,
+                child:  Row(
+                  children: <Widget>[
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Icon(
+                        CupertinoIcons.search,
+                        size: 24,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 12.0,
+                    ),
+                    Expanded(
+                      child: Text(
+                        style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,fontSize: 15),
+                        (isLoggedIn) ? 'Salam ${user?.firstName}, Search Dukkan' : 'Search Dukkan',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 
@@ -228,6 +328,7 @@ class _HomeLayoutState extends State<HomeLayout> with AppBarMixin {
     }
 
     return SafeArea(
+      top: false,
       bottom: false,
       child: verticalWidgetData == null
           ? CustomScrollView(

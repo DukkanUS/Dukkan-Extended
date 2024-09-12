@@ -12,10 +12,12 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../app.dart';
 import '../../common/config.dart';
 import '../../common/constants.dart';
+import '../../common/tools/navigate_tools.dart';
 import '../../custom/custom_controllers/app_controller.dart';
 import '../../data/boxes.dart';
 import '../../generated/l10n.dart';
 import '../../models/app_model.dart';
+import '../../models/cart/cart_model.dart';
 import '../../modules/dynamic_layout/index.dart';
 import '../../widgets/home/index.dart';
 import '../base_screen.dart';
@@ -208,6 +210,32 @@ class _HomeScreenState extends BaseScreen<HomeScreen> {
             bannerConfig.popup.alwaysShowUponOpen;
 
         return Scaffold(
+          floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: GestureDetector(
+              onTap: (){
+                NavigateTools.navigateToCart(context);
+              },
+              child: Container(
+                width: 175,
+                height: 44,
+                decoration: ShapeDecoration(
+                  color: Theme.of(context).primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(26.50),
+                  ),
+                ),
+                child:  Center(child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.shopping_cart_outlined,color: Colors.white,),
+                    Text('${context.watch<CartModel>().totalCartQuantity} View Cart',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+                  ],
+                )),
+              ),
+            ),
+          ) : const SizedBox.shrink(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           backgroundColor: Theme.of(context).colorScheme.background,
           body: Stack(
             children: <Widget>[

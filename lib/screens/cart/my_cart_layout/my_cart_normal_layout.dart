@@ -12,6 +12,8 @@ import '../../../menu/maintab_delegate.dart';
 import '../../../models/app_model.dart';
 import '../../../models/cart/cart_base.dart';
 import '../../../models/entities/product.dart';
+import '../../../modules/dynamic_layout/config/product_config.dart';
+import '../../../modules/dynamic_layout/product/product_list.dart';
 import '../helpers/cart_items_helper.dart';
 import '../mixins/my_cart_mixin.dart';
 import '../widgets/empty_cart.dart';
@@ -40,6 +42,52 @@ class MyCartNormalLayout extends StatefulWidget {
 
 class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
     with MyCartMixin {
+  var customConfig = {
+      'showCartIcon': false,
+      'imageBoxfit': 'cover',
+      'showStockStatus': true,
+      'featured': false,
+      'hideEmptyProductLayout': false,
+      'showCountDown': false,
+      'parallax': false,
+      'columns': 0,
+      'hideStore': false,
+      'vPadding': 0,
+      'showQuantity': false,
+      'showHeart': true,
+      'hMargin': 6,
+      'parallaxImageRatio': 1.2,
+      'showCartButtonWithQuantity': true,
+      'vMargin': 0,
+      'showOnlyImage': false,
+      'onSale': false,
+      'productType': false,
+      'image': '',
+      'showCategory': false,
+      'productListItemHeight': 125,
+      'showCartIconColor': false,
+      'useSort': false,
+      'hPadding': 0,
+      'hidePrice': false,
+      'rows': 1,
+      'enableBottomAddToCart': false,
+      'layout': 'threeColumn',
+      'enableRating': false,
+      'imageRatio': 1.2,
+      'useCircularRadius': true,
+      'hideTitle': false,
+      'borderRadius': 3,
+      'cardDesign': 'card',
+      'backgroundRadius': 10,
+      'isSnapping': false,
+      'showCartButton': false,
+      'name': 'Our Selection',
+      'cartIconRadius': 9,
+      'enableAutoSliding': false,
+      'category': '76',
+      'hideEmptyProductListRating': false
+    };
+
   @override
   bool? get isModal => widget.isModal;
 
@@ -55,7 +103,8 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
 
     return Selector<CartModel, String?>(
       selector: (_, carModel) => '${cartModel.productsInCart.keys.firstOrNull}'
-          '${cartModel.couponObj.toString()}', //add this Selector to reload cart screen when add product item to cart if the current cart has wallet item
+          '${cartModel.couponObj.toString()}',
+      //add this Selector to reload cart screen when add product item to cart if the current cart has wallet item
       builder: (context, _, child) {
         return MediaQuery.removePadding(
           context: context,
@@ -63,7 +112,7 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
           child: Scaffold(
             backgroundColor: Theme.of(context).colorScheme.background,
             floatingActionButtonLocation:
-                kAdvanceConfig.floatingCartCheckoutButtonLocation,
+                FloatingActionButtonLocation.centerDocked,
             floatingActionButton:
                 Selector<CartModel, (bool, Map<String?, Product?>, bool)>(
               selector: (_, cartModel) => (
@@ -99,12 +148,13 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
-                  extendedPadding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  extendedPadding: EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: MediaQuery.sizeOf(context).width * .38),
                   backgroundColor: backgroundButton,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(9.0),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   label: Selector<CartModel, int>(
@@ -146,27 +196,27 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
             body: CustomScrollView(
               controller: widget.scrollController,
               slivers: [
-                SliverAppBar(
-                  titleSpacing: true == widget.isModal ? 5 : null,
-                  pinned: true,
-                  centerTitle: false,
-                  leading: widget.isModal == true
-                      ? CloseButton(
-                          onPressed: () =>
-                              onPressedClose(layoutType, widget.isBuyNow),
-                        )
-                      : canPop
-                          ? const BackButton()
-                          : null,
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  title: Text(
-                    S.of(context).myCart,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall!
-                        .copyWith(fontWeight: FontWeight.w700),
-                  ),
-                ),
+                // SliverAppBar(
+                //   titleSpacing: true == widget.isModal ? 5 : null,
+                //   pinned: true,
+                //   centerTitle: false,
+                //   leading: widget.isModal == true
+                //       ? CloseButton(
+                //           onPressed: () =>
+                //               onPressedClose(layoutType, widget.isBuyNow),
+                //         )
+                //       : canPop
+                //           ? const BackButton()
+                //           : null,
+                //   backgroundColor: Theme.of(context).primaryColor,
+                //   title: Text(
+                //     S.of(context).myCart,
+                //     style: Theme.of(context)
+                //         .textTheme
+                //         .headlineSmall!
+                //         .copyWith(fontWeight: FontWeight.w700),
+                //   ),
+                // ),
                 SliverToBoxAdapter(
                   child: Selector<CartModel, int>(
                     selector: (_, cartModel) => cartModel.totalCartQuantity,
@@ -275,7 +325,11 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
                                         ),
                                       ),
                                     const SizedBox(height: 4.0),
-                                    WishList()
+                                    WishList(),
+                                    ProductList(
+                                      config: ProductConfig.fromJson(customConfig),
+                                      cleanCache: true,
+                                    )
                                   ],
                                 )
                               ],

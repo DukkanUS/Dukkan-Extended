@@ -22,6 +22,7 @@ import '../../../modules/native_payment/razorpay/services.dart';
 import '../../../services/services.dart';
 import '../../../widgets/common/place_picker.dart';
 import '../../../widgets/product/cart_item/cart_item.dart';
+import '../../cart/widgets/point_reward.dart';
 import '../../cart/widgets/shopping_cart_sumary.dart';
 import '../mixins/checkout_mixin.dart';
 import '../widgets/success.dart';
@@ -707,6 +708,8 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                             ],
                           ),
                         ),
+                        const SizedBox(height: 20),
+                        if (!cartModel.isWalletCart()) const PointReward(),
 
                         const SizedBox(height: 20),
                         const ShoppingCartSummary(showPrice: false,hideCoupon: true,),

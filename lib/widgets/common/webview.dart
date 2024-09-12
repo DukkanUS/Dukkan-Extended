@@ -302,7 +302,12 @@ class _WebViewState extends State<WebView> with WebviewMixin, AppBarMixin {
           ? null
           : widget.appBar ??
               AppBar(
-                backgroundColor: Theme.of(context).colorScheme.background,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(20),
+                        bottomLeft: Radius.circular(20))),
+                toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
+                backgroundColor: Theme.of(context).primaryColor,
                 elevation: 0.0,
                 centerTitle: true,
                 title: Text(
@@ -310,20 +315,20 @@ class _WebViewState extends State<WebView> with WebviewMixin, AppBarMixin {
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!
-                      .copyWith(fontWeight: FontWeight.w600),
+                      .copyWith(fontWeight: FontWeight.w600,color: Colors.white),
                 ),
                 leadingWidth: 100,
                 actions: [
                   if (widget.enableClose)
                     IconButton(
                       onPressed: onTapCloseButton,
-                      icon: const Icon(Icons.close, size: 20),
+                      icon: const Icon(Icons.close, size: 20,color: Colors.white,),
                     ),
                   const SizedBox(width: 10),
                 ],
                 leading: Builder(
                   builder: (buildContext) {
-                    return Row(
+                    return const SizedBox.shrink(); /*Row(
                       children: [
                         if (widget.enableBackward)
                           IconButton(
@@ -336,7 +341,7 @@ class _WebViewState extends State<WebView> with WebviewMixin, AppBarMixin {
                             icon: const Icon(Icons.arrow_forward_ios, size: 20),
                           ),
                       ],
-                    );
+                    );*/
                   },
                 ),
               ),

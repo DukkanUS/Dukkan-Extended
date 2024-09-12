@@ -5,6 +5,8 @@ import '../../../../../common/config.dart';
 import '../../../common/constants.dart';
 import '../../../common/extensions/num_ext.dart';
 import '../../../common/tools.dart';
+import '../../../custom/custom_controllers/auto_apply_coupons_controller.dart';
+import '../../../custom/custom_entities/auto_apply_coupons/custom_coupon_entity.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/index.dart'
     show CartModel, PointModel, AppModel, UserModel;
@@ -22,13 +24,25 @@ class _PointRewardState extends State<PointReward> {
 
   final TextEditingController controller = TextEditingController();
 
+  bool isApplyingCoupon = false;
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
 
-  void applyPoints(PointModel pointModel, CartModel cartModel) {
+  void applyPoints(PointModel pointModel, CartModel cartModel) async {
+    setState(() {
+      isApplyingCoupon = true;
+    });
+    var totalAfterAutoDiscount =
+        (await AutoApplyCouponController.getAutoApplyCouponsDetails(cartModel))
+            ?.totalDiscount;
+    setState(() {
+      isApplyingCoupon = false;
+    });
+
     if (!applied) {
       setState(() {
         appliedPoints = int.tryParse(controller.text) ?? 0;
@@ -64,7 +78,8 @@ class _PointRewardState extends State<PointReward> {
           pointModel.cartPriceRate! /
           pointModel.cartPointsRate!;
 
-      if (appliedPriceDiscount > (cartModel.getTotal() ?? 0)) {
+      if (appliedPriceDiscount >
+          ((cartModel.getTotal() ?? 0) - (totalAfterAutoDiscount ?? 0))) {
         Tools.showSnackBar(ScaffoldMessenger.of(context),
             S.of(context).pointMsgOverMaximumDiscountPoint);
         return;
@@ -152,10 +167,15 @@ class _PointRewardState extends State<PointReward> {
                       elevation: 0.0,
                     ),
                     onPressed: () {
-                      applyPoints(pointModel, cartModel);
+                      if (!isApplyingCoupon) {
+                        applyPoints(pointModel, cartModel);
+                      }
                     },
-                    child: Text(
-                        applied ? S.of(context).remove : S.of(context).apply),
+                    child: Text(isApplyingCoupon
+                        ? S.of(context).loading
+                        : applied
+                            ? S.of(context).remove
+                            : S.of(context).apply),
                   ),
                 ],
               ),

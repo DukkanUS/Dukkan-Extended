@@ -44,16 +44,28 @@ class _WishListState extends State<ProductWishListScreen> with AppBarMixin {
       secondAppBar: isDesktop
           ? null
           : AppBar(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20))),
+        toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
+        centerTitle: true,
               elevation: 0.5,
-              backgroundColor: Theme.of(context).colorScheme.background,
+              backgroundColor: Theme.of(context).primaryColor,
               title: Text(
                 S.of(context).myWishList,
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                    ?.copyWith(fontWeight: FontWeight.w700,color: Colors.white),
               ),
-            ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_sharp,
+            color: Colors.white,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),            ),
       child: ListenableProvider.value(
         value: Provider.of<ProductWishListModel>(context, listen: false),
         child: Consumer<ProductWishListModel>(

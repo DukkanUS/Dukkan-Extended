@@ -242,10 +242,10 @@ class _QuantitySelectionState extends State<QuantitySelection> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(width: 1.0, color: kGrey200),
-          borderRadius: BorderRadius.circular(3),
+          borderRadius: BorderRadius.circular(8),
         ),
-        height: widget.height,
-        width: widget.width,
+        height: 38,
+        width: 38,
         child: Padding(
           padding: EdgeInsets.symmetric(
               vertical: 2.0, horizontal: (hasChangeQuantity) ? 5.0 : 10.0),
@@ -260,13 +260,6 @@ class _QuantitySelectionState extends State<QuantitySelection> {
                   ),
                 ),
               ),
-              if (hasChangeQuantity)
-                const SizedBox(
-                  width: 5.0,
-                ),
-              if (hasChangeQuantity)
-                Icon(Icons.keyboard_arrow_down,
-                    size: 14, color: Theme.of(context).colorScheme.secondary)
             ],
           ),
         ),

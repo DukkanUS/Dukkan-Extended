@@ -1,10 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../common/constants.dart';
+import '../../custom/helper.dart';
 import '../../generated/l10n.dart';
 import '../../models/index.dart' show AppModel;
+import '../../modules/dynamic_layout/config/product_config.dart';
+import '../../modules/dynamic_layout/header/header_text.dart';
+import '../../modules/dynamic_layout/product/product_list.dart';
+import '../../routes/flux_navigate.dart';
 import '../../services/index.dart';
 import '../../widgets/cardlist/index.dart';
 import '../common/app_bar_mixin.dart';
@@ -42,6 +50,52 @@ class CategoriesScreenState extends State<CategoriesScreen>
         AutomaticKeepAliveClientMixin,
         SingleTickerProviderStateMixin,
         AppBarMixin {
+  var customConfig = {
+    'showCartIcon': false,
+    'imageBoxfit': 'cover',
+    'showStockStatus': true,
+    'featured': false,
+    'hideEmptyProductLayout': false,
+    'showCountDown': false,
+    'parallax': false,
+    'columns': 0,
+    'hideStore': false,
+    'vPadding': 0,
+    'showQuantity': false,
+    'showHeart': true,
+    'hMargin': 6,
+    'parallaxImageRatio': 1.2,
+    'showCartButtonWithQuantity': true,
+    'vMargin': 0,
+    'showOnlyImage': false,
+    'onSale': false,
+    'productType': false,
+    'image': '',
+    'showCategory': false,
+    'productListItemHeight': 125,
+    'showCartIconColor': false,
+    'useSort': false,
+    'hPadding': 0,
+    'hidePrice': false,
+    'rows': 1,
+    'enableBottomAddToCart': false,
+    'layout': 'threeColumn',
+    'enableRating': false,
+    'imageRatio': 1.2,
+    'useCircularRadius': true,
+    'hideTitle': false,
+    'borderRadius': 3,
+    'cardDesign': 'card',
+    'backgroundRadius': 10,
+    'isSnapping': false,
+    'showCartButton': false,
+    'name': 'Picked for you',
+    'cartIconRadius': 9,
+    'enableAutoSliding': false,
+    'category': '76',
+    'hideEmptyProductListRating': false
+  };
+
   @override
   bool get wantKeepAlive => true;
 
@@ -60,6 +114,53 @@ class CategoriesScreenState extends State<CategoriesScreen>
     final appModel = Provider.of<AppModel>(context);
     final categoryLayout = appModel.categoryLayout;
     return renderScaffold(
+      backgroundColor: Colors.white,
+      secondAppBar: AppBar(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20))),
+        toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
+        title: GestureDetector(
+          onTap: () {
+            FluxNavigate.pushNamed(
+              RouteList.homeSearch,
+              forceRootNavigator: true,
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.white),
+            height: MediaQuery.sizeOf(context).height * .042,
+            width: MediaQuery.sizeOf(context).width * .9,
+            child: const Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(
+                    CupertinoIcons.search,
+                    size: 24,
+                    color: Colors.grey,
+                  ),
+                ),
+                SizedBox(
+                  width: 12.0,
+                ),
+                Expanded(
+                  child: Text(
+                    style: TextStyle(color: Colors.grey),
+                    'Search',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        centerTitle: true,
+      ),
       routeName: RouteList.category,
       child: [
         GridCategory.type,
@@ -79,29 +180,36 @@ class CategoriesScreenState extends State<CategoriesScreen>
         // TODO(Son): pls check again, I think it works
         ParallaxCategories.type,
         CardCategories.type,
-
         // Only work for enableLargeCategory
         MultiLevelCategories.type,
         FancyScrollCategories.type,
       ].contains(categoryLayout)
-          ? Container(
-              color: Theme.of(context).colorScheme.background,
-              child: SafeArea(
-                bottom: false,
-                child: Column(
-                  children: <Widget>[
-                    HeaderCategory(showSearch: widget.showSearch),
-                    Expanded(
-                      child: renderCategories(
-                        categoryLayout,
-                        widget.enableParallax,
-                        widget.parallaxImageRatio,
-                        _scrollController,
-                      ),
-                    )
+          ? Column(
+              children: <Widget>[
+                const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 10,left: 10),
+                      child: Text('Shop By Aisles',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                    ),
                   ],
                 ),
-              ),
+                Expanded(
+                  child: renderCategories(
+                    categoryLayout,
+                    widget.enableParallax,
+                    widget.parallaxImageRatio,
+                    _scrollController,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                 Expanded(child:  ProductList(
+                  config: ProductConfig.fromJson(customConfig),
+                  cleanCache: true,
+                ))
+              ],
             )
           : renderCategories(
               categoryLayout,
@@ -121,55 +229,5 @@ class CategoriesScreenState extends State<CategoriesScreen>
           parallaxImageRatio: parallaxImageRatio,
           scrollController: scrollController,
         );
-  }
-}
-
-class HeaderCategory extends StatelessWidget {
-  const HeaderCategory({super.key, required this.showSearch});
-  final bool showSearch;
-
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    return Container(
-      color: Theme.of(context).colorScheme.background,
-      width: screenSize.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          if (ModalRoute.of(context)?.canPop ?? false)
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Icon(
-                  Icons.arrow_back_ios,
-                ),
-              ),
-            ),
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 10, left: 10, bottom: 10, right: 10),
-            child: Text(
-              S.of(context).category,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(fontWeight: FontWeight.w700),
-            ),
-          ),
-          if (showSearch)
-            IconButton(
-              icon: Icon(
-                CupertinoIcons.search,
-                color: Theme.of(context).colorScheme.secondary.withOpacity(0.6),
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(RouteList.categorySearch);
-              },
-            ),
-        ],
-      ),
-    );
   }
 }

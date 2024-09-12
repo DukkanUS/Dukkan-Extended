@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
@@ -5,14 +6,15 @@ import 'package:provider/provider.dart';
 
 import '../../../common/config.dart';
 import '../../../common/constants.dart';
+import '../../../common/tools/flash.dart';
 import '../../../common/tools/tools.dart';
+import '../../../generated/l10n.dart';
 import '../../../models/index.dart' show Product, ProductModel, UserModel;
 import '../../../models/product_variant_model.dart';
 import '../../../services/index.dart';
 import '../../../widgets/product/product_bottom_sheet.dart';
 import '../../../widgets/product/widgets/heart_button.dart';
 import '../../chat/vendor_chat.dart';
-import '../product_detail_screen.dart';
 import '../widgets/buy_button_widget.dart';
 import '../widgets/index.dart';
 import '../widgets/product_common_info.dart';
@@ -157,16 +159,40 @@ class _SimpleLayoutState extends State<SimpleLayout>
                                           .primaryColorLight
                                           .withOpacity(0.7),
                                       child: IconButton(
-                                        icon: const Icon(Icons.more_vert,
-                                            size: 19),
-                                        color: Theme.of(context).primaryColor,
-                                        onPressed: () =>
-                                            ProductDetailScreen.showMenu(
-                                          context,
-                                          widget.product,
-                                          isLoading: !hasProductInfo,
-                                        ),
-                                      ),
+                                          icon:
+                                          const Icon(Icons.share, size: 19),
+                                          color: Theme.of(context).primaryColor,
+                                          onPressed: () {
+                                            var url = product.permalink;
+                                            if (url?.isNotEmpty ?? false) {
+                                              unawaited(
+                                                FlashHelper.message(
+                                                  context,
+                                                  message: S
+                                                      .of(context)
+                                                      .generatingLink,
+                                                  duration: const Duration(
+                                                      seconds: 1),
+                                                ),
+                                              );
+                                              Services()
+                                                  .firebase
+                                                  .shareDynamicLinkProduct(
+                                                itemUrl: url,
+                                              );
+                                            } else {
+                                              unawaited(
+                                                FlashHelper.errorMessage(
+                                                  context,
+                                                  message: S
+                                                      .of(context)
+                                                      .failedToGenerateLink,
+                                                  duration: const Duration(
+                                                      seconds: 1),
+                                                ),
+                                              );
+                                            }
+                                          }),
                                     ),
                                   ),
                                 ],

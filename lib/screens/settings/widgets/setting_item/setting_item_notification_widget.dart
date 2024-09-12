@@ -129,7 +129,7 @@ class SettingNotificationWidget extends StatelessWidget {
                 ),
               ),
               const Divider(color: Colors.black12, height: 1.0, indent: 75),
-              if (model.enable) messageWidget,
+              // if (model.enable) messageWidget,
             ],
           );
       }

@@ -146,12 +146,12 @@ class _ProductFlatViewState extends State<ProductFlatView> with ProductsMixin {
           value: '${sortByData[index]['type']}',
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         child: Icon(
           CupertinoIcons.ellipsis,
           size: 20,
-          color: Theme.of(context).primaryColor,
+          color: Colors.white,
         ),
       ),
     );
@@ -207,13 +207,18 @@ class _ProductFlatViewState extends State<ProductFlatView> with ProductsMixin {
       child: Column(
         children: [
           AppBar(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(20),
+                      bottomLeft: Radius.circular(20))),
+              toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
               primary: !widget.hasAppBar,
               titleSpacing: 0,
-              backgroundColor: Theme.of(context).colorScheme.background,
+              backgroundColor: Theme.of(context).primaryColor,
               leading: Navigator.of(context).canPop()
                   ? CupertinoButton(
                       padding: EdgeInsets.zero,
-                      child: const Icon(CupertinoIcons.back),
+                      child: const Icon(CupertinoIcons.back,color: Colors.white,size: 24,),
                       onPressed: () => Navigator.of(context).pop(),
                     )
                   : null,
@@ -221,6 +226,7 @@ class _ProductFlatViewState extends State<ProductFlatView> with ProductsMixin {
                 padding: EdgeInsets.only(
                     left: Navigator.of(context).canPop() ? 0 : 15),
                 child: CupertinoSearchTextField(
+                  backgroundColor: Colors.white,
                   controller: widget.searchFieldController,
                   onChanged: onSearch,
                   onSubmitted: onSearch,
@@ -229,13 +235,9 @@ class _ProductFlatViewState extends State<ProductFlatView> with ProductsMixin {
                 ),
               ),
               actions: [
-                Selector<UserModel, bool>(
-                  selector: (context, provider) => provider.loggedIn,
-                  builder: (context, loggedIn, child) {
-                    return _buildMoreWidget(loggedIn);
-                  },
-                ),
-                const SizedBox(width: 4),
+                IconButton(onPressed: (){
+                  shareProductsLink(context);
+                }, icon: const Icon(Icons.share,color: Colors.white,size: 20,))
               ]),
           Expanded(
             child: Stack(

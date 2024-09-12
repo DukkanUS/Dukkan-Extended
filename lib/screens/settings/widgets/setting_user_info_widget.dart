@@ -78,12 +78,6 @@ class _SettingUserInfoWidgetState extends State<SettingUserInfoWidget> {
             padding: widget.paddingContent,
             child: Column(
               children: [
-                if (user != null && user.name != null)
-                  SettingItemUserInfoWidget(
-                    cardStyle: widget.cartStyle,
-                    onTapUpdateProfile: _handleUpdateProfile,
-                    user: user,
-                  ),
                 if (user == null)
                   Container(
                     decoration: decoration,
@@ -105,31 +99,6 @@ class _SettingUserInfoWidgetState extends State<SettingUserInfoWidget> {
                             replacement: true,
                           );
                         }
-                      },
-                    ),
-                  ),
-                if (openAIConfig.enableInputKey)
-                  Container(
-                    decoration: decoration,
-                    child: SettingItemWidget(
-                      icon: Icons.vpn_key,
-                      cardStyle: widget.cartStyle,
-                      titleWidget: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            S.of(context).manageApiKey,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                        color: kGrey600,
-                      ),
-                      onTap: () {
-                        context.showOpenAiKey();
                       },
                     ),
                   ),

@@ -144,6 +144,7 @@ mixin AppBarMixin<T extends StatefulWidget> on State<T> {
         (appBar?.shouldShowOn(routeName) ?? false) && !hideNewAppBar;
     if (showNewAppBar) {
       return Scaffold(
+
         body: Column(
           children: [
             getAppBarWidget(
@@ -176,7 +177,7 @@ mixin AppBarMixin<T extends StatefulWidget> on State<T> {
           left: false,
           right: false,
           bottom: false,
-          top: disableSafeArea != true,
+          top: false,
           child: child,
         ),
         floatingActionButton: floatingActionButton,

@@ -10,29 +10,28 @@ class CategoryColumnItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
+    return Column(
       children: <Widget>[
         LayoutBuilder(builder: (context, constraints) {
-          return FluxImage(
-            imageUrl: category.image!,
-            fit: BoxFit.cover,
-            width: constraints.maxWidth,
+          return Container(
+            padding: const EdgeInsets.all(10),
+            height: 100,
+            width: 100,
+            child: Center(
+              child: FluxImage(
+                imageUrl: category.image!,
+                fit: BoxFit.cover,
+                width: constraints.maxWidth,
+              ),
+            ),
           );
         }),
-        Container(
-          color: const Color.fromRGBO(0, 0, 0, 0.4),
-          child: Center(
-            child: Text(
-              category.name!,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        )
+        Text(
+          category.name!,
+          style: const TextStyle(
+              color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }

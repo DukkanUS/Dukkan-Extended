@@ -120,12 +120,6 @@ mixin AddressMixin on CartMixin {
     address = data;
     saveShippingAddress(data);
     try{
-
-
-
-
-
-
       Provider.of<UpdateUserRemoteAddress>(App.fluxStoreNavigatorKey.currentState!.context,listen: false).updateProfileAddress();
     }catch(e,trace){
       printLog(e.toString());

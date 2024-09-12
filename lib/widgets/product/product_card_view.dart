@@ -82,7 +82,7 @@ class _ProductCardState extends State<ProductCard> with ActionButtonMixin {
           maxLines: widget.config.titleLine,
         ),
         StoreName(product: widget.item, hide: widget.config.hideStore),
-        const SizedBox(height: 5),
+        const SizedBox(height: 15),
         Align(
           alignment: Alignment.bottomLeft,
           child: Stack(
@@ -202,53 +202,6 @@ class _ProductCardState extends State<ProductCard> with ActionButtonMixin {
                           onTapProduct: () => onTapProduct(context,
                               product: widget.item, config: widget.config),
                         ),
-                        if (widget.config.showCartButtonWithQuantity &&
-                            widget.item.canBeAddedToCartFromList(
-                              enableBottomAddToCart:
-                                  widget.config.enableBottomAddToCart,
-                            ) &&
-                            Services().widget.enableShoppingCart(widget.item))
-                          Positioned.fill(
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Selector<CartModel, int>(
-                                selector: (context, cartModel) =>
-                                    cartModel.productsInCart[widget.item.id] ??
-                                    0,
-                                builder: (context, quantity, child) {
-                                  return CartButtonWithQuantity(
-                                    quantity: quantity,
-                                    borderRadiusValue:
-                                        widget.config.cartIconRadius,
-                                    increaseQuantityFunction: () {
-                                      // final minQuantityNeedAdd =
-                                      //     widget.item.getMinQuantity();
-                                      // var quantityWillAdd = 1;
-                                      // if (quantity == 0 &&
-                                      //     minQuantityNeedAdd > 1) {
-                                      //   quantityWillAdd = minQuantityNeedAdd;
-                                      // }
-                                      addToCart(
-                                        context,
-                                        quantity: 1,
-                                        product: widget.item,
-                                        enableBottomAddToCart:
-                                            widget.config.enableBottomAddToCart,
-                                      );
-                                    },
-                                    decreaseQuantityFunction: () {
-                                      if (quantity <= 0) return;
-                                      updateQuantity(
-                                        context: context,
-                                        quantity: quantity - 1,
-                                        product: widget.item,
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
                       ],
                     ),
                     Container(
@@ -287,7 +240,54 @@ class _ProductCardState extends State<ProductCard> with ActionButtonMixin {
                   ),
                   onPressed: widget.onTapDelete,
                 ),
-              )
+              ),
+
+            if (widget.config.showCartButtonWithQuantity &&
+                widget.item.canBeAddedToCartFromList(
+                  enableBottomAddToCart:
+                  widget.config.enableBottomAddToCart,
+                ) &&
+                Services().widget.enableShoppingCart(widget.item))
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Selector<CartModel, int>(
+                  selector: (context, cartModel) =>
+                  cartModel.productsInCart[widget.item.id] ??
+                      0,
+                  builder: (context, quantity, child) {
+                    return CartButtonWithQuantity(
+                      quantity: quantity,
+                      borderRadiusValue:
+                      widget.config.cartIconRadius,
+                      increaseQuantityFunction: () {
+                        // final minQuantityNeedAdd =
+                        //     widget.item.getMinQuantity();
+                        // var quantityWillAdd = 1;
+                        // if (quantity == 0 &&
+                        //     minQuantityNeedAdd > 1) {
+                        //   quantityWillAdd = minQuantityNeedAdd;
+                        // }
+                        addToCart(
+                          context,
+                          quantity: 1,
+                          product: widget.item,
+                          enableBottomAddToCart:
+                          widget.config.enableBottomAddToCart,
+                        );
+                      },
+                      decreaseQuantityFunction: () {
+                        if (quantity <= 0) return;
+                        updateQuantity(
+                          context: context,
+                          quantity: quantity - 1,
+                          product: widget.item,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
           ],
         ),
       ),

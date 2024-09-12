@@ -65,18 +65,23 @@ class _ListOrderHistoryScreenState extends State<ListOrderHistoryScreen>
     return renderScaffold(
       routeName: RouteList.orders,
       secondAppBar: AppBar(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20))),
+        toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
         title: Text(
           S.of(context).orderHistory,
-          style: TextStyle(
-            color: colorScheme.secondary,
+          style: const TextStyle(
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
-        backgroundColor: colorScheme.background,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_sharp,
-            color: colorScheme.secondary,
+            color: Colors.white,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),

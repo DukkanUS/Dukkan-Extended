@@ -83,28 +83,28 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
       margin: const EdgeInsets.only(bottom: 6, right: 6),
       height: 40,
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorLight,
-        border: Border.all(color: Theme.of(context).colorScheme.secondary),
-        borderRadius: BorderRadius.circular(widget.borderRadiusValue),
+        color: const Color(0xff1ED760),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           IconButton(
             onPressed: decreaseQuantity,
-            icon: Icon(
+            icon: const Icon(
               Icons.remove,
               size: 20,
-              color: Theme.of(context).primaryColor,
+              color: Colors.white,
             ),
           ),
-          Text('$_quantity'),
+          Text('$_quantity',style: const TextStyle(color: Colors.white),),
           IconButton(
             onPressed: increaseQuantity,
-            icon: Icon(
+            icon: const Icon(
               Icons.add,
               size: 20,
-              color: Theme.of(context).primaryColor,
+              color: Colors.white,
             ),
           ),
         ],
@@ -119,9 +119,8 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
         increaseQuantity();
       },
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadiusValue),
-        ),
+        backgroundColor: const Color(0xff1ED760),
+        shape: const CircleBorder(),
         minimumSize: const Size.square(40),
         padding: EdgeInsets.zero,
       ),
@@ -137,17 +136,15 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
     return OutlinedButton(
       onPressed: _focusNode.requestFocus,
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadiusValue),
-        ),
+        shape: const CircleBorder(),
         backgroundColor: Theme.of(context).colorScheme.background,
-        side: BorderSide(color: Theme.of(context).primaryColor),
+        side: const BorderSide(color: Color(0xff1ED760)),
         minimumSize: const Size.square(40),
       ),
       child: Text(
         '$_quantity',
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
+        style: const TextStyle(
+          color: Color(0xff1ED760),
           fontWeight: FontWeight.w600,
         ),
       ),

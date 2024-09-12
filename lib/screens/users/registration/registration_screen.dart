@@ -340,15 +340,20 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
   Widget build(BuildContext context) {
     final appModel = Provider.of<AppModel>(context, listen: true);
     final themeConfig = appModel.themeConfig;
+    InputBorder enabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: const BorderSide(
+          width: 1, color: Colors.black54),
+    );
+    InputBorder focusBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: const BorderSide(width: 1, color: Colors.black54,),
+    );
 
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          elevation: 0.0,
-        ),
         body: SafeArea(
           child: GestureDetector(
             onTap: () => Tools.hideKeyboard(context),
@@ -364,17 +369,6 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
-                            const SizedBox(height: 10.0),
-                            Center(
-                              child: FractionallySizedBox(
-                                widthFactor: 0.8,
-                                child: FluxImage(
-                                  useExtendedImage: false,
-                                  imageUrl: themeConfig.logo,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
                             const SizedBox(
                               height: 30.0,
                             ),
@@ -386,6 +380,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                               nextNode: lastNameNode,
                               showCancelIcon: true,
                               decoration: InputDecoration(
+                                enabledBorder: enabledBorder,
+                                focusedBorder: focusBorder,
                                 labelText: S.of(context).firstName,
                                 hintText: S.of(context).enterYourFirstName,
                               ),
@@ -402,6 +398,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                               textCapitalization: TextCapitalization.words,
                               onChanged: (value) => lastName = value,
                               decoration: InputDecoration(
+                                enabledBorder: enabledBorder,
+                                focusedBorder: focusBorder,
                                 labelText: S.of(context).lastName,
                                 hintText: S.of(context).enterYourLastName,
                               ),
@@ -441,6 +439,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                                       textInputAction: TextInputAction.next,
                                       onChanged: (value) => phoneNumber = value,
                                       decoration: InputDecoration(
+                                        enabledBorder: enabledBorder,
+                                        focusedBorder: focusBorder,
                                         labelText: S.of(context).phone,
                                         hintText:
                                             S.of(context).enterYourPhoneNumber,
@@ -460,6 +460,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                               onChanged: (value) => emailAddress = value,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
+                                  enabledBorder: enabledBorder,
+                                  focusedBorder: focusBorder,
                                   labelText: S.of(context).enterYourEmail),
                               hintText: S.of(context).enterYourEmail,
                             ),
@@ -472,6 +474,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                               obscureText: true,
                               onChanged: (value) => password = value,
                               decoration: InputDecoration(
+                                enabledBorder: enabledBorder,
+                                focusedBorder: focusBorder,
                                 labelText: S.of(context).enterYourPassword,
                                 hintText: S.of(context).enterYourPassword,
                               ),
@@ -485,6 +489,8 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                               obscureText: true,
                               onChanged: (value) => confirmPassword = value,
                               decoration: InputDecoration(
+                                enabledBorder: enabledBorder,
+                                focusedBorder: focusBorder,
                                 labelText: S.of(context).confirmPassword,
                                 hintText: S.of(context).confirmPassword,
                               ),
@@ -622,39 +628,6 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    '${S.of(context).or} ',
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      final canPop =
-                                          ModalRoute.of(context)!.canPop;
-                                      if (canPop) {
-                                        Navigator.pop(context);
-                                      } else {
-                                        Navigator.of(context)
-                                            .pushReplacementNamed(
-                                                RouteList.login);
-                                      }
-                                    },
-                                    child: Text(
-                                      S.of(context).loginToYourAccount,
-                                      style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        decoration: TextDecoration.underline,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ],

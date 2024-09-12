@@ -48,6 +48,13 @@ class TabBarIcon extends StatelessWidget {
             size: config.iconSize,
           );
         }
+        if (item.icon == 'custom_home') {
+          return  SizedBox(
+              width: 45,
+              height: 45,
+              child: Image.asset('assets/images/tab-icon.png')
+          );
+        }
 
         var isImage = item.icon.contains('/');
         return isImage

@@ -84,7 +84,7 @@ mixin SettingActionMixin {
     final pageRoute = MaterialPageRoute(
       builder: (context) => WebView(
         url: aboutUrl,
-        // title: S.of(context).aboutUs,
+        title: S.of(context).aboutUs,
       ),
     );
 

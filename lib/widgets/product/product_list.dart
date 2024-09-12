@@ -246,14 +246,12 @@ class _ProductListState extends State<ProductList> {
                 item: products[i],
                 width: widthContent,
                 ratioProductImage: widget.ratioProductImage ?? 1.2,
-                config: ProductConfig.empty()
-                  ..showHeart = true
+                config: ProductConfig.empty()..showCartButtonWithQuantity = true
+                  ..showHeart = true..enableBottomAddToCart = products[i].isVariableProduct ..showCartButton = false..showQuantity = false
                   ..imageRatio = widget.ratioProductImage ?? 1.2
                   ..showCountDown = kSaleOffProduct.showCountDown &&
                       widget.layout == Layout.saleOff
-                  ..showCartIcon = ProductConfig.empty().showCartIcon &&
-                      (widget.layout != Layout.columns &&
-                          products[i].canBeAddedToCartFromList()),
+                  ..showCartIcon = false,
               );
         },
       ),

@@ -1,7 +1,20 @@
-import 'package:flutter/widgets.dart';
+import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../common/constants.dart';
+import '../../../../data/boxes.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../models/notification_model.dart';
+import '../../../../models/user_model.dart';
+import '../../../../routes/flux_navigate.dart';
+import '../../../../services/service_config.dart';
 import '../../../common/delete_account_mixin.dart';
+import '../../../index.dart';
+import '../../../order_history/views/order_history_detail_screen.dart';
 import '../mixins/branch_mixin.dart';
 import '../mixins/setting_nomarl_mixin.dart';
 import '../setting_builder_layout.dart';
@@ -29,14 +42,230 @@ class _SettingLayoutNormalWidgetState extends State<SettingLayoutNormalWidget>
 
   @override
   ScrollController get scrollController => PrimaryScrollController.of(context);
+  bool isLoggedIn = UserBox().isLoggedIn;
+
+  void _handleUpdateProfile() async {
+    await FluxNavigate.pushNamed(
+      RouteList.updateUser,
+    ) as bool?;
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       controller: scrollController,
+      physics: const BouncingScrollPhysics(),
       slivers: <Widget>[
-        appBarWidget,
+        // appBarWidget,
         // Items
+
+        SliverAppBar(
+          toolbarHeight: (isLoggedIn) ? MediaQuery.sizeOf(context).height * .18 : MediaQuery.sizeOf(context).height * .14 ,
+          pinned: true,
+          backgroundColor: Colors.transparent,
+          flexibleSpace: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                child: Container(
+                  height: (isLoggedIn) ? MediaQuery.sizeOf(context).height * .16 : MediaQuery.sizeOf(context).height * .12,
+                  width: MediaQuery.sizeOf(context).width,
+                  decoration: ShapeDecoration(
+                    color: Theme.of(context).primaryColor,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(15)),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                child: SizedBox(
+                  height: 120,
+                  width: MediaQuery.sizeOf(context).width,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      (isLoggedIn)? Padding(
+                        padding:
+                            const EdgeInsets.only(left: 30, right: 30, top: 30),
+                        child: GestureDetector(
+                          onTap: () {
+                            _handleUpdateProfile();
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                '${Provider.of<UserModel>(context).user?.nicename}',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Icon(
+                                Icons.mode_edit_outline_outlined,
+                                color: Colors.white,
+                                size: 24,
+                              )
+                            ],
+                          ),
+                        ),
+                      ) :const SizedBox.shrink(),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: SizedBox(
+                  width: MediaQuery.sizeOf(context)
+                      .width, // Giving the Row a finite width
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    // Ensuring Row only takes needed space
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          if (isLoggedIn) {
+                            await FluxNavigate.pushNamed(
+                              RouteList.orders,
+                              arguments:
+                                  Provider.of<UserModel>(context, listen: false)
+                                      .user,
+                            );
+                          } else {
+                            await Navigator.of(context)
+                                .pushNamed(RouteList.login);
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: Colors.black.withOpacity(.1)),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5)),
+                          height: 80,
+                          width: 110,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.bug_report_rounded),
+                              Text(S.of(context).orders)
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          if (isLoggedIn) {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      NotificationScreen(),
+                                ));
+                          } else {
+                            await Navigator.of(context)
+                                .pushNamed(RouteList.login);
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: Colors.black.withOpacity(.1)),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5)),
+                          height: 80,
+                          width: 110,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              (Provider.of<NotificationModel>(context,
+                                              listen: false)
+                                          .unreadCount >
+                                      0)
+                                  ? SizedBox(
+                                      height: 30,
+                                      width: 30,
+                                      child: Stack(children: [
+                                        const Positioned(
+                                            bottom: 0,
+                                            left: 0,
+                                            child:
+                                                Icon(Icons.notifications_none)),
+                                        Positioned(
+                                          top: 0,
+                                          right: 0,
+                                          child: Container(
+                                            height: 18,
+                                            width: 18,
+                                            decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: Center(
+                                              child: Text(
+                                                Provider.of<NotificationModel>(
+                                                        context)
+                                                    .unreadCount
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ]),
+                                    )
+                                  : const Icon(Icons.notifications_none),
+                              Text(S.of(context).notifications)
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          log('message');
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: Colors.black.withOpacity(.1)),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5)),
+                          height: 80,
+                          width: 110,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Icon(Icons.help), Text('help')],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         SliverList(
           delegate: SliverChildListDelegate(
             <Widget>[
@@ -45,12 +274,16 @@ class _SettingLayoutNormalWidgetState extends State<SettingLayoutNormalWidget>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    // UserInfo
                     if (userInfoWidget != null)
                       userInfoWidget!
                     else
-                      const SizedBox(height: 30.0),
-
+                      const SizedBox.shrink(),
+                    const Divider(
+                      thickness: 1.5,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       S.of(context).generalSetting,
                       style: const TextStyle(

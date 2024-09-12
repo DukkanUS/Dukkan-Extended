@@ -677,7 +677,7 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          S.of(context).verifySMSCode,
+          S.of(context).otpVerification,
           style: TextStyle(
             fontSize: 16.0,
             color: Theme.of(context).colorScheme.onBackground,
@@ -697,29 +697,6 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            const SizedBox(height: 100),
-            Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                        height: 40.0,
-                        child: FluxImage(imageUrl: themeConfig.logo)),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                S.of(context).phoneNumberVerification,
-                style:
-                const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                textAlign: TextAlign.center,
-              ),
-            ),
             Padding(
               padding:
               const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8),
@@ -727,7 +704,7 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
                 textDirection: TextDirection.rtl,
                 child: RichText(
                   text: TextSpan(
-                    text: S.of(context).enterSendedCode,
+                    text: 'Enter the 6-digit code we sent over SMS to',
                     children: [
                       TextSpan(
                         text: Tools.isRTL(context)
@@ -739,11 +716,6 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
                       ),
                     ],
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.color
-                          ?.withOpacity(0.54),
                       fontSize: 15,
                     ),
                   ),
@@ -761,17 +733,19 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
                   controller: _pinCodeController,
                   keyboardType: TextInputType.number,
                   pinTheme: PinTheme(
-                    shape: PinCodeFieldShape.underline,
+                    shape: PinCodeFieldShape.box,
                     borderWidth: 2,
-                    activeFillColor: Theme.of(context).colorScheme.background,
-                    disabledColor: Theme.of(context).disabledColor,
+                    activeFillColor: Colors.grey,
                     fieldHeight: fieldHeight,
+                    activeColor: Theme.of(context).primaryColor,
+                    inactiveColor: Colors.grey,
+                    selectedColor: Colors.grey,
                   ),
                   length: 6,
-                  cursorHeight: 30,
+                  cursorHeight: 25,
                   autoFocus: true,
                   obscuringCharacter: '*',
-                  textStyle: textStyle,
+                  textStyle: textStyle?.copyWith(color: Colors.black,fontSize: 22),
                   animationType: AnimationType.scale,
                   hapticFeedbackTypes: HapticFeedbackTypes.light,
                   useHapticFeedback: true,
@@ -780,7 +754,7 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
                   onChanged: (value) {
                     if (value.length == 6) _loginSMS(value, context);
                   },
-                  cursorColor: Theme.of(context).colorScheme.onBackground,
+                  cursorColor: Colors.black,
                 ),
               ),
             ),
@@ -791,24 +765,7 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
                 style: TextStyle(color: Colors.red.shade300, fontSize: 15),
               ),
             ),
-            const SizedBox(height: 20),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                  text: S.of(context).didntReceiveCode,
-                  style: const TextStyle(fontSize: 15),
-                  children: [
-                    TextSpan(
-                        text: S.of(context).resend,
-                        recognizer: onTapRecognizer,
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ))
-                  ]),
-            ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
             Container(
               margin: const EdgeInsets.symmetric(
                 vertical: 16.0,
@@ -825,6 +782,23 @@ class _CustomVerifyCodeState extends State<CustomVerifyCode>
                 },
               ),
             ),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                  text: S.of(context).didntReceiveCode,
+                  style: const TextStyle(fontSize: 15,color: Colors.black),
+                  children: [
+                    TextSpan(
+                        text: S.of(context).resend,
+                        recognizer: onTapRecognizer,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ))
+                  ]),
+            ),
+
           ],
         ),
       ),

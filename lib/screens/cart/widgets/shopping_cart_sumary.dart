@@ -218,7 +218,7 @@ class _ShoppingCartSummaryState extends State<ShoppingCartSummary> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              if (enableCoupon & !widget.hideCoupon) _renderCouponCode(isApplyCouponSuccess),
+              if (enableCoupon & !widget.hideCoupon && false) _renderCouponCode(isApplyCouponSuccess),
               if (isApplyCouponSuccess)
                 Padding(
                   padding: const EdgeInsets.only(
@@ -233,7 +233,7 @@ class _ShoppingCartSummaryState extends State<ShoppingCartSummary> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              if (enablePointReward) const PointReward(),
+              // if (enablePointReward) const PointReward(),
               if (widget.showPrice)
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -241,8 +241,8 @@ class _ShoppingCartSummaryState extends State<ShoppingCartSummary> {
                     vertical: 10.0,
                   ),
                   child: Container(
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColorLight),
+                    decoration: const BoxDecoration(
+                        color: Colors.white),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         vertical: 12.0,

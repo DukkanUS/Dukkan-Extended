@@ -120,6 +120,10 @@ class StateSearchScreen extends State<SearchWidget>
     //     screenSize.width / (2 / (screenSize.height / screenSize.width));
     final userId = Provider.of<UserModel>(context, listen: false).user?.id;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('jihduivhsdv'),
+        centerTitle: true,
+      ),
       backgroundColor: Theme.of(context).colorScheme.background,
       resizeToAvoidBottomInset: false,
       body: SafeArea(

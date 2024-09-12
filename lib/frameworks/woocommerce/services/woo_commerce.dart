@@ -1356,6 +1356,18 @@ class WooCommerceService extends BaseServices {
             'last_name': lastName,
           }),
           headers: {'Content-Type': 'application/json'});
+      log(convert.jsonEncode({
+        'user_email': username,
+        'user_login': username,
+        'username': username,
+        'user_pass': password,
+        'email': username,
+        'user_nicename': niceName,
+        'display_name': niceName,
+        'phone': phoneNumber,
+        'first_name': firstName,
+        'last_name': lastName,
+      }));
       var body = convert.jsonDecode(response.body);
       if (response.statusCode == 200 && body['message'] == null) {
         var cookie = body['cookie'];

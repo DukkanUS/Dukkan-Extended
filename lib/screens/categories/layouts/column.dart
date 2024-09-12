@@ -14,7 +14,7 @@ import '../widgets/category_column_item.dart';
 const _kCrossAxisCount = 3;
 
 const _kDefaultGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-  crossAxisCount: _kCrossAxisCount,
+  crossAxisCount: 4,
   mainAxisSpacing: 4.0,
   crossAxisSpacing: 4.0,
   childAspectRatio: 0.75,

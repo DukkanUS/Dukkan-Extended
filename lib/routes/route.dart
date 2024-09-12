@@ -47,6 +47,7 @@ import '../screens/settings/branches_screen.dart';
 import '../screens/subcategories/models/subcategory_model.dart';
 import '../screens/videos/videos_screen.dart';
 import '../services/index.dart';
+import '../testss.dart';
 import '../widgets/multi_site/multi_site_selection_screen.dart';
 
 class Routes {
@@ -59,7 +60,7 @@ class Routes {
     RouteList.privacyTerms: (context) => const PrivacyTermScreen(),
     RouteList.register: (context) => const RegistrationScreen(),
     RouteList.login: (context) {
-      return const LoginScreen();
+      return  AuthPage();
     },
     RouteList.loginSMS: (context) {
       final userModel = Provider.of<UserModel>(context, listen: false);

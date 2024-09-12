@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:inspireui/inspireui.dart';
 import 'package:provider/provider.dart';
 
+import '../../app.dart';
 import '../../common/constants.dart';
+import '../../generated/l10n.dart';
 import '../../models/cart/cart_base.dart';
 import '../../widgets/common/loading_body.dart';
 import '../common/app_bar_mixin.dart';
@@ -50,10 +52,17 @@ class _CartScreenState extends State<CartScreen> with AppBarMixin {
   Widget build(BuildContext context) {
     return AutoHideKeyboard(
       child: renderScaffold(
+
         routeName: RouteList.cart,
         hideNewAppBar: widget.hideNewAppBar,
+        secondAppBar: AppBar(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(20),bottomLeft: Radius.circular(20))),
+          toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
+          title: Text(S.of(context).myCart,style: const TextStyle(color: Colors.white),),
+          centerTitle: true,
+        ),
         resizeToAvoidBottomInset: false,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Colors.white,
         child: Selector<CartModel, bool>(
           selector: (_, cartModel) => cartModel.calculatingDiscount,
           builder: (context, calculatingDiscount, child) {

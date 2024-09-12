@@ -88,7 +88,7 @@ mixin SettingNormalMixin on DeleteAccountMixin {
 
   /// User Info
   EdgeInsets get paddingContentInfoUser =>
-      const EdgeInsets.only(top: 10, bottom: 30);
+      const EdgeInsets.only(top: 10, bottom: 0);
   SettingUserInfoWidget? get userInfoWidget => hideUser
       ? null
       : SettingUserInfoWidget(

@@ -17,6 +17,7 @@ import '../../../widgets/common/custom_text_field.dart';
 import '../../../widgets/common/flux_image.dart';
 import '../../../widgets/common/login_animation.dart';
 import '../../base_screen.dart';
+import '../../login_sms/verify.dart';
 import 'login_screen_web.dart';
 import 'mixins/mixin_animation_button_login.dart';
 import 'mixins/mixin_login.dart';
@@ -91,22 +92,18 @@ class _LoginPageState extends BaseScreen<LoginScreenMobile>
     final screenSize = MediaQuery.sizeOf(context);
     final themeConfig = appModel.themeConfig;
     var forgetPasswordUrl = ServerConfig().forgetPassword;
+    InputBorder enabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: const BorderSide(
+          width: 1, color: Colors.black54),
+    );
+    InputBorder focusBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: const BorderSide(width: 1, color: Colors.black54,),
+    );
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        elevation: 0.0,
-        actions: !Services().widget.isRequiredLogin &&
-                !ModalRoute.of(context)!.canPop
-            ? [
-                IconButton(
-                  onPressed: loginDone,
-                  icon: const Icon(Icons.close, size: 25),
-                )
-              ]
-            : null,
-      ),
       body: SafeArea(
         child: AutoHideKeyboard(
           child: IgnorePointer(
@@ -123,17 +120,17 @@ class _LoginPageState extends BaseScreen<LoginScreenMobile>
                     child: AutofillGroup(
                       child: Column(
                         children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: FractionallySizedBox(
-                              widthFactor: 0.8,
-                              child: FluxImage(
-                                imageUrl: themeConfig.logo,
-                                fit: BoxFit.contain,
-                                useExtendedImage: false,
-                              ),
-                            ),
-                          ),
+                          // Expanded(
+                          //   flex: 1,
+                          //   child: FractionallySizedBox(
+                          //     widthFactor: 0.8,
+                          //     child: FluxImage(
+                          //       imageUrl: themeConfig.logo,
+                          //       fit: BoxFit.contain,
+                          //       useExtendedImage: false,
+                          //     ),
+                          //   ),
+                          // ),
                           Expanded(
                             flex: 3,
                             child: SingleChildScrollView(
@@ -153,12 +150,15 @@ class _LoginPageState extends BaseScreen<LoginScreenMobile>
                                     keyboardType: TextInputType.emailAddress,
                                     nextNode: _usernameFocusNode,
                                     decoration: InputDecoration(
-                                      labelText: S.of(_parentContext).username,
+                                      labelText: S.of(_parentContext).email,
+                                      enabledBorder: enabledBorder,
+                                      focusedBorder: focusBorder,
                                       hintText: S
                                           .of(_parentContext)
                                           .enterYourEmailOrUsername,
                                     ),
                                   ),
+                                  const SizedBox(height: 10,),
                                   CustomTextField(
                                     key: const Key('loginPasswordField'),
                                     autofillHints: const [
@@ -170,6 +170,8 @@ class _LoginPageState extends BaseScreen<LoginScreenMobile>
                                     controller: passwordCtrl,
                                     focusNode: _passwordFocusNode,
                                     decoration: InputDecoration(
+                                      enabledBorder: enabledBorder,
+                                      focusedBorder: focusBorder,
                                       labelText: S.of(_parentContext).password,
                                       hintText: S
                                           .of(_parentContext)
@@ -182,8 +184,7 @@ class _LoginPageState extends BaseScreen<LoginScreenMobile>
                                           vertical: 12.0),
                                       child: GestureDetector(
                                         onTap: () {
-                                          launchForgetPasswordURL(
-                                              forgetPasswordUrl);
+                                         Navigator.push(context, MaterialPageRoute(builder: (context)=>VerifyCode()));
                                         },
                                         behavior: HitTestBehavior.opaque,
                                         child: Padding(
@@ -256,7 +257,7 @@ class _LoginPageState extends BaseScreen<LoginScreenMobile>
                                         loginWithGoogle(context),
                                     onSmsPressed: () => loginWithSMS(context),
                                   ),
-                                  const SizedBox(height: 30.0),
+                                 /* const SizedBox(height: 30.0),
                                   Column(
                                     children: <Widget>[
                                       Row(
@@ -281,7 +282,7 @@ class _LoginPageState extends BaseScreen<LoginScreenMobile>
                                         ],
                                       ),
                                     ],
-                                  ),
+                                  ),*/
                                   const SizedBox(height: 30.0),
                                 ],
                               ),
