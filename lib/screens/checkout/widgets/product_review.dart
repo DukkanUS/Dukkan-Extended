@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,7 +47,7 @@ class ProductReviewWidget extends StatelessWidget {
       height: _kProductItemHeight,
       margin: const EdgeInsetsDirectional.symmetric(vertical: 5.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(3),
@@ -59,43 +60,53 @@ class ProductReviewWidget extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  item.name ?? '',
-                  style: TextStyle(
-                    color: secondaryColor,
+                Expanded(
+                  flex: 4,
+                  child: Text(
+                    item.name ?? '',
+                    style: TextStyle(
+                      color: secondaryColor,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 if (addonsOptions.keys.isNotEmpty)
                   HtmlWidget(
                     addonsOptions.values.join(', '),
                   ),
                 const SizedBox(height: 7),
-                Text(
-                  PriceTools.getCurrencyFormatted(
-                    item.total ?? 0.0,
-                    rates,
-                    currency: currencySelected,
-                  )!,
-                  style: TextStyle(
+                Expanded(
+                  flex: 1,
+                  child: QuantitySelection(
+                    enabled: false,
                     color: secondaryColor,
-                    fontSize: 14,
+                    value: item.quantity,
+                    style: QuantitySelectionStyle.normal,
+                    width: 60,
+                    height: 32,
                   ),
                 ),
-                const SizedBox(height: 10),
-                QuantitySelection(
-                  enabled: false,
-                  color: secondaryColor,
-                  value: item.quantity,
-                  style: QuantitySelectionStyle.normal,
-                  width: 60,
-                  height: 32,
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    PriceTools.getCurrencyFormatted(
+                      item.total ?? 0.0,
+                      rates,
+                      currency: currencySelected,
+                    )!,
+                    style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
+
               ],
             ),
           ),

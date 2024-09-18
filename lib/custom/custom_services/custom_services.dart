@@ -4,20 +4,19 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:inspireui/utils/http_client.dart';
-import 'package:inspireui/utils/logs.dart';
 import '../../models/entities/coupon.dart';
 import '../../services/services.dart';
 import '../custom_constants.dart';
 import '../custom_entities/force_update/app_configuration.dart';
-class CustomServices {
+import '../custom_entities/returns_model.dart';
 
+class CustomServices {
   static const _timeout = Duration(seconds: 5);
 
   static Future<Coupons> getAutoApplyCoupons() async {
     try {
-      var response =  await Services().api.getAutoApplyCoupons();
+      var response = await Services().api.getAutoApplyCoupons();
       return response!;
-
     } catch (e) {
       log('Exception occurred while getAutoApplyCoupons with $e');
       rethrow;
@@ -62,4 +61,53 @@ class CustomServices {
     }
   }
 
+  static Future<bool> sendReturnRequest(ReturnsRequest request) async {
+    var url =
+        'https://dukkan.us/wp-json/wc-partial-return/v1/request-return/';
+    try {
+      final response = await httpPost(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(request.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        log('Failed with status code: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      log('Error occurred: $e');
+      return false;
+    }
+  }
+
+  static Future<Returns?> getReturnRequest(int id) async {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    var url =
+        'https://dukkan.us/wp-json/wc-partial-return/v1/get-return-request/$id?ts=$timestamp';
+
+    try {
+      var response = await httpGet(Uri.parse(url), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Cache-Control': 'no-cache',
+      'accept': 'application/json',
+      });
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        final jsonResponse = jsonDecode(response.body);
+        return Returns.fromJson(jsonResponse[0]);
+      } else {
+        log('Failed to load return request');
+        return null;
+      }
+    } catch (e) {
+      log('Error occurred: $e');
+      return null;
+    }
+  }
 }

@@ -27,7 +27,9 @@ class OrderedSuccess extends StatefulWidget {
 class _OrderedSuccessState extends BaseScreen<OrderedSuccess> {
   Order? order;
   bool isLoading = false;
+
   ThemeData get theme => Theme.of(context);
+
   Color get secondaryColor => theme.colorScheme.secondary;
 
   Future<void> _loadOrderByNumberOrder(String numberOrder) async {
@@ -156,7 +158,12 @@ class _OrderedSuccessState extends BaseScreen<OrderedSuccess> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  S.of(context).itsOrdered,
+                  'Congratulation ${context.read<UserModel>().user?.firstName}!',
+                  style: TextStyle(fontSize: 16, color: secondaryColor),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'Your order has been completed',
                   style: TextStyle(fontSize: 16, color: secondaryColor),
                 ),
                 const SizedBox(height: 5),
@@ -209,22 +216,21 @@ class _OrderedSuccessState extends BaseScreen<OrderedSuccess> {
           const SizedBox(height: 16),
         ],
 
-        Text(
-          S.of(context).orderSuccessTitle1,
-          style: TextStyle(fontSize: 18, color: secondaryColor),
-        ),
-        const SizedBox(height: 15),
-        Text(
-          S.of(context).orderSuccessMsg1,
-          style: TextStyle(color: secondaryColor, height: 1.4, fontSize: 14),
-        ),
+        // Text(
+        //   S.of(context).orderSuccessTitle1,
+        //   style: TextStyle(fontSize: 18, color: secondaryColor),
+        // ),
+        // const SizedBox(height: 15),
+        // Text(
+        //   S.of(context).orderSuccessMsg1,
+        //   style: TextStyle(color: secondaryColor, height: 1.4, fontSize: 14),
+        // ),
         if (userModel.user != null)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30),
+            padding: const EdgeInsets.only(top: 30),
             child: Row(children: [
               Expanded(
                 child: ButtonTheme(
-                  height: 45,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -248,23 +254,23 @@ class _OrderedSuccessState extends BaseScreen<OrderedSuccess> {
             ]),
           ),
         //const SizedBox(height: 40),
-        Text(
-          S.of(context).orderSuccessTitle2,
-          style: TextStyle(fontSize: 18, color: secondaryColor),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          S.of(context).orderSuccessMsg2,
-          style: TextStyle(color: secondaryColor, height: 1.4, fontSize: 14),
-        ),
+        // Text(
+        //   S.of(context).orderSuccessTitle2,
+        //   style: TextStyle(fontSize: 18, color: secondaryColor),
+        // ),
+        // const SizedBox(height: 10),
+        // Text(
+        //   S.of(context).orderSuccessMsg2,
+        //   style: TextStyle(color: secondaryColor, height: 1.4, fontSize: 14),
+        // ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30),
+          padding: const EdgeInsets.only(bottom: 30),
           child: Row(
             children: [
               Expanded(
                 child: ButtonTheme(
                   height: 45,
-                  child: OutlinedButton(
+                  child: TextButton(
                     style: OutlinedButton.styleFrom(
                       shape: const RoundedRectangleBorder(),
                     ),
@@ -273,7 +279,11 @@ class _OrderedSuccessState extends BaseScreen<OrderedSuccess> {
                     },
                     child: Text(
                       S.of(context).backToShop.toUpperCase(),
-                      style: TextStyle(color: secondaryColor),
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ),
@@ -288,6 +298,7 @@ class _OrderedSuccessState extends BaseScreen<OrderedSuccess> {
 
 class BankAccountInfo extends StatelessWidget {
   const BankAccountInfo({super.key, required this.bankInfo});
+
   final BankAccountItem bankInfo;
 
   @override

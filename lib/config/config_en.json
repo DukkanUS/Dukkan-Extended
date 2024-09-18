@@ -119,10 +119,10 @@
       "backgroundRadius": 10,
       "isSnapping": false,
       "showCartButton": false,
-      "name": "Health & Beauty",
+      "name": "Fresh Produce",
       "cartIconRadius": 9,
       "enableAutoSliding": false,
-      "category": "76",
+      "category": "152",
       "hideEmptyProductListRating": false
     },
     {
@@ -170,10 +170,10 @@
       "backgroundRadius": 10,
       "isSnapping": false,
       "showCartButton": false,
-      "name": "Artisan Cheese",
+      "name": "Beverages & Water",
       "cartIconRadius": 9,
       "enableAutoSliding": false,
-      "category": "64",
+      "category": "133",
       "hideEmptyProductListRating": false
     },
     {
@@ -221,10 +221,10 @@
       "backgroundRadius": 10,
       "isSnapping": false,
       "showCartButton": false,
-      "name": "Bakery & Bread",
+      "name": "Ziyad",
       "cartIconRadius": 9,
       "enableAutoSliding": false,
-      "category": "76",
+      "category": "181",
       "hideEmptyProductListRating": false
     },
     {

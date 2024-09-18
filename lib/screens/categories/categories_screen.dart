@@ -50,51 +50,6 @@ class CategoriesScreenState extends State<CategoriesScreen>
         AutomaticKeepAliveClientMixin,
         SingleTickerProviderStateMixin,
         AppBarMixin {
-  var customConfig = {
-    'showCartIcon': false,
-    'imageBoxfit': 'cover',
-    'showStockStatus': true,
-    'featured': false,
-    'hideEmptyProductLayout': false,
-    'showCountDown': false,
-    'parallax': false,
-    'columns': 0,
-    'hideStore': false,
-    'vPadding': 0,
-    'showQuantity': false,
-    'showHeart': true,
-    'hMargin': 6,
-    'parallaxImageRatio': 1.2,
-    'showCartButtonWithQuantity': true,
-    'vMargin': 0,
-    'showOnlyImage': false,
-    'onSale': false,
-    'productType': false,
-    'image': '',
-    'showCategory': false,
-    'productListItemHeight': 125,
-    'showCartIconColor': false,
-    'useSort': false,
-    'hPadding': 0,
-    'hidePrice': false,
-    'rows': 1,
-    'enableBottomAddToCart': false,
-    'layout': 'threeColumn',
-    'enableRating': false,
-    'imageRatio': 1.2,
-    'useCircularRadius': true,
-    'hideTitle': false,
-    'borderRadius': 3,
-    'cardDesign': 'card',
-    'backgroundRadius': 10,
-    'isSnapping': false,
-    'showCartButton': false,
-    'name': 'Picked for you',
-    'cartIconRadius': 9,
-    'enableAutoSliding': false,
-    'category': '76',
-    'hideEmptyProductListRating': false
-  };
 
   @override
   bool get wantKeepAlive => true;
@@ -189,7 +144,7 @@ class CategoriesScreenState extends State<CategoriesScreen>
                 const Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 10,left: 10),
+                      padding: EdgeInsets.all(10),
                       child: Text('Shop By Aisles',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
                     ),
                   ],
@@ -202,13 +157,6 @@ class CategoriesScreenState extends State<CategoriesScreen>
                     _scrollController,
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                 Expanded(child:  ProductList(
-                  config: ProductConfig.fromJson(customConfig),
-                  cleanCache: true,
-                ))
               ],
             )
           : renderCategories(

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +21,11 @@ import '../../../models/index.dart';
 import '../../../models/tera_wallet/wallet_model.dart';
 import '../../../modules/analytics/analytics.dart';
 import '../../../modules/native_payment/razorpay/services.dart';
+import '../../../services/service_config.dart';
 import '../../../services/services.dart';
 import '../../../widgets/common/place_picker.dart';
 import '../../../widgets/product/cart_item/cart_item.dart';
+import '../../cart/widgets/coupon_list.dart';
 import '../../cart/widgets/point_reward.dart';
 import '../../cart/widgets/shopping_cart_sumary.dart';
 import '../mixins/checkout_mixin.dart';
@@ -37,6 +41,82 @@ class SingleCheckoutPgeScreen extends StatefulWidget {
 
 class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     with RazorDelegate, CheckoutMixin {
+
+  /// for coupon
+
+
+  final services = Services();
+  Coupons? coupons;
+
+  String _productsInCartJson = '';
+  final _debounceApplyCouponTag = 'debounceApplyCouponTag';
+  final defaultCurrency = kAdvanceConfig.defaultCurrency;
+
+  final couponController = TextEditingController();
+
+  final bool _showCouponList =
+      kAdvanceConfig.showCouponList && ServerConfig().isSupportCouponList;
+
+
+  Future<void> getCoupon() async {
+    try {
+      coupons = await services.api.getCoupons();
+    } catch (_) {
+    }
+  }
+
+  void showError(String message) {
+    final snackBar = SnackBar(
+      content: Text(S.of(context).warning(message)),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: S.of(context).close,
+        onPressed: () {},
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  /// Check coupon code
+  void checkCoupon(String couponCode, CartModel cartModel) {
+    if (couponCode.isEmpty) {
+      showError(S.of(context).pleaseFillCode);
+      return;
+    }
+
+    cartModel.setLoadingDiscount();
+
+    Services().widget.applyCoupon(
+      context,
+      coupons: coupons,
+      code: couponCode,
+      success: (Discount discount) async {
+        await cartModel.updateDiscount(discount: discount);
+        cartModel.setLoadedDiscount();
+      },
+      error: (String errMess) {
+        if (cartModel.couponObj != null) {
+          removeCoupon(cartModel);
+        }
+        cartModel.setLoadedDiscount();
+        showError(errMess);
+      },
+    );
+  }
+
+  Future<void> removeCoupon(CartModel cartModel) async {
+    await Services().widget.removeCoupon(context);
+    cartModel.resetCoupon();
+    cartModel.discountAmount = 0.0;
+  }
+
+  ///
+
+
+
+
+
+
   bool _isDatePickerExpanded = true;
   String? _selectedTimePeriod;
 
@@ -59,6 +139,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   @override
   void initState() {
     Future.delayed(Duration.zero).then((_) async {
+      unawaited(getCoupon());
       unawaited(context.read<DeliveryTime>().fetchDeliveryHours());
       ///fetch the shipping methods
      await Provider.of<ShippingMethodModel>(context, listen: false)
@@ -84,6 +165,17 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
               cartModel: cartModel,
               shippingMethod: cartModel.shippingMethod,
               langCode: Provider.of<AppModel>(context, listen: false).langCode);
+      await WidgetsBinding.instance.endOfFrame.then((_) {
+        if (mounted) {
+          // if (cartModel.couponObj != null && cartModel.couponObj!.amount! > 0) {
+          //   final savedCoupon = cartModel.savedCoupon;
+          //   couponController.text = savedCoupon ?? '';
+          // }
+          final savedCoupon = cartModel.savedCoupon;
+          couponController.text = savedCoupon ?? '';
+          _productsInCartJson = jsonEncode(cartModel.productsInCart);
+        }
+      });
     });
     super.initState();
   }
@@ -137,8 +229,17 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     final taxModel = Provider.of<TaxModel>(context);
     final currencyRate = Provider.of<AppModel>(context).currencyRate;
     final bgColor = Theme.of(context).primaryColor;
+    InputBorder enabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: const BorderSide(
+          width: 1, color: Colors.black54),
+    );
+    InputBorder focusBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: const BorderSide(width: 1, color: Colors.black54,),
+    );
     return SafeArea(
-      top: true,
+      top: false,
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Visibility(
@@ -186,8 +287,22 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
         ),
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text('Checkout'),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20))),
+          toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
+          title: const Text('Checkout',style: TextStyle(color: Colors.white),),
           centerTitle: true,
+          leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                size: 20,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
         ),
         body: newOrder != null
             ? OrderedSuccess(
@@ -261,10 +376,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                             },
                             child: Row(
                               children: [
-                                const Icon(
-                                  Icons.location_on,
-                                  color: Colors.black,
-                                ),
+                                Image.asset('assets/checkout_icons/location.png'),
                                 const SizedBox(
                                   width: 10,
                                 ),
@@ -356,17 +468,14 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                               ExpansionPanel(
                                 headerBuilder: (BuildContext context,
                                     bool isExpanded) {
-                                  return const ListTile(
+                                  return ListTile(
                                     title: Row(
                                       children: [
-                                        Icon(
-                                          Icons.notes,
-                                          color: Colors.black,
-                                        ),
-                                        SizedBox(
+                                        Image.asset('assets/checkout_icons/car.png'),
+                                        const SizedBox(
                                           width: 10,
                                         ),
-                                        Text('Delivery Instructions',style: TextStyle(fontWeight: FontWeight.bold),),
+                                        const Text('Delivery Instructions',style: TextStyle(fontWeight: FontWeight.bold),),
                                       ],
                                     ),
                                   );
@@ -427,10 +536,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   return  ListTile(
                                     title: Row(
                                       children: [
-                                        const Icon(
-                                          Icons.access_time_filled,
-                                          color: Colors.black,
-                                        ),
+                                        Image.asset('assets/checkout_icons/Time.png'),
                                         const SizedBox(
                                           width: 10,
                                         ),
@@ -486,10 +592,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   return ListTile(
                                     title: Row(
                                       children: [
-                                        const Icon(
-                                          Icons.phone_android_sharp,
-                                          color: Colors.black,
-                                        ),
+                                        Image.asset('assets/checkout_icons/Phone.png'),
                                         const SizedBox(
                                           width: 10,
                                         ),
@@ -510,6 +613,10 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 50.0),
                                   child: TextFormField(
+                                    decoration: InputDecoration(
+                                      focusedBorder: focusBorder,
+                                      enabledBorder: enabledBorder
+                                    ),
                                     enableSuggestions: true,
                                     keyboardType: TextInputType.phone,
                                     initialValue:
@@ -610,10 +717,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                       return ListTile(
                                         title: Row(
                                           children: [
-                                            const Icon(
-                                              Icons.monetization_on,
-                                              color: Colors.black,
-                                            ),
+                                            Image.asset('assets/checkout_icons/cash-coin.png'),
                                             const SizedBox(
                                               width: 10,
                                             ),
@@ -709,6 +813,11 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                           ),
                         ),
                         const SizedBox(height: 20),
+
+                        if (kAdvanceConfig.enableCouponCode && !cartModel.isWalletCart() ) _renderCouponCode((cartModel.couponObj != null &&
+                            (cartModel.couponObj!.amount ?? 0) > 0)),
+
+
                         if (!cartModel.isWalletCart()) const PointReward(),
 
                         const SizedBox(height: 20),
@@ -948,4 +1057,108 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
       ),
     );
   }
+
+
+
+  Widget _renderCouponCode(bool isApplyCouponSuccess) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(5),),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(
+                top: 20.0,
+                bottom: 20.0,
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              decoration: !isApplyCouponSuccess
+                  ? BoxDecoration(color: Theme.of(context).cardColor)
+                  : BoxDecoration(color: Theme.of(context).primaryColorLight),
+              child: GestureDetector(
+                onTap: _showCouponList
+                    ? () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) => CouponList(
+                        isFromCart: true,
+                        coupons: coupons,
+                        onSelect: (String couponCode) {
+                          Future.delayed(
+                              const Duration(milliseconds: 250), () {
+                            couponController.text = couponCode;
+                            checkCoupon(couponController.text, cartModel);
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                }
+                    : null,
+                child: AbsorbPointer(
+                  absorbing: _showCouponList,
+                  child: TextField(
+                    controller: couponController,
+                    autocorrect: false,
+                    enabled:
+                    !isApplyCouponSuccess && !cartModel.calculatingDiscount,
+                    decoration: InputDecoration(
+                      prefixIcon: _showCouponList
+                          ? Icon(
+                        CupertinoIcons.search,
+                        color: Theme.of(context).primaryColor,
+                      )
+                          : null,
+                      labelText: S.of(context).couponCode,
+                      //hintStyle: TextStyle(color: _enable ? Colors.grey : Colors.black),
+                      contentPadding: const EdgeInsets.all(2),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme.of(context).primaryColorLight,
+              elevation: 0.0,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+            ),
+            label: Text(
+              cartModel.calculatingDiscount
+                  ? S.of(context).loading
+                  : !isApplyCouponSuccess
+                  ? S.of(context).apply
+                  : S.of(context).remove,
+            ),
+            icon: const Icon(
+              CupertinoIcons.checkmark_seal_fill,
+              size: 18,
+            ),
+            onPressed: !cartModel.calculatingDiscount
+                ? () {
+              if (!isApplyCouponSuccess) {
+                checkCoupon(couponController.text, cartModel);
+              } else {
+                removeCoupon(cartModel);
+              }
+            }
+                : null,
+          )
+        ],
+      ),
+    );
+  }
+
+
 }

@@ -48,11 +48,11 @@ class WishList extends StatelessWidget {
                                     item: item,
                                     width: constraints.maxWidth * 0.35,
                                     config: ProductConfig.empty()
-                                      ..showCartIcon = true
+                                      ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true
                                       ..cardDesign = useDesktopStyle
                                           ? CardDesign.simpleForWeb
                                           : CardDesign.card
-                                      ..enableBottomAddToCart = true,
+                                      ..enableBottomAddToCart = true..enableRating = false,
                                   )
                               ],
                             ),

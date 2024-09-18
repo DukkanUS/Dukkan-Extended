@@ -19,6 +19,7 @@ import 'common/tools.dart';
 import 'custom/providers/address_validation.dart';
 import 'custom/providers/delivery_time.dart';
 import 'custom/providers/registration_provider.dart';
+import 'custom/providers/return_request_provider.dart';
 import 'custom/providers/update_user_remote_address.dart';
 import 'generated/l10n.dart';
 import 'generated/languages/index.dart';
@@ -424,6 +425,8 @@ class AppState extends State<App>
                 ),
                 ChangeNotifierProvider<ListBlogModel>(
                     create: (_) => ListBlogModel()),
+                ChangeNotifierProvider<ReturnRequestProvider>(
+                    create: (_) => ReturnRequestProvider()),
                 ChangeNotifierProvider<UpdateUserRemoteAddress>(
                     create: (_) => UpdateUserRemoteAddress()),
                 ChangeNotifierProvider<AddressValidation>(

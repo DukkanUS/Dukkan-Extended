@@ -253,6 +253,7 @@ flutter:
     - lib/config/us_store/
     - lib/config/vi_store/
     - assets/icons/brands/
+    - assets/checkout_icons/
     - assets/icons/credit_cards/
     - assets/icons/tabs/
     - assets/icons/payment/

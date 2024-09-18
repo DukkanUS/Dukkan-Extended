@@ -1,9 +1,14 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../common/config.dart';
 import '../../../../common/theme/colors.dart';
 import '../../../../common/tools.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../models/cart/cart_base.dart';
 import '../../../../services/index.dart';
 import '../../quantity_selection/quantity_selection.dart';
 import '../cart_item_state_ui.dart';
@@ -58,8 +63,8 @@ class CartItemNormalWidget extends StatelessWidget {
                           children: [
                           Row(
                             children: [
-                              SizedBox(
-                                width: 180,
+                              Expanded(
+                                flex: 3,
                                 child: Text(
                                   stateUI.product.name!,
                                   style: TextStyle(
@@ -71,34 +76,40 @@ class CartItemNormalWidget extends StatelessWidget {
                               ),
                               const SizedBox(width: 10),
                               if (stateUI.showQuantity)
-                                QuantitySelection(
-                                  enabled: stateUI.inStock &&
-                                      stateUI.onChangeQuantity != null,
-                                  width: 60,
-                                  height: 32,
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  limitSelectQuantity: stateUI.isOnBackorder
-                                      ? kCartDetail['maxAllowQuantity']
-                                      : stateUI.limitQuantity,
-                                  value: stateUI.quantity,
-                                  onChanged: stateUI.onChangeQuantity,
-                                  style: QuantitySelectionStyle.normal,
+                                Expanded(
+                                  flex: 1,
+                                  child: QuantitySelection(
+                                    enabled: stateUI.inStock &&
+                                        stateUI.onChangeQuantity != null,
+                                    width: 60,
+                                    height: 32,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    limitSelectQuantity: stateUI.isOnBackorder
+                                        ? kCartDetail['maxAllowQuantity']
+                                        : stateUI.limitQuantity,
+                                    value: stateUI.quantity,
+                                    onChanged: stateUI.onChangeQuantity,
+                                    style: QuantitySelectionStyle.normal,
+                                  ),
                                 ),
 
                               const SizedBox(width: 10),
                               if (stateUI.showPrice(context))
-                                Text(
-                                  stateUI.price!,
-                                  style: TextStyle(
-                                      color: theme.colorScheme.secondary,
-                                      fontSize: 14),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    stateUI.price!,
+                                    style: TextStyle(
+                                        color: theme.colorScheme.secondary,
+                                        fontSize: 14),
+                                  ),
                                 ),
                             ],
                           ),
                             if (stateUI.onRemove != null)
                               GestureDetector(
                                 onTap: (){
-                                  stateUI.onRemove;
+                                  context.read<CartModel>().removeItemFromProductId(stateUI.product.id);
                                 },
                                 child: const Row(
                                   children: [

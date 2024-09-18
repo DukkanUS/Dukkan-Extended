@@ -1,16 +1,19 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:fstore/screens/order_history/views/widgets/custom_order_list_item.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/config.dart';
 import '../../../common/tools.dart';
+import '../../../custom/providers/return_request_provider.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/entities/aftership.dart';
-import '../../../models/index.dart' show AppModel, OrderStatus;
+import '../../../models/index.dart' show AppModel, OrderStatus, OrderStatusExtension;
 
 // import '../../../models/order/order.dart';
 import '../../../services/index.dart';
@@ -86,9 +89,19 @@ class _OrderHistoryDetailScreenState
       ),
     );
   }
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero).then((_) async {
+      if(orderHistoryModel.order.id?.isNotEmpty ?? false) {
+         await context.read<ReturnRequestProvider>().getReturnRequest(int.parse(orderHistoryModel.order.id!));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.sizeOf(context);
     return Consumer<OrderHistoryDetailModel>(builder: (context, model, child) {
       final order = model.order;
       final currencyCode =
@@ -113,39 +126,84 @@ class _OrderHistoryDetailScreenState
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20))),
+          toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
           leading: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back_ios,
                 size: 20,
-                color: Theme.of(context).colorScheme.secondary,
+                color: Colors.white,
               ),
               onPressed: () {
                 Navigator.of(context).pop();
               }),
+          centerTitle: true,
           title: Text(
             '${S.of(context).orderNo} #${order.number}',
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            style: const TextStyle(color: Colors.white),
           ),
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).primaryColor,
           elevation: 0.0,
-          actions: [
-            Center(child: Services().widget.reOrderButton(order)),
-          ],
+          // actions: [
+          //   Center(child: Services().widget.reOrderButton(order)),
+          // ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              /// order notes
+
+              const SizedBox(height: 15,),
+              Container(
+                height: 100,
+                decoration: ShapeDecoration(
+                  color: const Color(0xFFF7F7F7),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                ),
+                child: Center(
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 20,),
+                       Expanded(
+                          flex: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(model.listOrderNote?.first.note ?? ''),
+                              Text('#${order.number ?? ''}',style: const TextStyle(fontWeight: FontWeight.bold),)
+                            ],
+                          )),
+                      const SizedBox(width: 20,),
+                      Expanded(
+                          flex: 1,
+                          child: CustomOrderStatusWidget(
+                            title: S.of(context).status,
+                            detail: order.status == OrderStatus.unknown &&
+                                order.orderStatus != null
+                                ? order.orderStatus
+                                : order.status!.content,
+                          ),),
+                      const SizedBox(width: 20,),
+
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15,),
+
+              const Text('Order Details',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+
+              /// items and rate and return
               ListView.builder(
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(top: 8),
                 physics: const NeverScrollableScrollPhysics(),
-                // separatorBuilder: (context, index) => Container(
-                //   height: 1,
-                //   margin: const EdgeInsets.symmetric(horizontal: 2).copyWith(bottom: 2),
-                //   color: Theme.of(context).dividerColor,
-                // ),
                 itemCount: order.lineItems.length,
                 itemBuilder: (context, index) {
                   final item = order.lineItems[index];
@@ -160,9 +218,10 @@ class _OrderHistoryDetailScreenState
                   );
                 },
               ),
+              /// payment information
               Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorLight,
+                  color: const Color(0xFFF7F7F7),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 padding: const EdgeInsets.all(15),
@@ -215,7 +274,7 @@ class _OrderHistoryDetailScreenState
                     if (order.totalShipping != null) const SizedBox(height: 10),
                     if (order.totalShipping != null)
                       _CustomListTile(
-                        leading: S.of(context).shipping,
+                        leading: 'Delivery Fee',
                         trailing: PriceTools.getCurrencyFormatted(
                             order.totalShipping, currencyRate,
                             currency: currencyCode)!,
@@ -311,6 +370,7 @@ class _OrderHistoryDetailScreenState
                 ),
               ),
 
+              /// nothing
               if (model.order.aftershipTrackings.isNotEmpty)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,10 +411,11 @@ class _OrderHistoryDetailScreenState
                   ],
                 ),
 
-              Services().widget.renderOrderTimelineTracking(context, order),
-              const SizedBox(height: 20),
+              // /// status tracking
+              // Services().widget.renderOrderTimelineTracking(context, order),
+              // const SizedBox(height: 20),
 
-              /// Render the Cancel and Refund
+              /// Render the Cancel
               if (kPaymentConfig.enableRefundCancel && allowCancelAndRefund)
                 Services()
                     .widget
@@ -362,6 +423,7 @@ class _OrderHistoryDetailScreenState
 
               const SizedBox(height: 20),
 
+              /// refund request
               if (order.status == OrderStatus.processing &&
                   kPaymentConfig.enableRefundCancel)
                 Column(
@@ -408,107 +470,14 @@ class _OrderHistoryDetailScreenState
                 const SizedBox(height: 15),
               ],
 
+              /// shipping address
               if (order.billing != null) ...[
-                Text(S.of(context).shippingAddress,
-                    style: const TextStyle(
+                const Text('Delivery Address',
+                    style: TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 Text(order.billing!.fullInfoAddress),
               ],
-              if (kPaymentConfig.showOrderNotes)
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Builder(
-                    builder: (context) {
-                      final listOrderNote = model.listOrderNote;
-                      if (model.orderNoteLoading) {
-                        return kLoadingWidget(context);
-                      }
-                      if (listOrderNote?.isEmpty ?? true) {
-                        return const SizedBox();
-                      }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            S.of(context).orderNotes,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ...List.generate(
-                                listOrderNote!.length,
-                                (index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 15),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        CustomPaint(
-                                          painter: BoxComment(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          child: SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  top: 15,
-                                                  bottom: 25),
-                                              child: kAdvanceConfig
-                                                      .orderNotesLinkSupport
-                                                  ? Linkify(
-                                                      text: listOrderNote[index]
-                                                          .note!,
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 13,
-                                                          height: 1.2),
-                                                      onOpen: (link) async {
-                                                        await Tools.launchURL(
-                                                            link.url);
-                                                      },
-                                                    )
-                                                  : HtmlWidget(
-                                                      listOrderNote[index]
-                                                          .note!,
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 13,
-                                                              height: 1.2),
-                                                    ),
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          formatTime(DateTime.parse(
-                                              listOrderNote[index]
-                                                  .dateCreated!)),
-                                          style: const TextStyle(fontSize: 13),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 100),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-
               const SizedBox(height: 50)
             ],
           ),

@@ -127,8 +127,8 @@ class _PointRewardState extends State<PointReward> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(S.of(context).pointRewardMessage),
-              const SizedBox(height: 5.0),
+              // Text(S.of(context).pointRewardMessage),
+              // const SizedBox(height: 5.0),
               Text(
                 S.of(context).convertPoint(
                       PriceTools.getCurrencyFormatted(
