@@ -11,107 +11,78 @@ extension ProductsFilterMixinWidgetExtension on ProductsFilterMixin {
     bool allowMultipleCategory = false,
     bool allowMultipleTag = false,
   }) {
-    return Row(
-      children: [
-        Expanded(
-          child: title ?? renderFilterTitle(context),
-        ),
-        if (trailingWidget == null) ...[
-          const SizedBox(width: 5),
-          const SizedBox(
-            height: 44,
-            child: VerticalDivider(
-              width: 15,
-              indent: 8,
-              endIndent: 8,
-              color: Colors.black,
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      child: const Icon(Icons.filter_alt,color: Colors.white,),
+      onPressed: () => showModalBottomSheet(
+        context: App.fluxStoreNavigatorKey.currentContext!,
+        isScrollControlled: true,
+        isDismissible: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => Stack(
+          children: [
+            GestureDetector(
+              onTap: Navigator.of(context).pop,
+              child: Container(color: Colors.transparent),
             ),
-          ),
-          const SizedBox(width: 5),
-        ],
-        CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: trailingWidget ??
-              Row(
-                children: [
-                  Text(S.of(context).filter,
-                      style: Theme.of(context).textTheme.bodySmall),
-                  const SizedBox(width: 4),
-                  const Icon(CupertinoIcons.chevron_down, size: 13),
-                ],
-              ),
-          onPressed: () => showModalBottomSheet(
-            context: App.fluxStoreNavigatorKey.currentContext!,
-            isScrollControlled: true,
-            isDismissible: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => Stack(
-              children: [
-                GestureDetector(
-                  onTap: Navigator.of(context).pop,
-                  child: Container(color: Colors.transparent),
-                ),
-                DraggableScrollableSheet(
-                  initialChildSize: 0.7,
-                  minChildSize: 0.2,
-                  maxChildSize: 0.9,
-                  builder: (BuildContext context,
-                      ScrollController scrollController) {
-                    return Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(15.0),
-                              topRight: Radius.circular(15.0),
-                            ),
-                            color: Theme.of(context).colorScheme.background,
-                          ),
-                          child: Stack(
-                            children: [
-                              const DragHandler(),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: BackdropMenu(
-                                  onFilter: onFilter,
-                                  categoryId: categoryIds,
-                                  sortBy: filterSortBy,
-                                  tagId: tagIds,
-                                  listingLocationId: listingLocationId,
-                                  controller: scrollController,
-                                  minPrice: minPrice,
-                                  maxPrice: maxPrice,
-
-                                  /// hide layout filter from Search screen
-                                  showLayout: shouldShowLayout,
-                                  showCategory: showCategory,
-                                  showPrice: showPrice,
-                                  showTag: showTag,
-
-                                  onApply: onCloseFilter,
-                                  allowMultipleCategory: allowMultipleCategory,
-                                  allowMultipleTag: allowMultipleTag,
-
-                                  minFilterPrice:
-                                      productPriceModel.minFilterPrice,
-                                  maxFilterPrice:
-                                      productPriceModel.maxFilterPrice,
-                                ),
-                              ),
-                            ],
-                          ),
+            DraggableScrollableSheet(
+              initialChildSize: 0.7,
+              minChildSize: 0.2,
+              maxChildSize: 0.9,
+              builder: (BuildContext context,
+                  ScrollController scrollController) {
+                return Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(15.0),
+                          topRight: Radius.circular(15.0),
                         ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+                        color: Theme.of(context).colorScheme.background,
+                      ),
+                      child: Stack(
+                        children: [
+                          const DragHandler(),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: BackdropMenu(
+                              onFilter: onFilter,
+                              categoryId: categoryIds,
+                              sortBy: filterSortBy,
+                              tagId: tagIds,
+                              listingLocationId: listingLocationId,
+                              controller: scrollController,
+                              minPrice: minPrice,
+                              maxPrice: maxPrice,
+
+                              /// hide layout filter from Search screen
+                              showLayout: shouldShowLayout,
+                              showCategory: showCategory,
+                              showPrice: showPrice,
+                              showTag: showTag,
+
+                              onApply: onCloseFilter,
+                              allowMultipleCategory: allowMultipleCategory,
+                              allowMultipleTag: allowMultipleTag,
+
+                              minFilterPrice:
+                                  productPriceModel.minFilterPrice,
+                              maxFilterPrice:
+                                  productPriceModel.maxFilterPrice,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-          ),
+          ],
         ),
-        if (trailingWidget == null) const SizedBox(width: 5),
-      ],
+      ),
     );
   }
 

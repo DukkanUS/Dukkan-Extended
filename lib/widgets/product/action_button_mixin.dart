@@ -72,16 +72,16 @@ mixin ActionButtonMixin {
       if (message.isEmpty) {
         Analytics.triggerAddToCart(product, quantity, context);
 
-        FlashHelper.message(
-          context,
-          message: product.name != null
-              ? S.of(context).productAddToCart(product.name!)
-              : S.of(context).addToCartSucessfully,
-          messageStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-          ),
-        );
+        // FlashHelper.message(
+        //   context,
+        //   message: product.name != null
+        //       ? S.of(context).productAddToCart(product.name!)
+        //       : S.of(context).addToCartSucessfully,
+        //   messageStyle: const TextStyle(
+        //     color: Colors.white,
+        //     fontSize: 18.0,
+        //   ),
+        // );
       } else {
         FlashHelper.errorMessage(
           context,

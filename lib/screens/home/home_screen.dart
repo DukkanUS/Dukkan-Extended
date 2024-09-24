@@ -229,7 +229,7 @@ class _HomeScreenState extends BaseScreen<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.shopping_cart_outlined,color: Colors.white,),
-                    Text('${context.watch<CartModel>().totalCartQuantity} View Cart',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+                    Text('${context.watch<CartModel>().cartItemMetaDataInCart.length} View Cart',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
                   ],
                 )),
               ),

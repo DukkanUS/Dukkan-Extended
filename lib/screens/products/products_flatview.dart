@@ -206,39 +206,6 @@ class _ProductFlatViewState extends State<ProductFlatView> with ProductsMixin {
       color: Theme.of(context).colorScheme.background,
       child: Column(
         children: [
-          AppBar(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(20),
-                      bottomLeft: Radius.circular(20))),
-              toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
-              primary: !widget.hasAppBar,
-              titleSpacing: 0,
-              backgroundColor: Theme.of(context).primaryColor,
-              leading: Navigator.of(context).canPop()
-                  ? CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: const Icon(CupertinoIcons.back,color: Colors.white,size: 24,),
-                      onPressed: () => Navigator.of(context).pop(),
-                    )
-                  : null,
-              title: Padding(
-                padding: EdgeInsets.only(
-                    left: Navigator.of(context).canPop() ? 0 : 15),
-                child: CupertinoSearchTextField(
-                  backgroundColor: Colors.white,
-                  controller: widget.searchFieldController,
-                  onChanged: onSearch,
-                  onSubmitted: onSearch,
-                  placeholder: S.of(context).searchForItems,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ),
-              actions: [
-                IconButton(onPressed: (){
-                  shareProductsLink(context);
-                }, icon: const Icon(Icons.share,color: Colors.white,size: 20,))
-              ]),
           Expanded(
             child: Stack(
               children: [

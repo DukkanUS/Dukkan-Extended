@@ -103,10 +103,10 @@ class _ProductCardState extends State<ProductCard> with ActionButtonMixin {
                         const SizedBox(height: 2),
                         StockStatus(
                             product: widget.item, config: widget.config),
-                        ProductRating(
-                          product: widget.item,
-                          config: widget.config,
-                        ),
+                        // ProductRating(
+                        //   product: widget.item,
+                        //   config: widget.config,
+                        // ),
                         SaleProgressBar(
                           width: widget.width,
                           product: widget.item,
@@ -250,7 +250,7 @@ class _ProductCardState extends State<ProductCard> with ActionButtonMixin {
                 Services().widget.enableShoppingCart(widget.item))
               Positioned(
                 right: 0,
-                bottom: 0,
+                bottom: (widget.config.isInHome ?? false) ? 0 : 22,
                 child: Selector<CartModel, int>(
                   selector: (context, cartModel) =>
                   cartModel.productsInCart[widget.item.id] ??
@@ -261,13 +261,6 @@ class _ProductCardState extends State<ProductCard> with ActionButtonMixin {
                       borderRadiusValue:
                       widget.config.cartIconRadius,
                       increaseQuantityFunction: () {
-                        // final minQuantityNeedAdd =
-                        //     widget.item.getMinQuantity();
-                        // var quantityWillAdd = 1;
-                        // if (quantity == 0 &&
-                        //     minQuantityNeedAdd > 1) {
-                        //   quantityWillAdd = minQuantityNeedAdd;
-                        // }
                         addToCart(
                           context,
                           quantity: 1,

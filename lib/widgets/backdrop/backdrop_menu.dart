@@ -371,18 +371,18 @@ class _BackdropMenuState extends State<BackdropMenu> {
               onChanged: (tagId) => _onFilter(tagId: tagId),
             ),
 
-          if (widget.showCategory)
-            CategoryMenu(
-              categoryId: _categoryId,
-              isUseBlog: widget.isUseBlog,
-              isBlog: widget.isBlog,
-              allowMultiple: widget.allowMultipleCategory,
-              onFilter: (category) => _onFilter(
-                categoryId: category,
-                categoryName: null,
-                isSearch: false,
-              ),
-            ),
+          // if (widget.showCategory)
+          //   CategoryMenu(
+          //     categoryId: _categoryId,
+          //     isUseBlog: widget.isUseBlog,
+          //     isBlog: widget.isBlog,
+          //     allowMultiple: widget.allowMultipleCategory,
+          //     onFilter: (category) => _onFilter(
+          //       categoryId: category,
+          //       categoryName: null,
+          //       isSearch: false,
+          //     ),
+          //   ),
 
           /// render Apply button
           if (!ServerConfig().isListingType &&

@@ -105,7 +105,7 @@ class CategoriesScreenState extends State<CategoriesScreen>
                 ),
                 Expanded(
                   child: Text(
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,fontSize: 15),
                     'Search',
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -141,14 +141,14 @@ class CategoriesScreenState extends State<CategoriesScreen>
       ].contains(categoryLayout)
           ? Column(
               children: <Widget>[
-                const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Text('Shop By Aisles',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                    ),
-                  ],
-                ),
+                // const Row(
+                //   children: [
+                //     Padding(
+                //       padding: EdgeInsets.all(10),
+                //       child: Text('Shop By Aisles',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                //     ),
+                //   ],
+                // ),
                 Expanded(
                   child: renderCategories(
                     categoryLayout,

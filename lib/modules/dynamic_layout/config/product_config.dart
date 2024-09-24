@@ -86,6 +86,7 @@ class ProductConfig {
   bool? backgroundWidthMode;
   bool useSort = false;
   bool showCategory = false;
+  bool? isInHome = false;
   String? backgroundBoxFit;
   bool? enableBackground;
   CardDesign cardDesign = CardDesign.card;
@@ -270,6 +271,7 @@ class ProductConfig {
     backgroundImage = json['backgroundImage'];
     spaceWidth = json['spaceWidth'];
     backgroundHeight = json['backgroundHeight'];
+    isInHome = json['isInHome'];
     useSort = bool.tryParse(json['useSort'].toString()) ?? false;
     showCategory = bool.tryParse(json['showCategory'].toString()) ?? false;
     useCircularRadius =
@@ -378,6 +380,7 @@ class ProductConfig {
     map['vMargin'] = vMargin;
     map['hPadding'] = hPadding;
     map['vPadding'] = vPadding;
+    map['isInHome'] = isInHome;
     map['boxShadow'] = boxShadow?.toJson();
     map['backgroundImage'] = backgroundImage;
     map['spaceWidth'] = spaceWidth;

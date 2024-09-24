@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "379864872592-hu399topluu3uru7q6rk820badnj5igc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.evokey.dukkan",
+            "certificate_hash": "56a56ec58a6b3186e5cdc38f2b2d7e28d47aba8d"
+          }
+        },
+        {
           "client_id": "379864872592-sd4vkfarhmjbpo3ebcik8cdpicn7uobc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -48,11 +56,85 @@
               "client_type": 3
             },
             {
-              "client_id": "379864872592-efja38ijdfiudpp9gb46n4fgt7r6f40i.apps.googleusercontent.com",
+              "client_id": "379864872592-3loqs2hjrk9vn4ehg9fgebgruh05hb28.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "tech.evokey.dukkan",
-                "app_store_id": "6502571619"
+                "bundle_id": "us.dukkan.delivery",
+                "app_store_id": "6612033642"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379864872592:android:9ed6fb0d2c34d8ebec4a15",
+        "android_client_info": {
+          "package_name": "us.dukkan.delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379864872592-uq5vre83hqa2vhsn9r5h7sabdtm4vgok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8SoJHtLH9ZKvwBA0U9oSit-PWygWM9Fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379864872592-uq5vre83hqa2vhsn9r5h7sabdtm4vgok.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379864872592-3loqs2hjrk9vn4ehg9fgebgruh05hb28.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "us.dukkan.delivery",
+                "app_store_id": "6612033642"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379864872592:android:ca27cecd2a5a8759ec4a15",
+        "android_client_info": {
+          "package_name": "us.dukkan.manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379864872592-uq5vre83hqa2vhsn9r5h7sabdtm4vgok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8SoJHtLH9ZKvwBA0U9oSit-PWygWM9Fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379864872592-uq5vre83hqa2vhsn9r5h7sabdtm4vgok.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379864872592-3loqs2hjrk9vn4ehg9fgebgruh05hb28.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "us.dukkan.delivery",
+                "app_store_id": "6612033642"
               }
             }
           ]

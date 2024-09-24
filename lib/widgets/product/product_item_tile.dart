@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/tools.dart';
-import '../../models/index.dart' show Product;
+import '../../models/index.dart' show CartModel, Product;
 import '../../modules/dynamic_layout/config/product_config.dart';
 import '../../services/services.dart';
 import 'action_button_mixin.dart';
@@ -16,6 +17,7 @@ import 'index.dart'
         ProductTitle,
         StockStatus,
         StoreName;
+import 'widgets/cart_button_with_quantity.dart';
 
 class ProductItemTileView extends StatelessWidget with ActionButtonMixin {
   final Product item;
@@ -117,7 +119,7 @@ class ProductItemTileView extends StatelessWidget with ActionButtonMixin {
   }
 }
 
-class _ProductDescription extends StatelessWidget {
+class _ProductDescription extends StatelessWidget with ActionButtonMixin{
   final ProductConfig config;
 
   const _ProductDescription({
@@ -201,9 +203,52 @@ class _ProductDescription extends StatelessWidget {
                 const Spacer(),
                 if (config.showHeart && !item.isEmptyProduct())
                   CircleAvatar(child: HeartButton(product: item, size: 18)),
+
                 const SizedBox(width: 8),
               ],
             ),
+            Row(
+              children: [
+                const SizedBox(),
+                const Spacer(),
+                if (config.showCartButtonWithQuantity &&
+                    item.canBeAddedToCartFromList(
+                      enableBottomAddToCart:
+                      config.enableBottomAddToCart,
+                    ) &&
+                    Services().widget.enableShoppingCart(item))
+                  Selector<CartModel, int>(
+                    selector: (context, cartModel) =>
+                    cartModel.productsInCart[item.id] ??
+                        0,
+                    builder: (context, quantity, child) {
+                      return CartButtonWithQuantity(
+                        quantity: quantity,
+                        borderRadiusValue:
+                        config.cartIconRadius,
+                        increaseQuantityFunction: () {
+                          addToCart(
+                            context,
+                            quantity: 1,
+                            product: item,
+                            enableBottomAddToCart:
+                            config.enableBottomAddToCart,
+                          );
+                        },
+                        decreaseQuantityFunction: () {
+                          if (quantity <= 0) return;
+                          updateQuantity(
+                            context: context,
+                            quantity: quantity - 1,
+                            product: item,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                const SizedBox(width: 3,)
+              ],
+            )
           ],
         ),
       ),

@@ -92,7 +92,19 @@ class CustomOrderListItem extends StatelessWidget with ReOderMixin {
                                         ),
                                       ),
                                       const Spacer(),
-                                      Text('\$ ${order.total.toString()}')
+                                      Column(
+                                        children: [
+                                          CustomOrderStatusWidget(
+                                            title: S.of(context).status,
+                                            detail: order.status == OrderStatus.unknown &&
+                                                order.orderStatus != null
+                                                ? order.orderStatus
+                                                : order.status!.content,
+                                          ),
+                                          const SizedBox(height: 5,),
+                                          Text('\$ ${order.total.toString()}'),
+                                        ],
+                                      )
                                     ],
                                   ),
                                   const SizedBox(height: 5,),
@@ -227,6 +239,7 @@ class CustomOrderListItem extends StatelessWidget with ReOderMixin {
                                             color: Theme.of(context)
                                                 .primaryColor)))),
                             child: Text(
+                              order.status.toString().toLowerCase() == 'orderstatus.processing' ? 'Edit' :
                               'View Details',
                               style: TextStyle(
                                   color: Theme.of(context).primaryColor),

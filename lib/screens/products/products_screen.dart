@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:easy_debounce/easy_debounce.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:inspireui/inspireui.dart';
 import 'package:provider/provider.dart';
 
@@ -386,11 +389,85 @@ class _ProductsScreenMobileState extends State<ProductsScreenMobile>
                                 ratioProductImage: ratioProductImage,
                                 productListItemHeight: productListItemHeight,
                                 width: constraint.maxWidth,
-                                appbar: renderFilters(
-                                  context,
-                                  allowMultipleCategory: allowMultipleCategory,
-                                  allowMultipleTag: allowMultipleTag,
-                                ),
+                                useCustomAppBar: true,
+                                appbar: SliverAppBar(
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(20),
+                                            bottomLeft: Radius.circular(20))),
+                                    toolbarHeight:
+                                        MediaQuery.sizeOf(context).height *
+                                            0.07,
+                                    primary: true,
+                                    titleSpacing: 0,
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                    leading: Navigator.of(context).canPop()
+                                        ? CupertinoButton(
+                                            padding: EdgeInsets.zero,
+                                            child: const Icon(
+                                              CupertinoIcons.back,
+                                              color: Colors.white,
+                                              size: 24,
+                                            ),
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                          )
+                                        : null,
+                                    title: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: Navigator.of(context).canPop()
+                                              ? 0
+                                              : 15),
+                                      child: CupertinoSearchTextField(
+                                        backgroundColor: Colors.white,
+                                        controller: _searchFieldController,
+                                        onChanged: (String searchText) => {
+                                          onFilter(
+                                            minPrice: minPrice,
+                                            maxPrice: maxPrice,
+                                            categoryId: categoryIds,
+                                            tagId: tagIds,
+                                            listingLocationId:
+                                                listingLocationId,
+                                            search: searchText,
+                                            isSearch: true,
+                                          )
+                                        },
+                                        onSubmitted: (String searchText) => {
+                                          onFilter(
+                                            minPrice: minPrice,
+                                            maxPrice: maxPrice,
+                                            categoryId: categoryIds,
+                                            tagId: tagIds,
+                                            listingLocationId:
+                                                listingLocationId,
+                                            search: searchText,
+                                            isSearch: true,
+                                          )
+                                        },
+                                        placeholder:
+                                            S.of(context).searchForItems,
+                                        style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,fontSize: 15),
+                                      ),
+                                    ),
+                                    actions: [
+                                      IconButton(
+                                          onPressed: () {
+                                            shareProductsLink(context);
+                                          },
+                                          icon: const Icon(
+                                            Icons.share,
+                                            color: Colors.white,
+                                            size: 20,
+                                          )),
+                                      renderFilters(
+                                        context,
+                                        allowMultipleCategory:
+                                            allowMultipleCategory,
+                                        allowMultipleTag: allowMultipleTag,
+                                      )
+                                    ]),
                                 header: [
                                   ProductCategoryMenu(
                                     imageLayout: true,

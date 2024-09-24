@@ -29,7 +29,7 @@ class CategoryColumnItem extends StatelessWidget {
         Text(
           category.name!,
           style: const TextStyle(
-              color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),
+              color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),
           textAlign: TextAlign.center,
         ),
       ],

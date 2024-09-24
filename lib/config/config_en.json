@@ -10,6 +10,91 @@
       "height": 20
     },
     {
+      "layout": "category",
+      "type": "image",
+      "wrap": false,
+      "showShortDescription": true,
+      "size": 1.0,
+      "radius": 100.0,
+      "spacing": 12.0,
+      "items": [
+        {
+          "category": 132,
+          "name": "Bakery",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Nature-s-Own-Hot-Dog-Butter-Buns-15-oz-8-Count_a2df0d1d-a1e5-4798-b378-2b31e66952bc.ae50c444259d0766db0261007cbdfede.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 133,
+          "name": "Beverages",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Naked-No-Sugar-Added-Non-GMO-Mighty-Mango-Fruit-Juice-64-Fl-Oz-Bottle_2a1023f0-6160-45c3-9e1d-60076f8bb274.a7c092444601550079f52bb3d95ddf13.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 138,
+          "name": "Coffee",
+          "image": "https://dukkan.us/wp-content/uploads/2024/05/GUEST_14b5e172-fb90-43d4-92b4-17355c4e7f8c.jpeg",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },{
+          "category": 132,
+          "name": "Bakery",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Nature-s-Own-Hot-Dog-Butter-Buns-15-oz-8-Count_a2df0d1d-a1e5-4798-b378-2b31e66952bc.ae50c444259d0766db0261007cbdfede.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 133,
+          "name": "Beverages",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Naked-No-Sugar-Added-Non-GMO-Mighty-Mango-Fruit-Juice-64-Fl-Oz-Bottle_2a1023f0-6160-45c3-9e1d-60076f8bb274.a7c092444601550079f52bb3d95ddf13.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 138,
+          "name": "Coffee",
+          "image": "https://dukkan.us/wp-content/uploads/2024/05/GUEST_14b5e172-fb90-43d4-92b4-17355c4e7f8c.jpeg",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        }
+      ],
+      "line": false,
+      "marginLeft": 0.0,
+      "marginRight": 0.0,
+      "marginTop": 10.0,
+      "marginBottom": 10.0,
+      "paddingX": 10.0,
+      "paddingY": 10.0,
+      "marginX": 0.0,
+      "marginY": 0.0,
+      "hideTitle": false,
+      "noBackground": false,
+      "imageBorderWidth": 0.0,
+      "imageBorderColor": "ffe61a00",
+      "imageBorderStyle": "dot",
+      "imageSpacing": 0.0,
+      "labelFontSize": 14.0,
+      "horizontalItem": false,
+      "separateWidth": 24.0,
+      "gradientStyle": false,
+      "border": 0.6,
+      "enableBorder": false,
+      "textAlignment": "topCenter",
+      "imageBoxFit": "fitWidth",
+      "itemSize": {
+        "width": 123.0,
+        "height": 152.0
+      }
+    },
+    {
       "parallax": false,
       "doubleTapToFullScreen": false,
       "enableBackground": false,
@@ -81,6 +166,7 @@
       "height": 20
     },
     {
+      "isInHome": true,
       "showCartIcon": false,
       "imageBoxfit": "cover",
       "showStockStatus": true,
@@ -97,7 +183,7 @@
       "parallaxImageRatio": 1.2,
       "showCartButtonWithQuantity": true,
       "vMargin": 0,
-      "showOnlyImage": false,
+      "showOnlyImage": true,
       "onSale": false,
       "productType": false,
       "image": "",
@@ -109,7 +195,7 @@
       "hidePrice": false,
       "rows": 1,
       "enableBottomAddToCart": false,
-      "layout": "threeColumn",
+      "layout": "twoColumn",
       "enableRating": false,
       "imageRatio": 1.2,
       "useCircularRadius": true,
@@ -160,7 +246,7 @@
       "hidePrice": false,
       "rows": 1,
       "enableBottomAddToCart": false,
-      "layout": "threeColumn",
+      "layout": "twoColumn",
       "enableRating": false,
       "imageRatio": 1.2,
       "useCircularRadius": true,
@@ -211,7 +297,7 @@
       "hidePrice": false,
       "rows": 1,
       "enableBottomAddToCart": false,
-      "layout": "threeColumn",
+      "layout": "twoColumn",
       "enableRating": false,
       "imageRatio": 1.2,
       "useCircularRadius": true,
@@ -294,7 +380,7 @@
       "hidePrice": false,
       "rows": 1,
       "enableBottomAddToCart": false,
-      "layout": "threeColumn",
+      "layout": "twoColumn",
       "enableRating": false,
       "imageRatio": 1.2,
       "useCircularRadius": true,
@@ -409,7 +495,7 @@
       "hidePrice": false,
       "rows": 1,
       "enableBottomAddToCart": false,
-      "layout": "threeColumn",
+      "layout": "twoColumn",
       "enableRating": false,
       "imageRatio": 1.2,
       "useCircularRadius": true,

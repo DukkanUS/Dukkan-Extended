@@ -32,8 +32,11 @@ class ProductList extends StatefulWidget {
   final Widget? appbar;
   final ScrollController? scrollController;
 
+  final bool useCustomAppBar;
+
   const ProductList({
     this.isFetching = false,
+    this.useCustomAppBar = false,
     this.isEnd = true,
     this.errMsg,
     this.products,
@@ -203,7 +206,7 @@ class _ProductListState extends State<ProductList> {
       child: CustomScrollView(
         controller: widget.scrollController,
         slivers: <Widget>[
-          if (widget.appbar != null)
+          if (widget.appbar != null && widget.useCustomAppBar == false)
             SliverAppBar(
               primary: false,
               titleSpacing: 10,
@@ -216,7 +219,9 @@ class _ProductListState extends State<ProductList> {
               leading: const SizedBox(),
               title: widget.appbar,
               actions: null,
-            ),
+            )else if (widget.appbar != null)
+              widget.appbar!,
+
           SliverToBoxAdapter(
               child: Column(
             children: widget.header ?? [],
@@ -302,7 +307,12 @@ class _ProductListState extends State<ProductList> {
           return Services().widget.renderProductItemTileView(
               item: products![index],
               padding: const EdgeInsets.only(bottom: 10),
-              config: ProductConfig.empty()..showHeart = true);
+              config:  ProductConfig.empty()..showCartButtonWithQuantity = true
+          ..showHeart = true..enableBottomAddToCart = products[index].isVariableProduct ..showCartButton = false..showQuantity = false
+          ..imageRatio = widget.ratioProductImage ?? 1.2
+          ..showCountDown = kSaleOffProduct.showCountDown &&
+          widget.layout == Layout.saleOff
+          ..showCartIcon = false);
         },
         childCount: products?.length,
       ),
