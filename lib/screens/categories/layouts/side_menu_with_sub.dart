@@ -78,64 +78,68 @@ class SideMenuSubCategoriesState extends State<SideMenuSubCategories> {
 
         var icons = getListIcons(categories);
 
-        return Row(
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              flex: 3,
-              child: PagingList<CategoryModel, Category>(
-                selectorData: (_) => categories,
-                itemBuilder: (context, category, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6.0,
-                        vertical: 12.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: selectedIndex == index
-                            ? theme.primaryColor.withOpacity(0.1)
-                            : Colors.transparent,
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
+              flex: 1,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(categories.length, (index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 12.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: selectedIndex == index
+                              ? theme.primaryColor.withOpacity(0.1)
+                              : Colors.transparent,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 4.0,
+                            left: 6,
+                          ),
+                          child: AnimatedDefaultTextStyle(
+                            style: selectedIndex == index
+                                ? theme.textTheme.bodySmall!.copyWith(
+                              fontSize: 16,
+                              color: theme.primaryColor,
+                              fontWeight: FontWeight.w600,
+                            )
+                                : theme.textTheme.bodySmall!.copyWith(
+                              fontSize: 14,
+                              color: theme.colorScheme.secondary,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            duration: const Duration(milliseconds: 200),
+                            child: Text(
+                              categories[index].name?.toUpperCase() ?? '',
+                            ),
+                          ),
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 4.0,
-                          left: 6,
-                        ),
-                        child: AnimatedDefaultTextStyle(
-                          style: selectedIndex == index
-                              ? theme.textTheme.bodySmall!.copyWith(
-                                  fontSize: 11,
-                                  color: theme.primaryColor,
-                                  fontWeight: FontWeight.w600,
-                                )
-                              : theme.textTheme.bodySmall!.copyWith(
-                                  fontSize: 11,
-                                  color: theme.colorScheme.secondary,
-                                ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          duration: const Duration(milliseconds: 200),
-                          child:
-                              Text(categories[index].name?.toUpperCase() ?? ''),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                    );
+                  }),
+                ),
               ),
             ),
+
             Expanded(
-              flex: 7,
+              flex: 9,
               child: Builder(
                 builder: (context) {
                   var category = categories[selectedIndex];
@@ -253,28 +257,28 @@ class _StateGridSubCategory extends State<GridSubCategory> {
                   [
                     if (widget.parentCategoryImage != null &&
                         widget.parentCategoryImage!.isNotEmpty)
-                      GestureDetector(
-                        onTap: _seeAllProduct,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxHeight: 150.0,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(12.0)),
-                                  child: FluxImage(
-                                    imageUrl: widget.parentCategoryImage!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: _seeAllProduct,
+                      //   child: ConstrainedBox(
+                      //     constraints: const BoxConstraints(
+                      //       maxHeight: 150.0,
+                      //     ),
+                      //     child: Row(
+                      //       children: [
+                      //         Expanded(
+                      //           child: ClipRRect(
+                      //             borderRadius: const BorderRadius.all(
+                      //                 Radius.circular(12.0)),
+                      //             child: FluxImage(
+                      //               imageUrl: widget.parentCategoryImage!,
+                      //               fit: BoxFit.cover,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                     if ((widget.parentCategoryImage != null &&
                             widget.parentCategoryImage!.isNotEmpty) &&
                         (categories.isEmpty))

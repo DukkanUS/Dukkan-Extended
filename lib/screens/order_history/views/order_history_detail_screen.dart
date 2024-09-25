@@ -16,6 +16,7 @@ import '../../../models/entities/aftership.dart';
 import '../../../models/index.dart' show AppModel, OrderStatus, OrderStatusExtension;
 
 // import '../../../models/order/order.dart';
+import '../../../modules/re_order/widgets/re_order_item_list.dart';
 import '../../../services/index.dart';
 import '../../../widgets/common/box_comment.dart';
 import '../../../widgets/common/webview.dart';
@@ -438,10 +439,15 @@ class _OrderHistoryDetailScreenState
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white, backgroundColor: HexColor('#056C99'),
                                 ),
-                                onPressed: refundOrder,
-                                child: Text(
-                                    S.of(context).refundRequest.toUpperCase(),
+                                onPressed: ()=> (context.read<ReturnRequestProvider>().returnsList?.items?.isNotEmpty ?? false) ? null :refundOrder(orderHistoryDetailModel: model),
+                                child: (context.read<ReturnRequestProvider>().returnsList?.status?.isNotEmpty ?? false) ?
+                                Text(
+                                    'Request status : ${context.read<ReturnRequestProvider>().returnsList?.status}' ?? '',
                                     style: const TextStyle(
+                                        fontWeight: FontWeight.w700)):
+                                const Text(
+                                    'Request return',
+                                    style: TextStyle(
                                         fontWeight: FontWeight.w700))),
                           ),
                         )
@@ -494,53 +500,30 @@ class _OrderHistoryDetailScreenState
     }
   }
 
-  Future<void> refundOrder() async {
-    var loadingContext = context;
-    _showLoading((BuildContext context) {
-      loadingContext = context;
-    });
-    try {
-      await orderHistoryModel.createRefund();
-      _hideLoading(loadingContext);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).refundOrderSuccess)));
-    } catch (err) {
-      _hideLoading(loadingContext);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).refundOrderFailed)));
-    }
-  }
-
-  void _showLoading(Function(BuildContext) onGetContext) {
-    showDialog(
+  Future<void> refundOrder({required OrderHistoryDetailModel orderHistoryDetailModel}) async {
+    await showModalBottomSheet(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        onGetContext(context);
-        return Center(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white30,
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-            padding: const EdgeInsets.all(50.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                kLoadingWidget(context),
-              ],
-            ),
-          ),
-        );
-      },
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 1,
+        builder: (BuildContext context, ScrollController scrollController) {
+          return ReturnItemList(
+            order :orderHistoryDetailModel.order,
+            lineItems: orderHistoryDetailModel.order.lineItems,
+            b2bKingIsB2BOrder: orderHistoryDetailModel.order.b2bKingIsB2BOrder,
+          );
+        },
+      ),
     );
   }
 
-  void _hideLoading(BuildContext context) {
-    Navigator.of(context).pop();
-  }
+
 
   String formatTime(DateTime time) {
     return DateFormat('dd/MM/yyyy, HH:mm').format(time);

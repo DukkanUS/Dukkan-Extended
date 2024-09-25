@@ -710,7 +710,7 @@
       "defaultTab": false,
       "showSearch": true,
       "icon": "assets/icons/tabs/list_tap.png",
-      "categoryLayout": "column",
+      "categoryLayout": "sideMenuWithSub",
       "key": "UzbsxiXCRp"
     },
     {

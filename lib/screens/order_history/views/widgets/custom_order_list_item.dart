@@ -393,6 +393,15 @@ class CustomOrderStatusWidget extends StatelessWidget {
           statusOrderColor = Theme.of(context).primaryColor;
           break;
         }
+        case 'cancelled':
+        {
+          statusOrderColor = Colors.red;
+          break;
+        }
+      default: {
+        statusOrderColor = Theme.of(context).primaryColor;
+        break;
+      }
     }
 
     return Container(

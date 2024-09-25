@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:inspireui/inspireui.dart';
 import 'package:intl/intl.dart';
@@ -9,9 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../common/config.dart';
 import '../../../../common/constants.dart';
 import '../../../../common/tools.dart';
-import '../../../../common/tools/flash.dart';
-import '../../../../custom/custom_entities/returns_model.dart';
-import '../../../../custom/providers/return_request_provider.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../models/entities/store_delivery_date.dart';
 import '../../../../models/index.dart';
@@ -51,9 +46,6 @@ class _StateProductOrderItem extends BaseScreen<ProductOrderItem>
   Product? product;
   late String imageFeatured = kDefaultImage;
   bool isLoading = true;
-
-
-  late  BuildContext loadingContext;
 
   @override
   void afterFirstLayout(BuildContext context) async {
@@ -97,7 +89,6 @@ class _StateProductOrderItem extends BaseScreen<ProductOrderItem>
   }
 
   Widget _buildItemDesc(String title, String content) {
-    var returnsList = context.watch<ReturnRequestProvider>().returnsList;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 3.0,
@@ -125,64 +116,7 @@ class _StateProductOrderItem extends BaseScreen<ProductOrderItem>
               color: Theme.of(context).primaryColor,
             ),
           ),
-          if (returnsList?.items
-                  ?.where((element) =>
-                      element.itemId.toString() == widget.product.productId)
-                  .isNotEmpty ??
-              false)
-            Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(.2),
-                  borderRadius: BorderRadius.circular(10)),
-              height: MediaQuery.sizeOf(context).height * 0.025,
-              width: MediaQuery.sizeOf(context).width * 0.35,
-              child: const Center(
-                  child: Text(
-                'Return Requested',
-              )),
-            )
-          else
-            GestureDetector(
-              onTap: () async {
-                showLoading(context);
-              var x =  await  context
-                    .read<ReturnRequestProvider>()
-                    .sendReturnRequest(
-                  request: ReturnsRequest(items: [
-                      Items(
-                          itemId:
-                              int.tryParse(widget.product.productId ?? ''),
-                          itemName: widget.product.name,
-                          itemPrice: double.tryParse(
-                              widget.product.total ?? '0.0'),
-                          itemQty: 1)
-                    ], orderId: int.parse(widget.orderId)),
-                  id: int.parse(widget.orderId)
-                );
-                hideLoading();
-                if(x) {
-                  await FlashHelper.message(
-                    context,
-                    message: 'Your Request Sent Successfully',
-                    messageStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10)),
-                height: MediaQuery.sizeOf(context).height * 0.025,
-                width: MediaQuery.sizeOf(context).width * 0.35,
-                child: const Center(
-                    child: Text(
-                  'Request Return',
-                )),
-              ),
-            ),
+          const Spacer(),
           Text(
             content,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -193,29 +127,6 @@ class _StateProductOrderItem extends BaseScreen<ProductOrderItem>
         ],
       ),
     );
-  }
-
-   void showLoading(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        loadingContext = context;
-        return Center(
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white30,
-                borderRadius: BorderRadius.circular(5.0)),
-            padding: const EdgeInsets.all(50.0),
-            child: kLoadingWidget(context),
-          ),
-        );
-      },
-    );
-  }
-
-   void hideLoading() {
-    Navigator.of(loadingContext).pop();
   }
 
   @override

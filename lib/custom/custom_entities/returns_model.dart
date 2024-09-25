@@ -29,14 +29,16 @@ class Items {
   String? itemName;
   int? itemQty;
   double? itemPrice;
+  String? returnReason;
 
-  Items({this.itemId, this.itemName, this.itemQty, this.itemPrice});
+  Items({this.itemId, this.itemName, this.itemQty, this.itemPrice,this.returnReason});
 
   Items.fromJson(Map<String, dynamic> json) {
     itemId = json['item_id'];
     itemName = json['item_name'];
     itemQty = json['item_qty'];
     itemPrice = double.tryParse(json['item_price'].toString());
+    returnReason = json['return_reason'];
   }
 
   Map<String, dynamic> toJson() {
@@ -45,6 +47,7 @@ class Items {
     data['item_name'] = itemName;
     data['item_qty'] = itemQty;
     data['item_price'] = itemPrice;
+    data['return_reason'] = returnReason;
     return data;
   }
 }
@@ -53,8 +56,9 @@ class Returns {
   String? returnRequestId;
   String? orderId;
   List<Items>? items;
+  String? status;
 
-  Returns({this.returnRequestId, this.orderId, this.items});
+  Returns({this.returnRequestId, this.orderId, this.items,this.status});
 
   Returns.fromJson(Map<String, dynamic> json) {
     returnRequestId = json['return_request_id'].toString();
@@ -65,6 +69,7 @@ class Returns {
         items!.add(Items.fromJson(v));
       });
     }
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -74,6 +79,7 @@ class Returns {
     if (items != null) {
       data['items'] = items!.map((v) => v.toJson()).toList();
     }
+    data['status'] = status;
     return data;
   }
 }

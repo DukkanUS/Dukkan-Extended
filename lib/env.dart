@@ -130,7 +130,7 @@ Map<String, dynamic> environment = {
     "OrderNotesWithPrivateNote": true,
     "OrderNotesLinkSupport": false,
     "inAppUpdateForAndroid": {"enable": false, "typeUpdate": "flexible"},
-    "categoryConfig": {"enableLargeCategories": true, "deepLevel": 3},
+    "categoryConfig": {"enableLargeCategories": false, "deepLevel": 3},
     "pinnedProductTags": [],
     "showOpeningStatus": true,
     "TimeShowToastMessage": 1500,
@@ -207,7 +207,8 @@ Map<String, dynamic> environment = {
       {
         "image": "assets/images/fogg-uploading-1.png",
         "title": "Connect Surrounding World",
-        "desc": "See all things happening around you just by a click in your phone. Fast, convenient and clean."
+        "desc":
+            "See all things happening around you just by a click in your phone. Fast, convenient and clean."
       },
       {
         "image": "assets/images/fogg-order-completed.png",
@@ -316,7 +317,7 @@ Map<String, dynamic> environment = {
     "EnableAlphanumericZipCode": true,
     "allowSearchingAddress": true,
     "ShowOrderNotes": false,
-    "EnableRefundCancel": true,
+    "EnableRefundCancel": true
   },
   "payments": {
     "expresspay_apple_pay": "assets/icons/payment/apple-pay-mark.svg",
@@ -334,7 +335,8 @@ Map<String, dynamic> environment = {
     "paypal": "assets/icons/payment/paypal.svg"
   },
   "stripeConfig": {
-    "publishableKey": "pk_test_51PDt1ZP5yi9m9h8KWOSAdrihaqSxkgZvFwXMljDWOvQrqX945eSjDdrd5raPfZDqMv5IDxSUvwATRxaIUXRWYOmB00nVO6TpDJ",
+    "publishableKey":
+        "pk_test_51PDt1ZP5yi9m9h8KWOSAdrihaqSxkgZvFwXMljDWOvQrqX945eSjDdrd5raPfZDqMv5IDxSUvwATRxaIUXRWYOmB00nVO6TpDJ",
     "enableGooglePay": true,
     "merchantCountryCode": "US",
     "useV1": false,
@@ -344,18 +346,21 @@ Map<String, dynamic> environment = {
     "enabled": true,
     "merchantDisplayName": "merchant tech evokey dukkan",
     "merchantIdentifier": "merchant.tech.evokey.dukkan",
-    "serverEndpoint": "https://phpstack-1261530-4670073.cloudwaysapps.com/stripe-server/stripe-v4",
+    "serverEndpoint":
+        "https://phpstack-1261530-4670073.cloudwaysapps.com/stripe-server/stripe-v4",
     "enableApplePay": true,
     "returnUrl": "fluxstore://inspireui.com",
     "saveCardAfterCheckout": true,
     "production": false
   },
   "paypalConfig": {
-    "clientId": "ASlpjFreiGp3gggRKo6YzXMyGM6-NwndBAQ707k6z3-WkSSMTPDfEFmNmky6dBX00lik8wKdToWiJj5w",
+    "clientId":
+        "ASlpjFreiGp3gggRKo6YzXMyGM6-NwndBAQ707k6z3-WkSSMTPDfEFmNmky6dBX00lik8wKdToWiJj5w",
     "production": false,
     "paymentMethodId": "paypal",
     "nativeMode": false,
-    "secret": "ECbFREri7NFj64FI_9WzS6A0Az2DqNLrVokBo0ZBu4enHZKMKOvX45v9Y1NBPKFr6QJv2KaSp5vk5A1G",
+    "secret":
+        "ECbFREri7NFj64FI_9WzS6A0Az2DqNLrVokBo0ZBu4enHZKMKOvX45v9Y1NBPKFr6QJv2KaSp5vk5A1G",
     "returnUrl": "tech.evokey.dukkan://paypalpay",
     "enabled": true
   },
@@ -373,7 +378,8 @@ Map<String, dynamic> environment = {
   "mercadoPagoConfig": {
     "production": false,
     "paymentMethodId": "woo-mercado-pago-basic",
-    "accessToken": "TEST-5726912977510261-102413-65873095dc5b0a877969b7f6ffcceee4-613803978",
+    "accessToken":
+        "TEST-5726912977510261-102413-65873095dc5b0a877969b7f6ffcceee4-613803978",
     "enabled": true
   },
   "payTmConfig": {
@@ -398,7 +404,8 @@ Map<String, dynamic> environment = {
     "enabled": true
   },
   "myFatoorahConfig": {
-    "apiToken": "rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL",
+    "apiToken":
+        "rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL",
     "production": false,
     "paymentMethodId": "myfatoorah_v2",
     "accountCountry": "KW",
@@ -416,7 +423,8 @@ Map<String, dynamic> environment = {
     "enabled": false
   },
   "xenditConfig": {
-    "secretApiKey": "xnd_development_4E9ql5zFiC1BBmhK2r7wr9mNYyyvjLs0fIal00tGuHEj1iEYCu7B7tCUudv3Xe",
+    "secretApiKey":
+        "xnd_development_4E9ql5zFiC1BBmhK2r7wr9mNYyyvjLs0fIal00tGuHEj1iEYCu7B7tCUudv3Xe",
     "paymentMethodId": "xendit",
     "enabled": false
   },
@@ -571,7 +579,8 @@ Map<String, dynamic> environment = {
     "version": "2"
   },
   "openAIConfig": {
-    "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0a3JxdnRzbHVqZHpqeGhqb2N1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU5OTI5MzMsImV4cCI6MTk5MTU2ODkzM30.qKtfNHhL6AKqGsmDfjMq90bIWIWlnN3UVgnwcLF_vGY",
+    "supabaseAnonKey":
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0a3JxdnRzbHVqZHpqeGhqb2N1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU5OTI5MzMsImV4cCI6MTk5MTU2ODkzM30.qKtfNHhL6AKqGsmDfjMq90bIWIWlnN3UVgnwcLF_vGY",
     "revenueProductsIos": ["gpt_3999_1y_1w0", "gpt_399_1m_1w0"],
     "enableSubscription": false,
     "enableInputKey": false,
@@ -584,7 +593,8 @@ Map<String, dynamic> environment = {
   "smartChat": [
     {
       "app": "firebase",
-      "imageData": "https://trello.com/1/cards/611a38c89ebde41ec7cf10e2/attachments/611a392cceb1b534aa92a83e/previews/611a392dceb1b534aa92a84d/download",
+      "imageData":
+          "https://trello.com/1/cards/611a38c89ebde41ec7cf10e2/attachments/611a392cceb1b534aa92a83e/previews/611a392dceb1b534aa92a84d/download",
       "description": "Realtime Chat"
     },
     {
@@ -610,8 +620,10 @@ Map<String, dynamic> environment = {
       "iconData": "facebookMessenger"
     },
     {
-      "app": "https://twitter.com/messages/compose?recipient_id=821597032011931648",
-      "imageData": "https://trello.com/1/cards/611a38c89ebde41ec7cf10e2/attachments/611a38d026894f10dc1091c8/previews/611a38d126894f10dc1091d6/download",
+      "app":
+          "https://twitter.com/messages/compose?recipient_id=821597032011931648",
+      "imageData":
+          "https://trello.com/1/cards/611a38c89ebde41ec7cf10e2/attachments/611a38d026894f10dc1091c8/previews/611a38d126894f10dc1091d6/download",
       "description": "Twitter Chat"
     }
   ],
