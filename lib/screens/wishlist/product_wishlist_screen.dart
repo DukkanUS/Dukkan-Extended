@@ -39,6 +39,32 @@ class _WishListState extends State<ProductWishListScreen> with AppBarMixin {
     final isDesktop = Layout.isDisplayDesktop(context);
 
     return renderScaffold(
+      floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: GestureDetector(
+          onTap: (){
+            NavigateTools.navigateToCart(context);
+          },
+          child: Container(
+            width: 175,
+            height: 44,
+            decoration: ShapeDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(26.50),
+              ),
+            ),
+            child:  Center(child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.shopping_cart_outlined,color: Colors.white,),
+                Text('${context.watch<CartModel>().cartItemMetaDataInCart.length} View Cart',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+              ],
+            )),
+          ),
+        ),
+      ) : const SizedBox.shrink(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Theme.of(context).colorScheme.background,
       routeName: RouteList.wishlist,
       secondAppBar: isDesktop

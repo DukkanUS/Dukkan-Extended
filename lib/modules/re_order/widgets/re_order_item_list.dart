@@ -516,6 +516,8 @@ class ReturnItemList extends StatefulWidget {
 class _ReturnItemListState extends State<ReturnItemList> {
   final Map<String, int> _itemCounts = {};
   final Map<String, String?> _selectedReasons = {};
+  final Map<String, bool> _selectedItems =
+      {};
   final bool _isLoading = false;
   late BuildContext loadingContext;
 
@@ -536,33 +538,36 @@ class _ReturnItemListState extends State<ReturnItemList> {
     for (var item in widget.lineItems) {
       final id = item.id;
       if (id != null) {
-        _itemCounts[id] = item.quantity ?? 1; // Initializing the quantity
-        _selectedReasons[id] = null; // No reason selected initially
+        _itemCounts[id] = item.quantity ?? 1;
+        _selectedReasons[id] = null;
+        _selectedItems[id] = false;
       }
     }
   }
 
-  void _removeItem(String id) {
-    setState(() {
-      widget.lineItems.removeWhere((item) => item.id == id);
-      _itemCounts.remove(id);
-      _selectedReasons.remove(id);
-    });
-  }
-
   void _requestReturn() async {
+    var selectedItems = widget.lineItems
+        .where((item) => _selectedItems[item.id] == true)
+        .toList();
+
+    if (selectedItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select at least one item.')));
+      return;
+    }
+
     var allReasonsSelected =
-        _selectedReasons.values.every((reason) => reason != null);
+        selectedItems.every((item) => _selectedReasons[item.id] != null);
 
     if (!allReasonsSelected) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please select a reason for each item.')));
+          content: Text('Please select a reason for each selected item.')));
       return;
     }
 
     showLoading(context);
     var itemList = <Items>[];
-    for (var item in widget.lineItems) {
+    for (var item in selectedItems) {
       final id = item.id;
       itemList.add(Items(
           itemPrice: double.tryParse(item.total ?? '0.0'),
@@ -571,14 +576,16 @@ class _ReturnItemListState extends State<ReturnItemList> {
           itemQty: _itemCounts[id],
           returnReason: _selectedReasons[id]));
     }
-    await Future.delayed(Duration(seconds: 2));
+
+    await Future.delayed(const Duration(seconds: 2));
     var x = await context.read<ReturnRequestProvider>().sendReturnRequest(
         request: ReturnsRequest(
             orderId: int.parse(widget.order?.id ?? ''), items: itemList),
         id: int.parse(widget.order?.id ?? ''));
     hideLoading();
+
     if (x) {
-       unawaited(FlashHelper.message(
+      unawaited(FlashHelper.message(
         context,
         message: 'Your Request Sent Successfully',
         messageStyle: const TextStyle(
@@ -586,7 +593,6 @@ class _ReturnItemListState extends State<ReturnItemList> {
           fontSize: 18.0,
         ),
       ));
-      Navigator.of(context).pop();
       Navigator.of(context).pop();
     }
   }
@@ -614,24 +620,6 @@ class _ReturnItemListState extends State<ReturnItemList> {
     Navigator.of(loadingContext).pop();
   }
 
-  void _printItems() {
-    bool allReasonsSelected =
-        _selectedReasons.values.every((reason) => reason != null);
-
-    if (!allReasonsSelected) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please select a reason for each item.')));
-      return;
-    }
-
-    // Logic to print the list of items with selected reasons and quantities
-    for (var item in widget.lineItems) {
-      final id = item.id;
-      print(
-          'Item: ${item.name}, Quantity: ${_itemCounts[id]}, Reason: ${_selectedReasons[id]}');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return LoadingBody(
@@ -654,13 +642,28 @@ class _ReturnItemListState extends State<ReturnItemList> {
             ),
           ),
           Positioned(
-            top: 44.0,
+            top: 10.0, // Adjust this value to position the heading properly
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              alignment: Alignment.center,
+              child: Text(
+                'Select the items you need help with',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 70.0,
             bottom: 0,
             right: 0,
             left: 0,
             child: SafeArea(
               child: SingleChildScrollView(
-                // Wrap to avoid overflow
                 child: Column(
                   children: [
                     ListView.separated(
@@ -670,8 +673,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
                         right: 16.0,
                       ),
                       shrinkWrap: true,
-                      // Important to avoid taking up all vertical space
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         final product = widget.lineItems[index];
                         final productId = product.id;
@@ -721,7 +723,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                       Row(
                                         children: [
                                           IconButton(
-                                            icon: Icon(Icons.remove),
+                                            icon: const Icon(Icons.remove),
                                             onPressed: () {
                                               setState(() {
                                                 if (_itemCounts[productId]! >
@@ -736,7 +738,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                           Text(_itemCounts[productId]
                                               .toString()),
                                           IconButton(
-                                            icon: Icon(Icons.add),
+                                            icon: const Icon(Icons.add),
                                             onPressed: () {
                                               setState(() {
                                                 if (_itemCounts[productId]! <
@@ -748,43 +750,49 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                               });
                                             },
                                           ),
-                                          Spacer(),
-                                          IconButton(
-                                            icon: Icon(Icons.delete),
-                                            onPressed: () {
-                                              _removeItem(productId!);
+                                          const Spacer(),
+                                          Checkbox(
+                                            activeColor: Theme.of(context).primaryColor,
+                                            value: _selectedItems[productId],
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                _selectedItems[productId!] =
+                                                    value ?? false;
+                                              });
                                             },
                                           ),
                                         ],
                                       ),
-                                      SizedBox(
-                                        height: 80,
-                                        width: 300,
-                                        child: DropdownButtonFormField<String>(
-                                          isExpanded: true,
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: const InputDecoration(
-                                            labelText: 'Reason',
-                                            border: OutlineInputBorder(),
+                                      // Show dropdown if item is selected
+                                      if (_selectedItems[productId] == true)
+                                        SizedBox(
+                                          height: 80,
+                                          width: 300,
+                                          child:
+                                              DropdownButtonFormField<String>(
+                                            isExpanded: true,
+                                            decoration: const InputDecoration(
+                                              labelText: 'Reason',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                            value: _selectedReasons[productId],
+                                            items: reasons.map((reason) {
+                                              return DropdownMenuItem<String>(
+                                                value: reason,
+                                                child: Text(reason),
+                                              );
+                                            }).toList(),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectedReasons[productId!] =
+                                                    value;
+                                              });
+                                            },
+                                            validator: (value) => value == null
+                                                ? 'Please select a reason'
+                                                : null,
                                           ),
-                                          value: _selectedReasons[productId],
-                                          items: reasons.map((reason) {
-                                            return DropdownMenuItem<String>(
-                                              value: reason,
-                                              child: Text(reason),
-                                            );
-                                          }).toList(),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectedReasons[productId!] =
-                                                  value;
-                                            });
-                                          },
-                                          validator: (value) => value == null
-                                              ? 'Please select a reason'
-                                              : null,
                                         ),
-                                      ),
                                     ],
                                   ),
                                 ),
@@ -816,7 +824,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
                       behavior: HitTestBehavior.translucent,
                       child: SafeArea(
                         child: Text(
-                          'Request return',
+                          'Submit',
                           style:
                               Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     color: Colors.white,

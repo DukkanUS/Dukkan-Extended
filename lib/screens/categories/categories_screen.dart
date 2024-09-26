@@ -6,9 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../common/constants.dart';
+import '../../common/tools/navigate_tools.dart';
 import '../../custom/helper.dart';
 import '../../generated/l10n.dart';
-import '../../models/index.dart' show AppModel;
+import '../../models/index.dart' show AppModel, CartModel;
 import '../../modules/dynamic_layout/config/product_config.dart';
 import '../../modules/dynamic_layout/header/header_text.dart';
 import '../../modules/dynamic_layout/product/product_list.dart';
@@ -116,6 +117,32 @@ class CategoriesScreenState extends State<CategoriesScreen>
         ),
         centerTitle: true,
       ),
+      floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: GestureDetector(
+          onTap: (){
+            NavigateTools.navigateToCart(context);
+          },
+          child: Container(
+            width: 175,
+            height: 44,
+            decoration: ShapeDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(26.50),
+              ),
+            ),
+            child:  Center(child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.shopping_cart_outlined,color: Colors.white,),
+                Text('${context.watch<CartModel>().cartItemMetaDataInCart.length} View Cart',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+              ],
+            )),
+          ),
+        ),
+      ) : const SizedBox.shrink(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       routeName: RouteList.category,
       child: [
         GridCategory.type,

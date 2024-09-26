@@ -129,66 +129,69 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
                     ? Theme.of(context).primaryColor
                     : Colors.grey;
 
-                return FloatingActionButton.extended(
-                  heroTag: null,
-                  onPressed: isReadyForCheckout
-                      ? () {
-                          if (kAdvanceConfig.alwaysShowTabBar) {
-                            MainTabControlDelegate.getInstance()
-                                .changeTab(RouteList.cart, allowPush: false);
-                            // return;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: FloatingActionButton.extended(
+                    heroTag: null,
+                    onPressed: isReadyForCheckout
+                        ? () {
+                            if (kAdvanceConfig.alwaysShowTabBar) {
+                              MainTabControlDelegate.getInstance()
+                                  .changeTab(RouteList.cart, allowPush: false);
+                              // return;
+                            }
+                            onCheckout(cartModel);
                           }
-                          onCheckout(cartModel);
-                        }
-                      : null,
-                  elevation: 0,
-                  isExtended: true,
-                  extendedTextStyle: const TextStyle(
-                    letterSpacing: 0.8,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  extendedPadding: EdgeInsets.symmetric(
-                      vertical: 0,
-                      horizontal: MediaQuery.sizeOf(context).width * .38),
-                  backgroundColor: backgroundButton,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  label: Selector<CartModel, int>(
-                    selector: (_, carModel) => cartModel.totalCartQuantity,
-                    builder: (context, totalCartQuantity, child) {
-                      final colorBody =
-                          backgroundButton.getColorBasedOnBackground;
-                      final style = TextStyle(color: colorBody);
+                        : null,
+                    elevation: 0,
+                    isExtended: true,
+                    extendedTextStyle: const TextStyle(
+                      letterSpacing: 0.8,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    extendedPadding: EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: MediaQuery.sizeOf(context).width * .38),
+                    backgroundColor: backgroundButton,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    label: Selector<CartModel, int>(
+                      selector: (_, carModel) => cartModel.totalCartQuantity,
+                      builder: (context, totalCartQuantity, child) {
+                        final colorBody =
+                            backgroundButton.getColorBasedOnBackground;
+                        final style = TextStyle(color: colorBody);
 
-                      return Row(
-                        children: [
-                          totalCartQuantity > 0
-                              ? (isLoading
-                                  ? Text(
-                                      S.of(context).loading.toUpperCase(),
-                                      style: style,
-                                    )
-                                  : Text(
-                                      S.of(context).checkout.toUpperCase(),
-                                      style: style,
-                                    ))
-                              : Text(
-                                  S.of(context).startShopping.toUpperCase(),
-                                  style: style,
-                                ),
-                          const SizedBox(width: 3),
-                          Icon(
-                            CupertinoIcons.right_chevron,
-                            size: 12,
-                            color: colorBody,
-                          ),
-                        ],
-                      );
-                    },
+                        return Row(
+                          children: [
+                            totalCartQuantity > 0
+                                ? (isLoading
+                                    ? Text(
+                                        S.of(context).loading.toUpperCase(),
+                                        style: style,
+                                      )
+                                    : Text(
+                                        S.of(context).checkout.toUpperCase(),
+                                        style: style,
+                                      ))
+                                : Text(
+                                    S.of(context).startShopping.toUpperCase(),
+                                    style: style,
+                                  ),
+                            const SizedBox(width: 3),
+                            Icon(
+                              CupertinoIcons.right_chevron,
+                              size: 12,
+                              color: colorBody,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 );
               },

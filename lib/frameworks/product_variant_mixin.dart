@@ -279,7 +279,7 @@ mixin ProductVariantMixin on BaseFrameworks {
                 child: Center(
                   child: Text(
                     S.of(context).addToCart.toUpperCase(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,

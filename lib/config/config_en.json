@@ -714,8 +714,8 @@
       "key": "UzbsxiXCRp"
     },
     {
-      "label": "Cart",
-      "layout": "cart",
+      "label": "Orders",
+      "layout": "orders",
       "fontFamily": "CupertinoIcons",
       "fullscreen": false,
       "pos": 400,

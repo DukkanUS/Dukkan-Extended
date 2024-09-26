@@ -520,14 +520,17 @@ extension TabBarMenuExtention on MainTabsState {
                   child: tabViewItem(
                     key: navigators[i],
                     initialRoute: initialRoute,
-                    args: routeData,
+                    args: initialRoute == 'orders'?Provider.of<UserModel>(context, listen: false).user: routeData,
+
                   ),
                 )
               : tabViewItem(
                   key: navigators[i],
                   initialRoute: initialRoute,
-                  args: routeData,
-                ),
+            args: initialRoute == 'orders'?Provider.of<UserModel>(context, listen: false).user: routeData,
+
+
+          ),
         );
       }
     }

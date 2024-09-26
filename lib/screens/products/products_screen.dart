@@ -9,17 +9,10 @@ import 'package:provider/provider.dart';
 
 import '../../common/config.dart';
 import '../../common/constants.dart';
+import '../../common/tools/navigate_tools.dart';
 import '../../generated/l10n.dart';
 import '../../models/index.dart'
-    show
-        AppModel,
-        CategoryModel,
-        FilterAttributeModel,
-        Product,
-        ProductModel,
-        ProductPriceModel,
-        TagModel,
-        UserModel;
+    show AppModel, CartModel, CategoryModel, FilterAttributeModel, Product, ProductModel, ProductPriceModel, TagModel, UserModel;
 import '../../models/search_web_model.dart';
 import '../../modules/analytics/analytics.dart';
 import '../../modules/dynamic_layout/helper/countdown_timer.dart';
@@ -604,6 +597,32 @@ class _ProductsScreenMobileState extends State<ProductsScreenMobile>
     );
 
     buildMain = renderScaffold(
+      floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: GestureDetector(
+          onTap: (){
+            NavigateTools.navigateToCart(context);
+          },
+          child: Container(
+            width: 175,
+            height: 44,
+            decoration: ShapeDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(26.50),
+              ),
+            ),
+            child:  Center(child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.shopping_cart_outlined,color: Colors.white,),
+                Text('${context.watch<CartModel>().cartItemMetaDataInCart.length} View Cart',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+              ],
+            )),
+          ),
+        ),
+      ) : const SizedBox.shrink(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       routeName: widget.routeName ?? RouteList.backdrop,
       child: buildMain,
       resizeToAvoidBottomInset: false,

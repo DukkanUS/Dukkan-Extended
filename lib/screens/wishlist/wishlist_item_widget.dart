@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/constants.dart';
 import '../../generated/l10n.dart';
-import '../../models/index.dart' show Product;
+import '../../models/index.dart' show CartModel, Product;
 import '../../services/service_config.dart';
 import '../../services/services.dart';
 import '../../widgets/common/flux_image.dart';
 import '../../widgets/product/action_button_mixin.dart';
 import '../../widgets/product/dialog_add_to_cart.dart';
+import '../../widgets/product/widgets/cart_button_with_quantity.dart';
 import '../../widgets/product/widgets/pricing.dart';
 
 class WishlistItem extends StatelessWidget with ActionButtonMixin {
@@ -77,32 +79,33 @@ class WishlistItem extends StatelessWidget with ActionButtonMixin {
                                         fontSize: 14),
                                   ),
                                   const SizedBox(height: 10),
-                                  if (Services()
-                                          .widget
-                                          .enableShoppingCart(product) &&
-                                      !ServerConfig().isListingType)
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        backgroundColor:
-                                            localTheme.primaryColor,
-                                      ),
-                                      onPressed: () => DialogAddToCart.show(
-                                          context,
-                                          product: product),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0),
-                                        child: Text(
-                                          ((product.isPurchased &&
-                                                      product.isDownloadable!)
-                                                  ? S.of(context).download
-                                                  : S.of(context).addToCart)
-                                              .toUpperCase(),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
+                                  Selector<CartModel, int>(
+                                    selector: (context, cartModel) =>
+                                    cartModel.productsInCart[product.id] ??
+                                        0,
+                                    builder: (context, quantity, child) {
+                                      return CartButtonWithQuantity(
+                                        quantity: quantity,
+                                        borderRadiusValue:0.0,
+                                        increaseQuantityFunction: () {
+                                          addToCart(
+                                            context,
+                                            quantity: 1,
+                                            product: product,
+                                            enableBottomAddToCart: false,
+                                          );
+                                        },
+                                        decreaseQuantityFunction: () {
+                                          if (quantity <= 0) return;
+                                          updateQuantity(
+                                            context: context,
+                                            quantity: quantity - 1,
+                                            product: product,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
                             ),

@@ -98,7 +98,7 @@ class _SettingLayoutNormalWidgetState extends State<SettingLayoutNormalWidget>
                           child: Row(
                             children: [
                               Text(
-                                '${Provider.of<UserModel>(context).user?.nicename}',
+                                'Welcome ${Provider.of<UserModel>(context).user?.firstName}!',
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,

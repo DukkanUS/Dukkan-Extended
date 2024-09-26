@@ -427,34 +427,27 @@ class _OrderHistoryDetailScreenState
               /// refund request
               if (order.status == OrderStatus.processing &&
                   kPaymentConfig.enableRefundCancel)
-                Column(
-                  children: <Widget>[
-                    const SizedBox(height: 30),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ButtonTheme(
-                            height: 45,
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white, backgroundColor: HexColor('#056C99'),
-                                ),
-                                onPressed: ()=> (context.read<ReturnRequestProvider>().returnsList?.items?.isNotEmpty ?? false) ? null :refundOrder(orderHistoryDetailModel: model),
-                                child: (context.read<ReturnRequestProvider>().returnsList?.status?.isNotEmpty ?? false) ?
-                                Text(
-                                    'Request status : ${context.read<ReturnRequestProvider>().returnsList?.status}' ?? '',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w700)):
-                                const Text(
-                                    'Request return',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700))),
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * .5,
+                    child: ButtonTheme(
+                      height: 45,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white, backgroundColor: HexColor('#056C99'),
                           ),
-                        )
-                      ],
+                          onPressed: ()=> (context.read<ReturnRequestProvider>().returnsList?.items?.isNotEmpty ?? false) ? null :refundOrder(orderHistoryDetailModel: model),
+                          child: (context.read<ReturnRequestProvider>().returnsList?.status?.isNotEmpty ?? false) ?
+                          Text(
+                              'Request status : ${context.read<ReturnRequestProvider>().returnsList?.status}' ?? '',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w700)):
+                          const Text(
+                              'Get help with the order',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700))),
                     ),
-                    const SizedBox(height: 10),
-                  ],
+                  ),
                 ),
 
               if (isPending && kPaymentConfig.showTransactionDetails) ...[

@@ -130,6 +130,7 @@ mixin AppBarMixin<T extends StatefulWidget> on State<T> {
     Color? backgroundColor,
     bool hideNewAppBar = false,
     Widget? floatingActionButton,
+    FloatingActionButtonLocation? floatingActionButtonLocation,
     AppBarConfig? appBarConfig,
     AppBar? secondAppBar,
     bool? disableSafeArea,
@@ -163,6 +164,7 @@ mixin AppBarMixin<T extends StatefulWidget> on State<T> {
         resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         backgroundColor: backgroundColor,
         floatingActionButton: floatingActionButton,
+        floatingActionButtonLocation: floatingActionButtonLocation,
       );
     }
     if (resizeToAvoidBottomInset != null ||
@@ -181,6 +183,7 @@ mixin AppBarMixin<T extends StatefulWidget> on State<T> {
           child: child,
         ),
         floatingActionButton: floatingActionButton,
+        floatingActionButtonLocation: floatingActionButtonLocation,
       );
     }
     return child;
