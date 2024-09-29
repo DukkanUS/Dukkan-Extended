@@ -556,14 +556,14 @@ class _ReturnItemListState extends State<ReturnItemList> {
       return;
     }
 
-    var allReasonsSelected =
-        selectedItems.every((item) => _selectedReasons[item.id] != null);
-
-    if (!allReasonsSelected) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please select a reason for each selected item.')));
-      return;
-    }
+    // var allReasonsSelected =
+    //     selectedItems.every((item) => _selectedReasons[item.id] != null);
+    //
+    // if (!allReasonsSelected) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Text('Please select a reason for each selected item.')));
+    //   return;
+    // }
 
     showLoading(context);
     var itemList = <Items>[];
@@ -574,7 +574,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
           itemName: item.name,
           itemId: int.tryParse(item.productId ?? ''),
           itemQty: _itemCounts[id],
-          returnReason: _selectedReasons[id]));
+          returnReason: _selectedReasons[id] ?? ''));
     }
 
     await Future.delayed(const Duration(seconds: 2));
@@ -768,11 +768,10 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                         SizedBox(
                                           height: 80,
                                           width: 300,
-                                          child:
-                                              DropdownButtonFormField<String>(
+                                          child: DropdownButtonFormField<String>(
                                             isExpanded: true,
                                             decoration: const InputDecoration(
-                                              labelText: 'Reason',
+                                              labelText: 'please clarify (optional)',
                                               border: OutlineInputBorder(),
                                             ),
                                             value: _selectedReasons[productId],

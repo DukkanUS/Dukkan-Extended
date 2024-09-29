@@ -381,12 +381,17 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   width: 10,
                                 ),
                                 Text(
-                                  Provider.of<CartModel>(context)
-                                          .address
-                                          ?.street ??
+                                  ('${
+                                        Provider.of<CartModel>(context)
+                                            .address
+                                            ?.street
+                                      }') ??
                                       'Choose Address',
                                   style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
                                 ),
+                                Spacer(),
+                                Text('Edit',style: TextStyle(color: Colors.red),),
+                                SizedBox(width: 5,)
                               ],
                             ),
                           ),

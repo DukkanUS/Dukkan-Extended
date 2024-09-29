@@ -562,15 +562,18 @@ class WooWidget extends BaseFrameworks
               child: GestureDetector(
                 onTap: cancelOrder,
                 child: Container(
+                  width: MediaQuery.sizeOf(context).width * .5,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: (order.status!.isCancelled)
                           ? Colors.blueGrey
                           : Colors.red),
-                  child: Text(
-                    S.of(context).cancel.toUpperCase(),
-                    style: const TextStyle(color: Colors.white),
+                  child: Center(
+                    child: Text(
+                      S.of(context).cancel.toUpperCase(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),

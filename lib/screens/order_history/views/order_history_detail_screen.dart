@@ -416,13 +416,6 @@ class _OrderHistoryDetailScreenState
               // Services().widget.renderOrderTimelineTracking(context, order),
               // const SizedBox(height: 20),
 
-              /// Render the Cancel
-              if (kPaymentConfig.enableRefundCancel && allowCancelAndRefund)
-                Services()
-                    .widget
-                    .renderButtons(context, order, cancelOrder, refundOrder),
-
-              const SizedBox(height: 20),
 
               /// refund request
               if (order.status == OrderStatus.processing &&
@@ -460,7 +453,13 @@ class _OrderHistoryDetailScreenState
                     ),
                   ),
                 ...order.bacsInfo.map((e) => BankAccountInfo(bankInfo: e)),
-                const SizedBox(height: 15),
+                const SizedBox(height: 5),
+
+              /// Render the Cancel
+              if (kPaymentConfig.enableRefundCancel && allowCancelAndRefund)
+                Services()
+                    .widget
+                    .renderButtons(context, order, cancelOrder, refundOrder),
 
                 /// Thai PromptPay
                 /// false: hide show Thank you message - https://tppr.me/xrNh1
@@ -475,7 +474,12 @@ class _OrderHistoryDetailScreenState
                     style: TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
-                Text(order.billing!.fullInfoAddress),
+                Builder(
+                  builder: (context) {
+                    var x = '';
+                    return Text('${order.billing?.street ?? ''} ${order.billing?.apartment ?? ''} ${order.billing?.country ?? ''} ${order.billing?.state ?? ''}, ${order.billing?.zipCode ?? ''}');
+                  }
+                ),
               ],
               const SizedBox(height: 50)
             ],

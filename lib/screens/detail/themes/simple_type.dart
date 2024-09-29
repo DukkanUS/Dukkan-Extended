@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,7 @@ import '../../../common/config.dart';
 import '../../../common/constants.dart';
 import '../../../common/tools/flash.dart';
 import '../../../common/tools/tools.dart';
+import '../../../custom/product_quantity_button.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/index.dart' show Product, ProductModel, UserModel;
 import '../../../models/product_variant_model.dart';
@@ -352,14 +354,7 @@ class _SimpleLayoutState extends State<SimpleLayout>
                   ),
                   if (kProductDetail.fixedBuyButtonToBottom &&
                       _isVisibleBuyButton)
-                    Container(
-                      color: Theme.of(context).colorScheme.background,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: SafeArea(
-                        top: false,
-                        child: BuyButtonWidget(product: product),
-                      ),
-                    )
+                    ProductQuantityButton(product:product),
                 ],
               );
             },

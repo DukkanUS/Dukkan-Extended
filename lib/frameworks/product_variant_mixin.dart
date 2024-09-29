@@ -131,26 +131,26 @@ mixin ProductVariantMixin on BaseFrameworks {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               (productVariation != null
-                  ? (productVariation.backordersAllowed ?? false)
-                  : product.backordersAllowed)
+                      ? (productVariation.backordersAllowed ?? false)
+                      : product.backordersAllowed)
                   ? Text(
-                S.of(context).backOrder,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: kStockColor.backorder,
-                  fontWeight: FontWeight.w600,
-                ),
-              )
+                      S.of(context).backOrder,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: kStockColor.backorder,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    )
                   : Text(
-                inStock
-                    ? '${S.of(context).inStock}$stockQuantity'
-                    : S.of(context).outOfStock,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: inStock
-                      ? kStockColor.inStock
-                      : kStockColor.outOfStock,
-                  fontWeight: FontWeight.w600,
-                ),
-              )
+                      inStock
+                          ? '${S.of(context).inStock}$stockQuantity'
+                          : S.of(context).outOfStock,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: inStock
+                                ? kStockColor.inStock
+                                : kStockColor.outOfStock,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    )
             ],
           ],
         ),
@@ -181,9 +181,6 @@ mixin ProductVariantMixin on BaseFrameworks {
           ],
         ),
       );
-
-
-
 
       if (productVariation?.description?.isNotEmpty ?? false) {
         listWidget.add(Services()
@@ -218,13 +215,13 @@ mixin ProductVariantMixin on BaseFrameworks {
     required bool isInAppPurchaseChecking,
     bool showQuantity = true,
     Widget Function(bool Function(int) onChanged, int maxQuantity)?
-    builderQuantitySelection,
+        builderQuantitySelection,
   }) {
     final theme = Theme.of(context);
 
     final inStock = (productVariation != null
-        ? productVariation.inStock
-        : product.inStock) ??
+            ? productVariation.inStock
+            : product.inStock) ??
         false;
 
     final allowBackorder = productVariation != null
@@ -234,67 +231,139 @@ mixin ProductVariantMixin on BaseFrameworks {
     final allowToBuy = inStock || allowBackorder;
     final alwaysShowBuyButton = kProductDetail.alwaysShowBuyButton;
 
-    return [
-      const SizedBox(height: 10),
-      Row(
-        children: [
-          // Quantity Selection
-          if (builderQuantitySelection != null)
-            builderQuantitySelection((p0) => onChangeQuantity(p0), maxQuantity)
-          else
-            Expanded(
-              child: Container(
-                height: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                ),
-                child: QuantitySelection(
+    if ((context.watch<CartModel>().productsInCart.containsKey(product.id))) {
+      return [
+
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            // Quantity Selection
+            if (builderQuantitySelection != null)
+              builderQuantitySelection(
+                  (p0) => onChangeQuantity(p0), maxQuantity)
+            else
+              Expanded(
+                child: Container(
                   height: 40,
-                  expanded: true,
-                  value: quantity,
-                  color: theme.colorScheme.secondary,
-                  limitSelectQuantity: maxQuantity,
-                  style: QuantitySelectionStyle.style01,
-                  onChanged: (p0) {
-                    final result = onChangeQuantity(p0);
-                    return result ?? true;
-                  },
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: QuantitySelection(
+                    height: 40,
+                    enabled: true,
+                    expanded: true,
+                    value: quantity,
+                    color: theme.colorScheme.secondary,
+                    limitSelectQuantity: maxQuantity,
+                    style: QuantitySelectionStyle.style01,
+                    onChanged: (p0) {
+                      context.read<CartModel>().updateQuantity(product, product.id, p0);
+
+                      final result = onChangeQuantity(p0);
+                      return result ?? true;
+                    },
+                  ),
                 ),
               ),
-            ),
 
-          const SizedBox(width: 10), // Space between the counter and button
+            const SizedBox(width: 10), // Space between the counter and button
 
-          // Add to Cart Button
-          Expanded(
-            child: GestureDetector(
-              onTap: () => addToCart(buyNow: false, inStock: allowToBuy),
-              child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: theme.primaryColor,
-                ),
-                child: Center(
-                  child: Text(
-                    S.of(context).addToCart.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+            // Add to Cart Button
+            Expanded(
+              child: GestureDetector(
+               onTap: () => context.read<CartModel>().updateQuantity(product, product.id, quantity),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: theme.primaryColor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      (context
+                              .watch<CartModel>()
+                              .productsInCart
+                              .containsKey(product.id))
+                          ? S.of(context).update.toUpperCase()
+                          : S.of(context).addToCart.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-    ];
-  }
+          ],
+        ),
+        const SizedBox(height: 10)
+      ];
+    } else {
+      return [
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            // Quantity Selection
+            if (builderQuantitySelection != null)
+              builderQuantitySelection(
+                  (p0) => onChangeQuantity(p0), maxQuantity)
+            else
+              Expanded(
+                child: Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: QuantitySelection(
+                    height: 40,
+                    expanded: true,
+                    value: quantity,
+                    color: theme.colorScheme.secondary,
+                    limitSelectQuantity: maxQuantity,
+                    style: QuantitySelectionStyle.style01,
+                    onChanged: (p0) {
+                      final result = onChangeQuantity(p0);
+                      return result ?? true;
+                    },
+                  ),
+                ),
+              ),
 
+            const SizedBox(width: 10), // Space between the counter and button
+
+            // Add to Cart Button
+            Expanded(
+              child: GestureDetector(
+                onTap: () => addToCart(buyNow: false, inStock: allowToBuy),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: theme.primaryColor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      S.of(context).addToCart.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+      ];
+    }
+  }
 
   /// Add to Cart & Buy Now function
   @override
@@ -447,8 +516,6 @@ Widget actionButton(
         //     child: buyOrOutOfStockButton,
         //   ),
         // ),
-
-
 
         // Hide add to cart button if it is external or variation is loading
         if (!isExternal && !isVariationLoading)
