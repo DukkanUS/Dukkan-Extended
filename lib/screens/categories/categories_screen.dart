@@ -117,7 +117,7 @@ class CategoriesScreenState extends State<CategoriesScreen>
         ),
         centerTitle: true,
       ),
-      floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+      floatingActionButton: (/*context.watch<CartModel>().productsInCart.isNotEmpty*/ true) ? Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: GestureDetector(
           onTap: (){

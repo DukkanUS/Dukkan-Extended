@@ -516,8 +516,8 @@ class ReturnItemList extends StatefulWidget {
 class _ReturnItemListState extends State<ReturnItemList> {
   final Map<String, int> _itemCounts = {};
   final Map<String, String?> _selectedReasons = {};
-  final Map<String, bool> _selectedItems =
-      {};
+  final Map<String, bool> _selectedItems = {};
+  final Map<String, String> _optionalReasons = {}; // New map for optional text field
   final bool _isLoading = false;
   late BuildContext loadingContext;
 
@@ -541,6 +541,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
         _itemCounts[id] = item.quantity ?? 1;
         _selectedReasons[id] = null;
         _selectedItems[id] = false;
+        _optionalReasons[id] = ''; // Initialize the optional reason map
       }
     }
   }
@@ -556,25 +557,28 @@ class _ReturnItemListState extends State<ReturnItemList> {
       return;
     }
 
-    // var allReasonsSelected =
-    //     selectedItems.every((item) => _selectedReasons[item.id] != null);
-    //
-    // if (!allReasonsSelected) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Text('Please select a reason for each selected item.')));
-    //   return;
-    // }
+    var allReasonsSelected =
+    selectedItems.every((item) => _selectedReasons[item.id] != null);
+
+    if (!allReasonsSelected) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Please select a reason for each selected item.')));
+      return;
+    }
 
     showLoading(context);
     var itemList = <Items>[];
     for (var item in selectedItems) {
       final id = item.id;
       itemList.add(Items(
-          itemPrice: double.tryParse(item.total ?? '0.0'),
-          itemName: item.name,
-          itemId: int.tryParse(item.productId ?? ''),
-          itemQty: _itemCounts[id],
-          returnReason: _selectedReasons[id] ?? ''));
+        itemPrice: double.tryParse(item.total ?? '0.0'),
+        itemName: item.name,
+        itemId: int.tryParse(item.productId ?? ''),
+        itemQty: _itemCounts[id],
+        returnReason: _selectedReasons[id] ?? '',
+        returnOptionalDetailedReason: _optionalReasons[id],
+        image: item.product?.imageFeature.toString()
+      ));
     }
 
     await Future.delayed(const Duration(seconds: 2));
@@ -625,7 +629,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
     return LoadingBody(
       isLoading: _isLoading,
       backgroundColor:
-          Theme.of(context).colorScheme.background.withOpacity(0.4),
+      Theme.of(context).colorScheme.background.withOpacity(0.4),
       child: Stack(
         children: [
           Align(
@@ -699,7 +703,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         product.name ?? '',
@@ -707,8 +711,8 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                             .textTheme
                                             .titleMedium!
                                             .copyWith(
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -729,8 +733,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                                 if (_itemCounts[productId]! >
                                                     1) {
                                                   _itemCounts[productId!] =
-                                                      _itemCounts[productId]! -
-                                                          1;
+                                                      _itemCounts[productId]! - 1;
                                                 }
                                               });
                                             },
@@ -744,8 +747,7 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                                 if (_itemCounts[productId]! <
                                                     (product.quantity ?? 1)) {
                                                   _itemCounts[productId!] =
-                                                      _itemCounts[productId]! +
-                                                          1;
+                                                      _itemCounts[productId]! + 1;
                                                 }
                                               });
                                             },
@@ -765,32 +767,49 @@ class _ReturnItemListState extends State<ReturnItemList> {
                                       ),
                                       // Show dropdown if item is selected
                                       if (_selectedItems[productId] == true)
-                                        SizedBox(
-                                          height: 80,
-                                          width: 300,
-                                          child: DropdownButtonFormField<String>(
-                                            isExpanded: true,
-                                            decoration: const InputDecoration(
-                                              labelText: 'please clarify (optional)',
-                                              border: OutlineInputBorder(),
+                                        Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 80,
+                                              width: 300,
+                                              child: DropdownButtonFormField<String>(
+                                                isExpanded: true,
+                                                decoration: const InputDecoration(
+                                                  labelText: 'Reason',
+                                                  border: OutlineInputBorder(),
+                                                ),
+                                                value: _selectedReasons[productId],
+                                                items: reasons.map((reason) {
+                                                  return DropdownMenuItem<String>(
+                                                    value: reason,
+                                                    child: Text(reason),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _selectedReasons[productId!] =
+                                                        value;
+                                                  });
+                                                },
+                                                validator: (value) => value == null
+                                                    ? 'Please select a reason'
+                                                    : null,
+                                              ),
                                             ),
-                                            value: _selectedReasons[productId],
-                                            items: reasons.map((reason) {
-                                              return DropdownMenuItem<String>(
-                                                value: reason,
-                                                child: Text(reason),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedReasons[productId!] =
-                                                    value;
-                                              });
-                                            },
-                                            validator: (value) => value == null
-                                                ? 'Please select a reason'
-                                                : null,
-                                          ),
+                                            // New optional text field for detailed reason
+                                            const SizedBox(height: 10),
+                                            TextFormField(
+                                              decoration: const InputDecoration(
+                                                labelText: 'Please clarify (optional)',
+                                                border: OutlineInputBorder(),
+                                              ),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _optionalReasons[productId!] = value;
+                                                });
+                                              },
+                                            ),
+                                          ],
                                         ),
                                     ],
                                   ),
@@ -835,6 +854,162 @@ class _ReturnItemListState extends State<ReturnItemList> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class ReturnedItemList extends StatefulWidget {
+  final List<Items> lineItems;
+  final Order? order;
+
+  const ReturnedItemList(
+      {super.key, required this.lineItems, this.order});
+
+  @override
+  State<ReturnedItemList> createState() => _ReturnedItemListState();
+}
+
+class _ReturnedItemListState extends State<ReturnedItemList> {
+  final Map<String, int> _itemCounts = {};
+  final Map<String, String?> _selectedReasons = {};
+  final Map<String, bool> _selectedItems = {};
+  final Map<String, String> _optionalReasons = {}; // New map for optional text field
+  final bool _isLoading = false;
+  late BuildContext loadingContext;
+
+
+  @override
+  void initState() {
+    super.initState();
+    for (var item in widget.lineItems) {
+      final id = item.itemId.toString();
+      if (id != '') {
+        _itemCounts[id] = item.itemQty ?? 1;
+        _selectedReasons[id] = null;
+        _selectedItems[id] = false;
+        _optionalReasons[id] = ''; // Initialize the optional reason map
+      }
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return LoadingBody(
+      isLoading: _isLoading,
+      backgroundColor:
+      Theme.of(context).colorScheme.background.withOpacity(0.4),
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: const EdgeInsets.only(top: 8.0),
+              alignment: Alignment.center,
+              width: 40.0,
+              height: 4.0,
+              decoration: BoxDecoration(
+                color: Colors.grey[400],
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 10.0, // Adjust this value to position the heading properly
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              alignment: Alignment.center,
+              child: Text(
+                'Review the items you’ve returned',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 70.0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.separated(
+                      padding: const EdgeInsets.only(
+                        bottom: kToolbarHeight,
+                        left: 16.0,
+                        right: 16.0,
+                      ),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final product = widget.lineItems[index];
+                        final productId = product.itemId.toString();
+                        // final productImage = product.itemImage.toString();
+
+                        return Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Container(
+                                    width: 120,
+                                    height: 120,
+                                    color: Colors.grey.withOpacity(0.2),
+                                    child: ((product.image?.isNotEmpty ?? false) && (product.image != '')) ? Image.network(product.image.toString()) : Image.asset('assets/images/app_icon.png'),
+                                  ),
+                                ),
+                                const SizedBox(width: 10.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.itemName ?? '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 5.0),
+                                      Text(
+                                        'Qty: ${_itemCounts[productId]}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(fontSize: 12.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemCount: widget.lineItems.length,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

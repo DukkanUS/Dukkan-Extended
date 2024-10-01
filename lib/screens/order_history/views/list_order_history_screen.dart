@@ -78,7 +78,7 @@ class _ListOrderHistoryScreenState extends State<ListOrderHistoryScreen>
         ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
+        leading: (!Navigator.of(context).canPop()) ? const SizedBox.shrink(): IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_sharp,
             color: Colors.white,

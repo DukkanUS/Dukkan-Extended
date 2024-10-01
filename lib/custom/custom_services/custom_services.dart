@@ -40,26 +40,6 @@ class CustomServices {
     }
   }
 
-  static Future<Map<String, dynamic>> getVariantColorsList() async {
-    var url = 'https://mumuso.jo/wp-json/evokey/v1/colors';
-    var response = await httpGet(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'accept': 'application/json',
-    });
-    var responseBody = jsonDecode(response.body);
-    try {
-      if (response.statusCode == 200) {
-        log('*****************************');
-        return responseBody;
-      } else {
-        log('error with color :: $responseBody');
-      }
-      return {};
-    } catch (e) {
-      log('error with color :: $e');
-      rethrow;
-    }
-  }
 
   static Future<bool> sendReturnRequest(ReturnsRequest request) async {
     var url =

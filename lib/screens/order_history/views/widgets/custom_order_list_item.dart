@@ -23,12 +23,10 @@ class CustomOrderListItem extends StatelessWidget with ReOderMixin {
     return Center(
       child: Consumer<OrderHistoryDetailModel>(builder: (_, model, __) {
         final order = model.order;
-        final currencyCode =
-            order.currencyCode ?? Provider.of<AppModel>(context).currencyCode;
 
         return Container(
           width: size.width,
-          height: 260,
+          height: 300,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             boxShadow: const [
@@ -148,7 +146,11 @@ class CustomOrderListItem extends StatelessWidget with ReOderMixin {
                               )
                               .toList(),
                         ),
-                      )
+                      ),
+                      const SizedBox(height: 5,),
+                      (order.status == OrderStatus.completed) ?
+                      (order.dateModified != null) ? Text('Delivered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.dateModified!)}') : const SizedBox.shrink()
+                          : (order.createdAt != null) ? Text('Ordered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.createdAt!)}') : const SizedBox.shrink()
                     ],
                   ),
                 ),
@@ -350,11 +352,16 @@ class OrderStatusWidget extends StatelessWidget {
 class CustomOrderStatusWidget extends StatelessWidget {
   final String? title;
   final String? detail;
+  final double? width;
 
-  const CustomOrderStatusWidget({super.key, this.title, this.detail});
+  const CustomOrderStatusWidget({super.key, this.title, this.detail, this.width});
 
   String getTitleStatus(String status, BuildContext context) {
     switch (status.toLowerCase()) {
+      case 'driverassigned':
+        return 'Driver assigned';
+      case 'outfordelivery':
+        return 'Out for delivery';
       case 'onhold':
         return S.of(context).orderStatusOnHold;
       case 'pending':
@@ -405,7 +412,7 @@ class CustomOrderStatusWidget extends StatelessWidget {
     }
 
     return Container(
-      width: 80,
+      width: width ?? 100,
       height: 28,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(

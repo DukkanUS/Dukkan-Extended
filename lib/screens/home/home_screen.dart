@@ -210,7 +210,7 @@ class _HomeScreenState extends BaseScreen<HomeScreen> {
             bannerConfig.popup.alwaysShowUponOpen;
 
         return Scaffold(
-          floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+          floatingActionButton: (/*context.watch<CartModel>().productsInCart.isNotEmpty*/ true) ? Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: GestureDetector(
               onTap: (){

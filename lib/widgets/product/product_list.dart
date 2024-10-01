@@ -30,6 +30,7 @@ class ProductList extends StatefulWidget {
   final double productListItemHeight;
   final List<Widget>? header;
   final Widget? appbar;
+  final bool? showAppBar;
   final ScrollController? scrollController;
 
   final bool useCustomAppBar;
@@ -50,7 +51,7 @@ class ProductList extends StatefulWidget {
     this.header,
     this.appbar,
     this.scrollController,
-    this.productType = false,
+    this.productType = false, this.showAppBar = false,
   });
 
   @override
@@ -206,6 +207,7 @@ class _ProductListState extends State<ProductList> {
       child: CustomScrollView(
         controller: widget.scrollController,
         slivers: <Widget>[
+          if(widget.showAppBar == true)
           if (widget.appbar != null && widget.useCustomAppBar == false)
             SliverAppBar(
               primary: false,
@@ -220,7 +222,8 @@ class _ProductListState extends State<ProductList> {
               title: widget.appbar,
               actions: null,
             )else if (widget.appbar != null)
-              widget.appbar!,
+              widget.appbar!
+          else SizedBox.shrink(),
 
           SliverToBoxAdapter(
               child: Column(

@@ -30,8 +30,10 @@ class Items {
   int? itemQty;
   double? itemPrice;
   String? returnReason;
+  String? returnOptionalDetailedReason;
+  String? image;
 
-  Items({this.itemId, this.itemName, this.itemQty, this.itemPrice,this.returnReason});
+  Items({this.itemId, this.itemName, this.itemQty, this.itemPrice,this.returnReason, this.returnOptionalDetailedReason, this.image});
 
   Items.fromJson(Map<String, dynamic> json) {
     itemId = json['item_id'];
@@ -39,6 +41,8 @@ class Items {
     itemQty = json['item_qty'];
     itemPrice = double.tryParse(json['item_price'].toString());
     returnReason = json['return_reason'];
+    returnOptionalDetailedReason = json['return_optional_detailed_reason'];
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +52,8 @@ class Items {
     data['item_qty'] = itemQty;
     data['item_price'] = itemPrice;
     data['return_reason'] = returnReason;
+    data['return_optional_detailed_reason'] = returnOptionalDetailedReason;
+    data['image'] = image;
     return data;
   }
 }

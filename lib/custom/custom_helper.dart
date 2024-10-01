@@ -15,7 +15,4 @@ class CustomHelper with ChangeNotifier{
     SupportedCountryModel(iso2Code: 'JO', nameAr: 'الأردن')
   ];
 
-  Future<Map<String, dynamic>> getVariantColorsList() async{
-    return CustomServices.getVariantColorsList();
-  }
 }

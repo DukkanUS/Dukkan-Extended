@@ -127,30 +127,6 @@ class _PointRewardState extends State<PointReward> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Text(S.of(context).pointRewardMessage),
-              // const SizedBox(height: 5.0),
-              Text(
-                S.of(context).convertPoint(
-                      PriceTools.getCurrencyFormatted(
-                        model.cartPriceRate,
-                        currencyRate,
-                        currency: currency,
-                      ).toString(),
-                      model.cartPointsRate.toString(),
-                    ),
-              ),
-              const SizedBox(height: 5.0),
-              Text(
-                S.of(context).useMaximumPointDiscount(
-                      model.maxPointDiscount.toString(),
-                      PriceTools.getCurrencyFormatted(
-                        model.maxPriceDiscount,
-                        currencyRate,
-                        currency: kAdvanceConfig.defaultCurrency?.currencyCode,
-                      ).toString(),
-                    ),
-              ),
-              const SizedBox(height: 5.0),
               Row(
                 children: [
                   PointSelection(

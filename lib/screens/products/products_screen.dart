@@ -40,6 +40,7 @@ class ProductsScreen extends StatelessWidget {
   final String? routeName;
   final bool autoFocusSearch;
   final String? searchText;
+  final bool? hideAppBar;
 
   const ProductsScreen({
     super.key,
@@ -49,7 +50,7 @@ class ProductsScreen extends StatelessWidget {
     this.enableSearchHistory = false,
     this.routeName,
     this.searchText,
-    this.autoFocusSearch = true,
+    this.autoFocusSearch = true,  this.hideAppBar = false,
   });
 
   @override
@@ -75,6 +76,7 @@ class ProductsScreen extends StatelessWidget {
       enableSearchHistory: enableSearchHistory,
       routeName: routeName,
       autoFocusSearch: autoFocusSearch,
+      hideAppBar: hideAppBar,
     );
   }
 }
@@ -86,6 +88,8 @@ class ProductsScreenMobile extends StatefulWidget {
   final bool enableSearchHistory;
   final String? routeName;
   final bool autoFocusSearch;
+  final bool? hideAppBar;
+
 
   const ProductsScreenMobile({
     this.products,
@@ -94,6 +98,7 @@ class ProductsScreenMobile extends StatefulWidget {
     this.enableSearchHistory = false,
     this.routeName,
     this.autoFocusSearch = true,
+    this.hideAppBar = false
   });
 
   @override
@@ -383,6 +388,7 @@ class _ProductsScreenMobileState extends State<ProductsScreenMobile>
                                 productListItemHeight: productListItemHeight,
                                 width: constraint.maxWidth,
                                 useCustomAppBar: true,
+                                showAppBar : !(widget.hideAppBar!),
                                 appbar: SliverAppBar(
                                     shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -597,7 +603,7 @@ class _ProductsScreenMobileState extends State<ProductsScreenMobile>
     );
 
     buildMain = renderScaffold(
-      floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+      floatingActionButton: (/*context.watch<CartModel>().productsInCart.isNotEmpty*/ true) ? Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: GestureDetector(
           onTap: (){

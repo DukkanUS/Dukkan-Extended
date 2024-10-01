@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class CartButtonWithQuantity extends StatefulWidget {
@@ -35,9 +37,29 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
 
   @override
   void dispose() {
+    _closeTimer?.cancel();
     _focusNode.dispose();
     super.dispose();
   }
+
+
+  Timer? _closeTimer;
+
+  void startCloseTimer() {
+    _closeTimer?.cancel();
+    _closeTimer = Timer(const Duration(milliseconds: 1500), () {
+      if (mounted) {
+        _focusNode.unfocus();
+      }
+    });
+  }
+
+  void resetCloseTimer() {
+    _closeTimer?.cancel();
+    startCloseTimer();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +156,10 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
 
   Widget buildQuantity() {
     return OutlinedButton(
-      onPressed: _focusNode.requestFocus,
+      onPressed: () {
+        _focusNode.requestFocus();
+        startCloseTimer();
+      },
       style: ElevatedButton.styleFrom(
         shape: const CircleBorder(),
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -152,6 +177,7 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
   }
 
   void increaseQuantity() {
+    resetCloseTimer();
     widget.increaseQuantityFunction();
     WidgetsBinding.instance.endOfFrame.then((_) {
       if (mounted) {
@@ -163,6 +189,7 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
   }
 
   void decreaseQuantity() {
+    resetCloseTimer();
     widget.decreaseQuantityFunction();
   }
 

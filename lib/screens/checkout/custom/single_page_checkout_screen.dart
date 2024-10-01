@@ -13,6 +13,7 @@ import '../../../common/constants.dart';
 import '../../../common/tools/price_tools.dart';
 import '../../../custom/custom_controllers/auto_apply_coupons_controller.dart';
 import '../../../custom/custom_entities/auto_apply_coupons/custom_coupon_entity.dart';
+import '../../../custom/delivery_time_widget.dart';
 import '../../../custom/providers/address_validation.dart';
 import '../../../custom/providers/delivery_time.dart';
 import '../../../data/boxes.dart';
@@ -140,6 +141,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   void initState() {
     Future.delayed(Duration.zero).then((_) async {
       unawaited(getCoupon());
+      unawaited(context.read<DeliveryTime>().fetchDeliveryHours());
       unawaited(context.read<DeliveryTime>().fetchDeliveryHours());
       ///fetch the shipping methods
      await Provider.of<ShippingMethodModel>(context, listen: false)
@@ -389,9 +391,9 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                       'Choose Address',
                                   style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
                                 ),
-                                Spacer(),
-                                Text('Edit',style: TextStyle(color: Colors.red),),
-                                SizedBox(width: 5,)
+                                const Spacer(),
+                                const Text('Edit',style: TextStyle(color: Colors.red),),
+                                const SizedBox(width: 5,)
                               ],
                             ),
                           ),
@@ -522,60 +524,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                             : const SizedBox.shrink(),
 
                         /// Delivery Time
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isDatePickerExpanded = !_isDatePickerExpanded;
-                            });
-                          },
-                          child: ExpansionPanelList(
-                            expansionCallback: (int index, bool isExpanded) {
-                              setState(() {
-                                _isDatePickerExpanded = !isExpanded;
-                              });
-                            },
-                            children: [
-                              ExpansionPanel(
-                                headerBuilder:
-                                    (BuildContext context, bool isExpanded) {
-                                  return  ListTile(
-                                    title: Row(
-                                      children: [
-                                        Image.asset('assets/checkout_icons/Time.png'),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text((_selectedTimePeriod != null) ? _selectedTimePeriod! :'Delivery Time',style: const TextStyle(fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                body: context.watch<DeliveryTime>().isFetchWorkingHours ?
-                                SizedBox(
-                                    height: 100,
-                                    child: SizedBox(
-                                      height: 100,
-                                      child: Shimmer.fromColors(
-                                        baseColor: Colors.grey[300]!,
-                                        highlightColor: Colors.grey[100]!,
-                                        child: Container(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    )):
-                                Column(
-                                  children: context.watch<DeliveryTime>().workingHours.map((e) => Column(
-                                    children: [
-                                      _buildTimeOption(e.toString()),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  )).toList(),
-                                ),
-                                isExpanded: _isDatePickerExpanded,
-                              ),
-                            ],
-                          ),
-                        ),
+                        DeliveryTimeWidget(),
 
                         ///Phone Number
                         GestureDetector(
@@ -790,17 +739,14 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                               ExpansionPanel(
                                 headerBuilder:
                                     (BuildContext context, bool isExpanded) {
-                                  return const ListTile(
+                                  return  ListTile(
                                     title: Row(
                                       children: [
-                                        Icon(
-                                          Icons.shopping_cart,
-                                          color: Colors.black,
-                                        ),
-                                        SizedBox(
+                                        Image.asset('assets/icons/tabs/Paper-colored.png'),
+                                        const SizedBox(
                                           width: 10,
                                         ),
-                                        Text('Order Preview',style: TextStyle(fontWeight: FontWeight.bold)),
+                                        const Text('Order Preview',style: TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                   );

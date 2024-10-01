@@ -39,7 +39,7 @@ class _WishListState extends State<ProductWishListScreen> with AppBarMixin {
     final isDesktop = Layout.isDisplayDesktop(context);
 
     return renderScaffold(
-      floatingActionButton: (context.watch<CartModel>().productsInCart.isNotEmpty) ? Padding(
+      floatingActionButton: (/*context.watch<CartModel>().productsInCart.isNotEmpty*/ true) ? Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: GestureDetector(
           onTap: (){

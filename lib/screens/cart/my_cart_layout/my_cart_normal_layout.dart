@@ -43,6 +43,7 @@ class MyCartNormalLayout extends StatefulWidget {
 class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
     with MyCartMixin {
   var customConfig = {
+    'isInHome': true,
     'showCartIcon': false,
     'imageBoxfit': 'cover',
     'showStockStatus': true,
@@ -130,7 +131,7 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
                     : Colors.grey;
 
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
+                  padding:  EdgeInsets.only(bottom: 15, left: MediaQuery.sizeOf(context).width *.2, right: MediaQuery.sizeOf(context).width *.2),
                   child: FloatingActionButton.extended(
                     heroTag: null,
                     onPressed: isReadyForCheckout

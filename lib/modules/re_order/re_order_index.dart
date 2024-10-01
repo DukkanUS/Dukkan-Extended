@@ -20,6 +20,7 @@ class ReOrderIndex extends StatelessWidget with ReOderMixin {
         onPressed: () => reOrder(context, order),
         child: Text(
           S.of(context).reOrder,
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );

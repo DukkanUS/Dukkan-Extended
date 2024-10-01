@@ -49,7 +49,7 @@ Map<String, dynamic> environment = {
     "EnableSkuSearch": true,
     "showStockStatus": true,
     "GridCount": 3,
-    "isCaching": false,
+    "isCaching": true,
     "kIsResizeImage": false,
     "httpCache": true,
     "Currencies": [
@@ -644,7 +644,7 @@ Map<String, dynamic> environment = {
   "loadingIcon": {"size": 30, "type": "fadingCube"},
   "splashScreen": {
     "duration": 2000,
-    "image": "assets/images/splashscreen.json",
+    "image": "assets/images/splashLogo.png",
     "animationName": "fluxstore",
     "backgroundColor": "#EDFFE2",
     "paddingBottom": 0,
@@ -652,7 +652,7 @@ Map<String, dynamic> environment = {
     "paddingRight": 0,
     "boxFit": "contain",
     "paddingTop": 0,
-    "type": "lottie",
+    "type": "zoom-in",
     "paddingLeft": 0
   },
   "orderConfig": {"version": 1},

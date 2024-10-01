@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:fstore/screens/order_history/views/widgets/custom_order_list_item.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -14,16 +11,13 @@ import '../../../custom/providers/return_request_provider.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/entities/aftership.dart';
 import '../../../models/index.dart' show AppModel, OrderStatus, OrderStatusExtension;
-
-// import '../../../models/order/order.dart';
 import '../../../modules/re_order/widgets/re_order_item_list.dart';
 import '../../../services/index.dart';
-import '../../../widgets/common/box_comment.dart';
 import '../../../widgets/common/webview.dart';
-import '../../../widgets/html/index.dart';
 import '../../base_screen.dart';
 import '../../checkout/widgets/success.dart';
 import '../models/order_history_detail_model.dart';
+import 'widgets/custom_order_list_item.dart';
 import 'widgets/order_price.dart';
 import 'widgets/product_order.dart';
 
@@ -148,9 +142,9 @@ class _OrderHistoryDetailScreenState
           ),
           backgroundColor: Theme.of(context).primaryColor,
           elevation: 0.0,
-          // actions: [
-          //   Center(child: Services().widget.reOrderButton(order)),
-          // ],
+          actions: [
+            Services().widget.reOrderButton(order),
+          ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -160,8 +154,9 @@ class _OrderHistoryDetailScreenState
               /// order notes
 
               const SizedBox(height: 15,),
+
               Container(
-                height: 100,
+                height: 120,
                 decoration: ShapeDecoration(
                   color: const Color(0xFFF7F7F7),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -176,19 +171,31 @@ class _OrderHistoryDetailScreenState
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(model.listOrderNote?.first.note ?? ''),
-                              Text('#${order.number ?? ''}',style: const TextStyle(fontWeight: FontWeight.bold),)
+                              CustomOrderStatusWidget(
+                                width: 300,
+                                title: S.of(context).status,
+                                detail: order.status == OrderStatus.unknown &&
+                                    order.orderStatus != null
+                                    ? order.orderStatus
+                                    : order.status!.content,
+                              ),
+                              const SizedBox(height: 5,),
+                              Text(model.listOrderNote?.first.note ?? '',style: const TextStyle(fontWeight: FontWeight.bold),),
+                              const SizedBox(height: 5,),
+                              (order.status == OrderStatus.completed) ?
+                              (order.dateModified != null) ? Text('Delivered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.dateModified!)}') : const SizedBox.shrink()
+                                  : (order.createdAt != null) ? Text('Ordered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.createdAt!)}') : const SizedBox.shrink()
+
                             ],
                           )),
                       const SizedBox(width: 20,),
                       Expanded(
                           flex: 1,
-                          child: CustomOrderStatusWidget(
-                            title: S.of(context).status,
-                            detail: order.status == OrderStatus.unknown &&
-                                order.orderStatus != null
-                                ? order.orderStatus
-                                : order.status!.content,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('#${order.number ?? ''}',style: const TextStyle(fontWeight: FontWeight.bold),),
+                            ],
                           ),),
                       const SizedBox(width: 20,),
 
@@ -418,7 +425,7 @@ class _OrderHistoryDetailScreenState
 
 
               /// refund request
-              if (order.status == OrderStatus.processing &&
+              if (order.status == OrderStatus.completed &&
                   kPaymentConfig.enableRefundCancel)
                 Center(
                   child: SizedBox(
@@ -429,12 +436,24 @@ class _OrderHistoryDetailScreenState
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white, backgroundColor: HexColor('#056C99'),
                           ),
-                          onPressed: ()=> (context.read<ReturnRequestProvider>().returnsList?.items?.isNotEmpty ?? false) ? null :refundOrder(orderHistoryDetailModel: model),
+                          onPressed: ()=> (context.read<ReturnRequestProvider>().returnsList?.items?.isNotEmpty ?? false) ?
+                          refundedOrder(orderHistoryDetailModel: model)
+                              : refundOrder(orderHistoryDetailModel: model),
                           child: (context.read<ReturnRequestProvider>().returnsList?.status?.isNotEmpty ?? false) ?
-                          Text(
-                              'Request status : ${context.read<ReturnRequestProvider>().returnsList?.status}' ?? '',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w700)):
+                          Column(
+                            children: [
+                              const Text(
+                                  'Request status :',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700)),
+                              Text(
+                                  (context.read<ReturnRequestProvider>().returnsList?.status.toString().toLowerCase() == 'pending') ? 'Help Request submitted' :
+                                  (context.read<ReturnRequestProvider>().returnsList?.status.toString().toLowerCase() == 'accepted') ? 'Refunded' :
+                                  context.read<ReturnRequestProvider>().returnsList?.status.toString() ?? '',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700,fontSize: 12)),
+                            ],
+                          ):
                           const Text(
                               'Get help with the order',
                               style: TextStyle(
@@ -474,12 +493,7 @@ class _OrderHistoryDetailScreenState
                     style: TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
-                Builder(
-                  builder: (context) {
-                    var x = '';
-                    return Text('${order.billing?.street ?? ''} ${order.billing?.apartment ?? ''} ${order.billing?.country ?? ''} ${order.billing?.state ?? ''}, ${order.billing?.zipCode ?? ''}');
-                  }
-                ),
+                Text('${order.billing?.street ?? ''} ${order.billing?.apartment ?? ''} ${order.billing?.country ?? ''} ${order.billing?.state ?? ''}, ${order.billing?.zipCode ?? ''}'),
               ],
               const SizedBox(height: 50)
             ],
@@ -514,6 +528,29 @@ class _OrderHistoryDetailScreenState
             order :orderHistoryDetailModel.order,
             lineItems: orderHistoryDetailModel.order.lineItems,
             b2bKingIsB2BOrder: orderHistoryDetailModel.order.b2bKingIsB2BOrder,
+          );
+        },
+      ),
+    );
+  }
+
+
+  Future<void> refundedOrder({required OrderHistoryDetailModel orderHistoryDetailModel}) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 1,
+        builder: (BuildContext context, ScrollController scrollController) {
+          return ReturnedItemList(
+            order :orderHistoryDetailModel.order,
+            lineItems: context.read<ReturnRequestProvider>().returnsList!.items!,
           );
         },
       ),

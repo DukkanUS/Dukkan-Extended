@@ -40,6 +40,7 @@ class _StateSearchScreen extends State<SearchScreen>
     }
 
     return ProductsScreen(
+      hideAppBar: true,
       enableSearchHistory: true,
       autoFocusSearch: widget.autoFocusSearch,
       config: ProductConfig.empty()

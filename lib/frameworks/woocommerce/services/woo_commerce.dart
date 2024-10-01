@@ -1424,12 +1424,15 @@ class WooCommerceService extends BaseServices {
           } );
 
       if (response.statusCode == 200) {
+        log('fuckkk');
+
         return List<String>.from(json.decode(response.body));
       } else {
+        log('fuckkk');
         throw Exception('Failed to load working hours');
       }
     } on Exception catch (e) {
-      log(e.toString());
+      log('fuckkk${e.toString()}');
       return [];
     }
   }

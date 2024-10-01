@@ -60,6 +60,15 @@ class _CartScreenState extends State<CartScreen> with AppBarMixin {
           toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
           title: Text(S.of(context).myCart,style: const TextStyle(color: Colors.white),),
           centerTitle: true,
+          leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                size: 20,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
         ),
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,

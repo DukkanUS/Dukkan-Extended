@@ -47,12 +47,21 @@ class WishList extends StatelessWidget {
                                   ProductCard(
                                     item: item,
                                     width: constraints.maxWidth * 0.35,
+
+
+                                    // config: ProductConfig.empty()..showCartButtonWithQuantity = true
+                                    //   ..showHeart = true..enableBottomAddToCart = products[i].isVariableProduct ..showCartButton = false..showQuantity = false
+                                    //   ..imageRatio = widget.ratioProductImage ?? 1.2
+                                    //   ..showCountDown = kSaleOffProduct.showCountDown &&
+                                    //       widget.layout == Layout.saleOff
+                                    //   ..showCartIcon = false,
+
                                     config: ProductConfig.empty()
-                                      ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true
+                                      ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true..isInHome = true
                                       ..cardDesign = useDesktopStyle
                                           ? CardDesign.simpleForWeb
                                           : CardDesign.card
-                                      ..enableBottomAddToCart = true..enableRating = false,
+                                      ..enableBottomAddToCart = false..enableRating = false,
                                   )
                               ],
                             ),
