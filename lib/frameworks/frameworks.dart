@@ -492,7 +492,7 @@ abstract class BaseFrameworks {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  child: Text('Shipping',
+                  child: Text('Delivery fee',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,

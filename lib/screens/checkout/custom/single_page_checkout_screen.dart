@@ -42,9 +42,7 @@ class SingleCheckoutPgeScreen extends StatefulWidget {
 
 class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     with RazorDelegate, CheckoutMixin {
-
   /// for coupon
-
 
   final services = Services();
   Coupons? coupons;
@@ -58,12 +56,10 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   final bool _showCouponList =
       kAdvanceConfig.showCouponList && ServerConfig().isSupportCouponList;
 
-
   Future<void> getCoupon() async {
     try {
       coupons = await services.api.getCoupons();
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   void showError(String message) {
@@ -113,11 +109,6 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
 
   ///
 
-
-
-
-
-
   bool _isDatePickerExpanded = true;
   String? _selectedTimePeriod;
 
@@ -132,6 +123,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
 
   bool _isPaymentExpanded = false;
   bool _isPhoneNumberExpanded = false;
+
   // bool _isBillingAddressExpanded = false;
   bool _isNotesExpanded = true;
   bool _isOrderPreviewExpanded = false;
@@ -143,25 +135,44 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
       unawaited(getCoupon());
       unawaited(context.read<DeliveryTime>().fetchDeliveryHours());
       unawaited(context.read<DeliveryTime>().fetchDeliveryHours());
+
       ///fetch the shipping methods
-     await Provider.of<ShippingMethodModel>(context, listen: false)
+      await Provider.of<ShippingMethodModel>(context, listen: false)
           .getShippingMethods(
-          cartModel: Provider.of<CartModel>(context, listen: false), token: context.read<UserModel>().user?.cookie, langCode: Provider.of<AppModel>(context, listen: false).langCode);
-     /// set the shipping method for the selected address or will show that the selected address is not supported yet
+              cartModel: Provider.of<CartModel>(context, listen: false),
+              token: context.read<UserModel>().user?.cookie,
+              langCode: Provider.of<AppModel>(context, listen: false).langCode);
 
-     if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
-       Provider.of<AddressValidation>(context,listen: false).setValid();
-       await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
-     }
-     else
-       {
-         Provider.of<AddressValidation>(context,listen: false).setInvalid();
-         await cartModel.removeShippingMethod();
+      /// set the shipping method for the selected address or will show that the selected address is not supported yet
+      try {
+        await Provider.of<TaxModel>(context, listen: false).getTaxes(
+            Provider.of<CartModel>(context, listen: false),
+            Provider.of<UserModel>(context, listen: false).user?.cookie,
+            (taxesTotal, taxes, isIncludingTax) {
+          Provider.of<CartModel>(context, listen: false)
+              .setTaxInfo(taxes, taxesTotal, isIncludingTax);
+          setState(() {});
+        });
+      } catch (ex) {
+        debugPrint("Exception Tax: ${ex.toString()}");
+      }
+      if (shippingMethodModel.shippingMethods!
+          .where((element) =>
+              element.title == cartModel.address?.zipCode.toString())
+          .isNotEmpty) {
+        Provider.of<AddressValidation>(context, listen: false).setValid();
+        await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!
+            .where((element) =>
+                element.title == cartModel.address?.zipCode.toString())
+            .first);
+      } else {
+        Provider.of<AddressValidation>(context, listen: false).setInvalid();
+        await cartModel.removeShippingMethod();
 
-         ///no supported method for such address.
-       }
+        ///no supported method for such address.
+      }
 
-     ///fetch the payment methods for the selected shipping
+      ///fetch the payment methods for the selected shipping
       await Provider.of<PaymentMethodModel>(context, listen: false)
           .getPaymentMethods(
               cartModel: cartModel,
@@ -198,12 +209,14 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
 
   void _selectTimePeriod(String period) {
     setState(() {
-      if(_selectedTimePeriod == period){
+      if (_selectedTimePeriod == period) {
         _selectedTimePeriod = null;
-        Provider.of<DeliveryTime>(context,listen: false).updateDeliveryTime(period: 'Any');
-      }else {
+        Provider.of<DeliveryTime>(context, listen: false)
+            .updateDeliveryTime(period: 'Any');
+      } else {
         _selectedTimePeriod = period;
-        Provider.of<DeliveryTime>(context,listen: false).updateDeliveryTime(period: period);
+        Provider.of<DeliveryTime>(context, listen: false)
+            .updateDeliveryTime(period: period);
       }
     });
   }
@@ -233,12 +246,14 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     final bgColor = Theme.of(context).primaryColor;
     InputBorder enabledBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(6),
-      borderSide: const BorderSide(
-          width: 1, color: Colors.black54),
+      borderSide: const BorderSide(width: 1, color: Colors.black54),
     );
     InputBorder focusBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(6),
-      borderSide: const BorderSide(width: 1, color: Colors.black54,),
+      borderSide: const BorderSide(
+        width: 1,
+        color: Colors.black54,
+      ),
     );
     return SafeArea(
       top: false,
@@ -252,21 +267,54 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                 backgroundColor: bgColor,
                 onPressed: (paymentMethodModel.message?.isNotEmpty ?? false)
                     ? null
-                    : () =>
-                isPaying || selectedId == null
+                    : () => isPaying || selectedId == null
                         ? showSnackbar
                         : {
-                  if(shippingMethodModel.shippingMethods?.isNotEmpty ?? false) {
-                    if(shippingMethodModel.shippingMethods!.where((sm) => sm.title.toString().contains(cartModel.address?.zipCode.toString() ?? '****')).isNotEmpty){
-                      cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first),
-                      placeOrder(paymentMethodModel, cartModel)
-                    }else{
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Selected address is not supported yet',style: TextStyle(fontWeight: FontWeight.bold),),backgroundColor: Colors.red,))
-                    }
-                  }else{
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No shipping methods in the meantime',style: TextStyle(fontWeight: FontWeight.bold),),backgroundColor: Colors.red,))
-                  }
-                },
+                            if (shippingMethodModel
+                                    .shippingMethods?.isNotEmpty ??
+                                false)
+                              {
+                                if (shippingMethodModel.shippingMethods!
+                                    .where((sm) => sm.title.toString().contains(
+                                        cartModel.address?.zipCode.toString() ??
+                                            '****'))
+                                    .isNotEmpty)
+                                  {
+                                    cartModel.setShippingMethod(
+                                        shippingMethodModel.shippingMethods!
+                                            .where((element) =>
+                                                element.title ==
+                                                cartModel.address?.zipCode
+                                                    .toString())
+                                            .first),
+                                    placeOrder(paymentMethodModel, cartModel)
+                                  }
+                                else
+                                  {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text(
+                                        'Selected address is not supported yet',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ))
+                                  }
+                              }
+                            else
+                              {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                    'No shipping methods in the meantime',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ))
+                              }
+                          },
                 label: Row(
                   children: [
                     Icon(
@@ -294,7 +342,10 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                   bottomRight: Radius.circular(20),
                   bottomLeft: Radius.circular(20))),
           toolbarHeight: MediaQuery.sizeOf(context).height * 0.07,
-          title: const Text('Checkout',style: TextStyle(color: Colors.white),),
+          title: const Text(
+            'Checkout',
+            style: TextStyle(color: Colors.white),
+          ),
           centerTitle: true,
           leading: IconButton(
               icon: const Icon(
@@ -360,45 +411,60 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                       await Services().widget.loadStates(c);
                                   await saveDataToLocal(address);
 
-                                  if(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).isNotEmpty) {
-                                    await cartModel.setShippingMethod(shippingMethodModel.shippingMethods!.where((element) => element.title == cartModel.address?.zipCode.toString()).first);
-                                    Provider.of<AddressValidation>(context,listen: false).setValid();
+                                  if (shippingMethodModel.shippingMethods!
+                                      .where((element) =>
+                                          element.title ==
+                                          cartModel.address?.zipCode.toString())
+                                      .isNotEmpty) {
+                                    await cartModel.setShippingMethod(
+                                        shippingMethodModel.shippingMethods!
+                                            .where((element) =>
+                                                element.title ==
+                                                cartModel.address?.zipCode
+                                                    .toString())
+                                            .first);
+                                    Provider.of<AddressValidation>(context,
+                                            listen: false)
+                                        .setValid();
                                     setState(() {});
-                                  }
-                                  else
-                                  {
-                                    Provider.of<AddressValidation>(context,listen: false).setInvalid();
-                                      await cartModel.removeShippingMethod();
-                                      setState(() {});
+                                  } else {
+                                    Provider.of<AddressValidation>(context,
+                                            listen: false)
+                                        .setInvalid();
+                                    await cartModel.removeShippingMethod();
+                                    setState(() {});
+
                                     ///no supported method for such address.
                                   }
-
                                 }
                               });
                             },
                             child: Row(
                               children: [
-                                Image.asset('assets/checkout_icons/location.png'),
+                                Image.asset(
+                                    'assets/checkout_icons/location.png'),
                                 const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  ('${
-                                        Provider.of<CartModel>(context)
-                                            .address
-                                            ?.street
-                                      }') ??
+                                  ('${Provider.of<CartModel>(context).address?.street}') ??
                                       'Choose Address',
-                                  style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
-                                const Text('Edit',style: TextStyle(color: Colors.red),),
-                                const SizedBox(width: 5,)
+                                const Text(
+                                  'Edit',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                )
                               ],
                             ),
                           ),
                         ),
-
 
                         // /// Billing Address
                         // (Provider.of<CartModel>(context).address?.street?.isNotEmpty ?? false)
@@ -459,68 +525,78 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                         /// Delivery Instructions
                         (kEnableCustomerNote)
                             ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isNotesExpanded = !_isNotesExpanded;
-                            });
-                          },
-                          child: ExpansionPanelList(
-                            expansionCallback:
-                                (int index, bool isExpanded) {
-                              setState(() {
-                                _isNotesExpanded = isExpanded;
-                              });
-                            },
-                            children: [
-                              ExpansionPanel(
-                                headerBuilder: (BuildContext context,
-                                    bool isExpanded) {
-                                  return ListTile(
-                                    title: Row(
-                                      children: [
-                                        Image.asset('assets/checkout_icons/car.png'),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        const Text('Delivery Instructions',style: TextStyle(fontWeight: FontWeight.bold),),
-                                      ],
-                                    ),
-                                  );
+                                onTap: () {
+                                  setState(() {
+                                    _isNotesExpanded = !_isNotesExpanded;
+                                  });
                                 },
-                                body: Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      width: 0.2,
+                                child: ExpansionPanelList(
+                                  expansionCallback:
+                                      (int index, bool isExpanded) {
+                                    setState(() {
+                                      _isNotesExpanded = isExpanded;
+                                    });
+                                  },
+                                  children: [
+                                    ExpansionPanel(
+                                      headerBuilder: (BuildContext context,
+                                          bool isExpanded) {
+                                        return ListTile(
+                                          title: Row(
+                                            children: [
+                                              Image.asset(
+                                                  'assets/checkout_icons/car.png'),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              const Text(
+                                                'Delivery Instructions',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      body: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                            width: 0.2,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: TextFormField(
+                                          initialValue:
+                                              UserBox().orderNotesFromLocal,
+                                          onChanged: (value) async {
+                                            cartModel.setOrderNotes(value);
+                                            await context
+                                                .read<UserModel>()
+                                                .saveOrderNotesToLocal(
+                                                    value: value);
+                                          },
+                                          maxLines: 5,
+                                          style: const TextStyle(fontSize: 13),
+                                          decoration: const InputDecoration(
+                                              hintText:
+                                                  'Add access code, best entrance, etc.',
+                                              hintStyle:
+                                                  TextStyle(fontSize: 12),
+                                              border: InputBorder.none),
+                                        ),
+                                      ),
+                                      isExpanded: _isNotesExpanded,
                                     ),
-                                    borderRadius:
-                                    BorderRadius.circular(5),
-                                  ),
-                                  child: TextFormField(
-                                    initialValue: UserBox().orderNotesFromLocal,
-                                    onChanged: (value) async{
-                                      cartModel.setOrderNotes(value);
-                                      await context.read<UserModel>().saveOrderNotesToLocal(value: value);
-                                    },
-                                    maxLines: 5,
-                                    style: const TextStyle(fontSize: 13),
-                                    decoration: const InputDecoration(
-                                        hintText:
-                                        'Add access code, best entrance, etc.',
-                                        hintStyle:
-                                        TextStyle(fontSize: 12),
-                                        border: InputBorder.none),
-                                  ),
+                                  ],
                                 ),
-                                isExpanded: _isNotesExpanded,
-                              ),
-                            ],
-                          ),
-                        )
+                              )
                             : const SizedBox.shrink(),
 
                         /// Delivery Time
@@ -546,19 +622,24 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   return ListTile(
                                     title: Row(
                                       children: [
-                                        Image.asset('assets/checkout_icons/Phone.png'),
+                                        Image.asset(
+                                            'assets/checkout_icons/Phone.png'),
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(((cartModel.address?.phoneNumber
-                                                        ?.isNotEmpty ??
-                                                    false) &&
-                                                cartModel
-                                                        .address?.phoneNumber !=
-                                                    '')
-                                            ? (cartModel.address?.phoneNumber ??
-                                                'Phone Number')
-                                            : 'Phone Number',style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        Text(
+                                            ((cartModel.address?.phoneNumber
+                                                            ?.isNotEmpty ??
+                                                        false) &&
+                                                    cartModel.address
+                                                            ?.phoneNumber !=
+                                                        '')
+                                                ? (cartModel
+                                                        .address?.phoneNumber ??
+                                                    'Phone Number')
+                                                : 'Phone Number',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                   );
@@ -568,9 +649,8 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                       horizontal: 50.0),
                                   child: TextFormField(
                                     decoration: InputDecoration(
-                                      focusedBorder: focusBorder,
-                                      enabledBorder: enabledBorder
-                                    ),
+                                        focusedBorder: focusBorder,
+                                        enabledBorder: enabledBorder),
                                     enableSuggestions: true,
                                     keyboardType: TextInputType.phone,
                                     initialValue:
@@ -587,7 +667,6 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                             ],
                           ),
                         ),
-
 
                         ///Payment Methods
                         ListenableProvider.value(
@@ -671,13 +750,17 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                       return ListTile(
                                         title: Row(
                                           children: [
-                                            Image.asset('assets/checkout_icons/cash-coin.png'),
+                                            Image.asset(
+                                                'assets/checkout_icons/cash-coin.png'),
                                             const SizedBox(
                                               width: 10,
                                             ),
-                                            Text(cartModel
-                                                    .paymentMethod?.title ??
-                                                'Payment Methods',style: const TextStyle(fontWeight: FontWeight.bold),),
+                                            Text(
+                                              cartModel.paymentMethod?.title ??
+                                                  'Payment Methods',
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ],
                                         ),
                                       );
@@ -739,14 +822,17 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                               ExpansionPanel(
                                 headerBuilder:
                                     (BuildContext context, bool isExpanded) {
-                                  return  ListTile(
+                                  return ListTile(
                                     title: Row(
                                       children: [
-                                        Image.asset('assets/icons/tabs/Paper-colored.png'),
+                                        Image.asset(
+                                            'assets/icons/tabs/Paper-colored.png'),
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        const Text('Order Preview',style: TextStyle(fontWeight: FontWeight.bold)),
+                                        const Text('Order Preview',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                   );
@@ -765,14 +851,18 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                         ),
                         const SizedBox(height: 20),
 
-                        if (kAdvanceConfig.enableCouponCode && !cartModel.isWalletCart() ) _renderCouponCode((cartModel.couponObj != null &&
-                            (cartModel.couponObj!.amount ?? 0) > 0)),
+                        if (kAdvanceConfig.enableCouponCode &&
+                            !cartModel.isWalletCart())
+                          _renderCouponCode((cartModel.couponObj != null &&
+                              (cartModel.couponObj!.amount ?? 0) > 0)),
 
-
-                        if (!cartModel.isWalletCart()) const PointReward(),
+                        // if (!cartModel.isWalletCart()) const PointReward(),
 
                         const SizedBox(height: 20),
-                        const ShoppingCartSummary(showPrice: false,hideCoupon: true,),
+                        const ShoppingCartSummary(
+                          showPrice: false,
+                          hideCoupon: true,
+                        ),
                         const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -871,34 +961,46 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                         ),
                         //region auto apply coupons feature
                         FutureBuilder<CustomCouponDetailsEntity?>(
-                          builder: (context,snapShot) {
-                            if(snapShot.connectionState == ConnectionState.waiting)
-                            {
+                          builder: (context, snapShot) {
+                            if (snapShot.connectionState ==
+                                ConnectionState.waiting) {
                               return const SizedBox.shrink();
-                            }
-                            else if(snapShot.hasData && snapShot.data!=null) {
+                            } else if (snapShot.hasData &&
+                                snapShot.data != null) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 20),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
                                       S.of(context).totalWithAutoApply,
                                       style: TextStyle(
                                           fontSize: 16,
-                                          color: Theme.of(context).colorScheme.secondary),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
                                     ),
                                     Text(
                                       PriceTools.getCurrencyFormatted(
-
-                                          (cartModel.getTotal()??0)-(snapShot.data?.totalDiscount??0)
-                                              -((snapShot.data?.isFreeShipping ?? false) ? cartModel.getShippingCost() ?? 0:0)
-                                          , currencyRate,
+                                          (cartModel.getTotal() ?? 0) -
+                                              (snapShot.data?.totalDiscount ??
+                                                  0) -
+                                              ((snapShot.data?.isFreeShipping ??
+                                                      false)
+                                                  ? cartModel
+                                                          .getShippingCost() ??
+                                                      0
+                                                  : 0),
+                                          currencyRate,
                                           currency: cartModel.currencyCode)!,
                                       style: TextStyle(
                                         fontSize: 20,
-                                        color: Theme.of(context).colorScheme.secondary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
                                         fontWeight: FontWeight.w600,
                                         decoration: TextDecoration.underline,
                                       ),
@@ -906,15 +1008,12 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   ],
                                 ),
                               );
-
-                            }
-                            else
-                            {
+                            } else {
                               return const SizedBox.shrink();
                             }
                           },
-                          future: AutoApplyCouponController.getAutoApplyCouponsDetails(cartModel),
-
+                          future: AutoApplyCouponController
+                              .getAutoApplyCouponsDetails(cartModel),
                         ),
                         //endregion
                         const SizedBox(height: 150),
@@ -1009,14 +1108,13 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     );
   }
 
-
-
   Widget _renderCouponCode(bool isApplyCouponSuccess) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15.0),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(5),),
+        borderRadius: BorderRadius.circular(5),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1034,23 +1132,23 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
               child: GestureDetector(
                 onTap: _showCouponList
                     ? () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (context) => CouponList(
-                        isFromCart: true,
-                        coupons: coupons,
-                        onSelect: (String couponCode) {
-                          Future.delayed(
-                              const Duration(milliseconds: 250), () {
-                            couponController.text = couponCode;
-                            checkCoupon(couponController.text, cartModel);
-                          });
-                        },
-                      ),
-                    ),
-                  );
-                }
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => CouponList(
+                              isFromCart: true,
+                              coupons: coupons,
+                              onSelect: (String couponCode) {
+                                Future.delayed(
+                                    const Duration(milliseconds: 250), () {
+                                  couponController.text = couponCode;
+                                  checkCoupon(couponController.text, cartModel);
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      }
                     : null,
                 child: AbsorbPointer(
                   absorbing: _showCouponList,
@@ -1058,13 +1156,13 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                     controller: couponController,
                     autocorrect: false,
                     enabled:
-                    !isApplyCouponSuccess && !cartModel.calculatingDiscount,
+                        !isApplyCouponSuccess && !cartModel.calculatingDiscount,
                     decoration: InputDecoration(
                       prefixIcon: _showCouponList
                           ? Icon(
-                        CupertinoIcons.search,
-                        color: Theme.of(context).primaryColor,
-                      )
+                              CupertinoIcons.search,
+                              color: Theme.of(context).primaryColor,
+                            )
                           : null,
                       labelText: S.of(context).couponCode,
                       //hintStyle: TextStyle(color: _enable ? Colors.grey : Colors.black),
@@ -1089,8 +1187,8 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
               cartModel.calculatingDiscount
                   ? S.of(context).loading
                   : !isApplyCouponSuccess
-                  ? S.of(context).apply
-                  : S.of(context).remove,
+                      ? S.of(context).apply
+                      : S.of(context).remove,
             ),
             icon: const Icon(
               CupertinoIcons.checkmark_seal_fill,
@@ -1098,18 +1196,16 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
             ),
             onPressed: !cartModel.calculatingDiscount
                 ? () {
-              if (!isApplyCouponSuccess) {
-                checkCoupon(couponController.text, cartModel);
-              } else {
-                removeCoupon(cartModel);
-              }
-            }
+                    if (!isApplyCouponSuccess) {
+                      checkCoupon(couponController.text, cartModel);
+                    } else {
+                      removeCoupon(cartModel);
+                    }
+                  }
                 : null,
           )
         ],
       ),
     );
   }
-
-
 }

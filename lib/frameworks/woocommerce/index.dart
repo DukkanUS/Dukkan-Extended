@@ -231,14 +231,14 @@ class WooWidget extends BaseFrameworks
           additionalPaymentInfo: additionalPaymentInfo)!;
 
       if (bacs) {
-        await Services()
+         unawaited(Services()
             .api
-            .updateOrder(order.id, status: 'on-hold', token: token);
+            .updateOrder(order.id, status: 'on-hold', token: token));
       }
       if ((cod && kPaymentConfig.updateOrderStatus)) {
-        await Services()
+         unawaited(Services()
             .api
-            .updateOrder(order.id, status: 'processing', token: token);
+            .updateOrder(order.id, status: 'processing', token: token));
       }
       if (!isLoggedIn) {
         var items = UserBox().orders;

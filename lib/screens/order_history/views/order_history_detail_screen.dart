@@ -172,7 +172,7 @@ class _OrderHistoryDetailScreenState
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CustomOrderStatusWidget(
-                                width: 300,
+                                width: 150,
                                 title: S.of(context).status,
                                 detail: order.status == OrderStatus.unknown &&
                                     order.orderStatus != null
@@ -183,7 +183,7 @@ class _OrderHistoryDetailScreenState
                               Text(model.listOrderNote?.first.note ?? '',style: const TextStyle(fontWeight: FontWeight.bold),),
                               const SizedBox(height: 5,),
                               (order.status == OrderStatus.completed) ?
-                              (order.dateModified != null) ? Text('Delivered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.dateModified!)}') : const SizedBox.shrink()
+                              (order.dateCompleted != null) ? Text('Delivered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.dateCompleted!)}') : const SizedBox.shrink()
                                   : (order.createdAt != null) ? Text('Ordered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.createdAt!)}') : const SizedBox.shrink()
 
                             ],
@@ -426,7 +426,7 @@ class _OrderHistoryDetailScreenState
 
               /// refund request
               if (order.status == OrderStatus.completed &&
-                  kPaymentConfig.enableRefundCancel)
+                  kPaymentConfig.enableRefundCancel && (DateTime.now().isBefore(order.dateCompleted!.add(const Duration(days: 2)))))
                 Center(
                   child: SizedBox(
                     width: MediaQuery.sizeOf(context).width * .5,

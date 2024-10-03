@@ -38,7 +38,7 @@ Map<String, dynamic> environment = {
   "advanceConfig": {
     "DefaultLanguage": "en",
     "DetailedBlogLayout": "halfSizeImageType",
-    "EnablePointReward": true,
+    "EnablePointReward": false,
     "hideOutOfStock": false,
     "HideEmptyTags": true,
     "HideEmptyCategories": true,
@@ -182,7 +182,7 @@ Map<String, dynamic> environment = {
     "about"
   ],
   "loginSetting": {
-    "IsRequiredLogin": false,
+    "IsRequiredLogin": true,
     "showAppleLogin": true,
     "showFacebook": false,
     "showSMSLogin": false,
@@ -641,10 +641,11 @@ Map<String, dynamic> environment = {
     "appName": "FluxStore Admin",
     "enableDeliveryFeature": false
   },
-  "loadingIcon": {"size": 30, "type": "fadingCube"},
-  "splashScreen": {
-    "duration": 2000,
-    "image": "assets/images/splashLogo.png",
+  "loadingIcon": {
+    "layout": "lottie",
+    "path": "assets/images/loading_icon.json"
+  },  "splashScreen": {
+    "image": "assets/images/splashscreen.json",
     "animationName": "fluxstore",
     "backgroundColor": "#EDFFE2",
     "paddingBottom": 0,
@@ -652,7 +653,7 @@ Map<String, dynamic> environment = {
     "paddingRight": 0,
     "boxFit": "contain",
     "paddingTop": 0,
-    "type": "zoom-in",
+    "type": "lottie",
     "paddingLeft": 0
   },
   "orderConfig": {"version": 1},

@@ -1075,6 +1075,8 @@ class WooCommerceService extends BaseServices {
             'User-Cookie': user.user != null ? user.user!.cookie! : '',
             'Content-Type': 'application/json'
           });
+      log('Create :: ${convert.jsonEncode(params)}');
+      log('Create token :: ${user.user!.cookie!.toString()}');
       var body = convert.jsonDecode(response.body);
       checkExpiredCookie(response);
       if ((response.statusCode == 201 || response.statusCode == 200) &&
@@ -1110,7 +1112,7 @@ class WooCommerceService extends BaseServices {
                   'Content-Type': 'application/json',
                 }
               : {});
-
+      log('Update :: ${convert.jsonEncode({'status': status})}');
       var body = convert.jsonDecode(response.body);
       checkExpiredCookie(response);
       if (body['message'] != null) {

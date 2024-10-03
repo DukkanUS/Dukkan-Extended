@@ -64,6 +64,7 @@ class Order {
   String? shippingMethodTitle;
   String? customerNote;
   String? customerId;
+  DateTime? dateCompleted;
   List<ProductItem> lineItems = [];
   Address? billing;
   Address? shipping;
@@ -215,6 +216,9 @@ class Order {
         wcfmStore = Store.fromDokanJson(parsedJson['store']);
       }
       customerId = parsedJson['customer_id'].toString();
+      dateCompleted = parsedJson['date_completed'] != null
+          ? DateTime.parse(parsedJson['date_completed'])
+          : DateTime.now();
 
       /// GET AFTERSHIP TRACKING & DELIVERY DATE
       if (parsedJson['meta_data'] != null) {
