@@ -1,8 +1,8 @@
-import 'package:intl_phone_number_input/intl_phone_number_input.dart'
-    show PhoneInputSelectorType;
-
-export 'package:intl_phone_number_input/intl_phone_number_input.dart'
-    show PhoneInputSelectorType;
+// import 'package:intl_phone_number_input/intl_phone_number_input.dart'
+//     show PhoneInputSelectorType;
+//
+// export 'package:intl_phone_number_input/intl_phone_number_input.dart'
+//     show PhoneInputSelectorType;
 
 class PhoneNumberConfig {
   final bool enablePhoneNumberValidation;
@@ -12,7 +12,7 @@ class PhoneNumberConfig {
   final bool showCountryFlag;
   final List<String> customCountryList;
   final bool formatInput;
-  final PhoneInputSelectorType selectorType;
+  // final PhoneInputSelectorType selectorType;
   final bool selectorFlagAsPrefixIcon;
 
   PhoneNumberConfig({
@@ -23,7 +23,7 @@ class PhoneNumberConfig {
     this.showCountryFlag = true,
     this.customCountryList = const [],
     this.formatInput = false,
-    this.selectorType = PhoneInputSelectorType.BOTTOM_SHEET,
+    // this.selectorType = PhoneInputSelectorType.BOTTOM_SHEET,
     this.selectorFlagAsPrefixIcon = true,
   });
 
@@ -39,7 +39,7 @@ class PhoneNumberConfig {
           ? <String>[...json['customCountryList']]
           : [],
       formatInput: json['formatInput'] ?? false,
-      selectorType: '${json['selectorType']}'.toPhoneInputSelectorType(),
+      // selectorType: '${json['selectorType']}'.toPhoneInputSelectorType(),
       selectorFlagAsPrefixIcon: json['selectorFlagAsPrefixIcon'] ?? true,
     );
   }
@@ -53,7 +53,7 @@ class PhoneNumberConfig {
     data['showCountryFlag'] = showCountryFlag;
     data['customCountryList'] = customCountryList;
     data['formatInput'] = formatInput;
-    data['selectorType'] = selectorType.name;
+    // data['selectorType'] = selectorType.name;
     data['selectorFlagAsPrefixIcon'] = selectorFlagAsPrefixIcon;
     return data;
   }
@@ -66,7 +66,7 @@ class PhoneNumberConfig {
     bool? showCountryFlag,
     List<String>? customCountryList,
     bool? formatInput,
-    PhoneInputSelectorType? selectorType,
+    // PhoneInputSelectorType? selectorType,
     bool? selectorFlagAsPrefixIcon,
   }) {
     return PhoneNumberConfig(
@@ -81,7 +81,7 @@ class PhoneNumberConfig {
         customCountryList ?? this.customCountryList,
       ),
       formatInput: formatInput ?? this.formatInput,
-      selectorType: selectorType ?? this.selectorType,
+      // selectorType: selectorType ?? this.selectorType,
       selectorFlagAsPrefixIcon:
           selectorFlagAsPrefixIcon ?? this.selectorFlagAsPrefixIcon,
     );
@@ -89,15 +89,15 @@ class PhoneNumberConfig {
 }
 
 extension on String {
-  PhoneInputSelectorType toPhoneInputSelectorType() {
-    switch (this) {
-      case 'DIALOG':
-        return PhoneInputSelectorType.DIALOG;
-      case 'DROPDOWN':
-        return PhoneInputSelectorType.DROPDOWN;
-      case 'BOTTOM_SHEET':
-      default:
-        return PhoneInputSelectorType.BOTTOM_SHEET;
-    }
-  }
+  // PhoneInputSelectorType toPhoneInputSelectorType() {
+  //   switch (this) {
+  //     case 'DIALOG':
+  //       return PhoneInputSelectorType.DIALOG;
+  //     case 'DROPDOWN':
+  //       return PhoneInputSelectorType.DROPDOWN;
+  //     case 'BOTTOM_SHEET':
+  //     default:
+  //       return PhoneInputSelectorType.BOTTOM_SHEET;
+  //   }
+  // }
 }

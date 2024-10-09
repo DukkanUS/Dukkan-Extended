@@ -4,7 +4,7 @@ import 'package:country_pickers/country_pickers.dart' as picker;
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+// import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/config.dart';
@@ -78,7 +78,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
   List<CountryState>? states = [];
   List<City>? cities = [];
 
-  PhoneNumber? initialPhoneNumber;
+  // PhoneNumber? initialPhoneNumber;
 
   @override
   void dispose() {
@@ -162,15 +162,15 @@ class _ShippingAddressState extends State<ShippingAddress> {
           try {
             final phoneNumber =
                 _textControllers[AddressFieldType.phoneNumber]?.text.trim();
-            if (phoneNumber?.isNotEmpty ?? false) {
-              initialPhoneNumber = await PhoneNumber.getParsablePhoneNumber(
-                PhoneNumber(
-                  dialCode: kPhoneNumberConfig.dialCodeDefault,
-                  isoCode: kPhoneNumberConfig.countryCodeDefault,
-                  phoneNumber: phoneNumber,
-                ),
-              );
-            }
+            // if (phoneNumber?.isNotEmpty ?? false) {
+            //   initialPhoneNumber = await PhoneNumber.getParsablePhoneNumber(
+            //     PhoneNumber(
+            //       dialCode: kPhoneNumberConfig.dialCodeDefault,
+            //       isoCode: kPhoneNumberConfig.countryCodeDefault,
+            //       phoneNumber: phoneNumber,
+            //     ),
+            //   );
+            // }
           } catch (e, trace) {
             printError(e, trace);
           }
@@ -563,53 +563,54 @@ class _ShippingAddressState extends State<ShippingAddress> {
 
       if (currentFieldType == AddressFieldType.phoneNumber &&
           kPhoneNumberConfig.enablePhoneNumberValidation) {
-        return InternationalPhoneNumberInput(
-          /// Auto focus first field if it's empty.
-          autoFocus:
-              index == 0 && (currentFieldController?.text.isEmpty ?? false),
-          textFieldController: currentFieldController,
-          focusNode: currentFieldFocusNode,
-          isReadOnly: isFieldReadOnly(index),
-          autofillHints: currentFieldType.autofillHint != null
-              ? ['${currentFieldType.autofillHint}']
-              : null,
-          inputDecoration: InputDecoration(
-            labelText: currentFieldType.getTitle(context),
-          ),
-          keyboardType: getKeyboardType(currentFieldType),
-          keyboardAction: hasNext ? TextInputAction.next : TextInputAction.done,
-          onFieldSubmitted: (_) {
-            if (hasNext) {
-              nextFieldFocus?.requestFocus();
-            }
-          },
-          onSaved: (value) {
-            onTextFieldSaved(
-              value.phoneNumber,
-              currentFieldType,
-            );
-          },
-          onInputChanged: (PhoneNumber number) {},
-          onInputValidated: (value) => {},
-          spaceBetweenSelectorAndTextField: 0,
-          selectorConfig: SelectorConfig(
-            enable: kPhoneNumberConfig.useInternationalFormat,
-            showFlags: kPhoneNumberConfig.showCountryFlag,
-            selectorType: kPhoneNumberConfig.selectorType,
-            setSelectorButtonAsPrefixIcon:
-                kPhoneNumberConfig.selectorFlagAsPrefixIcon,
-            leadingPadding: 0,
-            trailingSpace: false,
-          ),
-          selectorTextStyle: Theme.of(context).textTheme.titleMedium,
-          ignoreBlank: !(_configs[index]?.required ?? true),
-          initialValue: initialPhoneNumber,
-          formatInput: kPhoneNumberConfig.formatInput,
-          countries: kPhoneNumberConfig.customCountryList,
-          locale: langCode,
-          searchBoxDecoration: InputDecoration(
-              labelText: S.of(context).searchByCountryNameOrDialCode),
-        );
+        return const SizedBox.shrink();
+        // return InternationalPhoneNumberInput(
+        //   /// Auto focus first field if it's empty.
+        //   autoFocus:
+        //       index == 0 && (currentFieldController?.text.isEmpty ?? false),
+        //   textFieldController: currentFieldController,
+        //   focusNode: currentFieldFocusNode,
+        //   isReadOnly: isFieldReadOnly(index),
+        //   autofillHints: currentFieldType.autofillHint != null
+        //       ? ['${currentFieldType.autofillHint}']
+        //       : null,
+        //   inputDecoration: InputDecoration(
+        //     labelText: currentFieldType.getTitle(context),
+        //   ),
+        //   keyboardType: getKeyboardType(currentFieldType),
+        //   keyboardAction: hasNext ? TextInputAction.next : TextInputAction.done,
+        //   onFieldSubmitted: (_) {
+        //     if (hasNext) {
+        //       nextFieldFocus?.requestFocus();
+        //     }
+        //   },
+        //   onSaved: (value) {
+        //     onTextFieldSaved(
+        //       value.phoneNumber,
+        //       currentFieldType,
+        //     );
+        //   },
+        //   // onInputChanged: (PhoneNumber number) {},
+        //   onInputValidated: (value) => {},
+        //   spaceBetweenSelectorAndTextField: 0,
+        //   // selectorConfig: SelectorConfig(
+        //   //   enable: kPhoneNumberConfig.useInternationalFormat,
+        //   //   showFlags: kPhoneNumberConfig.showCountryFlag,
+        //   //   selectorType: kPhoneNumberConfig.selectorType,
+        //   //   setSelectorButtonAsPrefixIcon:
+        //   //       kPhoneNumberConfig.selectorFlagAsPrefixIcon,
+        //   //   leadingPadding: 0,
+        //   //   trailingSpace: false,
+        //   // ),
+        //   selectorTextStyle: Theme.of(context).textTheme.titleMedium,
+        //   ignoreBlank: !(_configs[index]?.required ?? true),
+        //   // initialValue: initialPhoneNumber,
+        //   formatInput: kPhoneNumberConfig.formatInput,
+        //   countries: kPhoneNumberConfig.customCountryList,
+        //   locale: langCode,
+        //   searchBoxDecoration: InputDecoration(
+        //       labelText: S.of(context).searchByCountryNameOrDialCode),
+        // );
       }
 
       return Column(
