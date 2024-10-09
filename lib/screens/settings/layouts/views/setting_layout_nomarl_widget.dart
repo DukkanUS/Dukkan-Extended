@@ -158,7 +158,7 @@ class _SettingLayoutNormalWidgetState extends State<SettingLayoutNormalWidget>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.bug_report_rounded),
+                              Image.asset('assets/icons/tabs/Paper.png',color: Theme.of(context).primaryColor),
                               Text(S.of(context).orders)
                             ],
                           ),
@@ -199,11 +199,11 @@ class _SettingLayoutNormalWidgetState extends State<SettingLayoutNormalWidget>
                                       height: 30,
                                       width: 30,
                                       child: Stack(children: [
-                                        const Positioned(
+                                         Positioned(
                                             bottom: 0,
                                             left: 0,
                                             child:
-                                                Icon(Icons.notifications_none)),
+                                                Icon(Icons.notifications_none,color: Theme.of(context).primaryColor)),
                                         Positioned(
                                           top: 0,
                                           right: 0,
@@ -230,7 +230,7 @@ class _SettingLayoutNormalWidgetState extends State<SettingLayoutNormalWidget>
                                         )
                                       ]),
                                     )
-                                  : const Icon(Icons.notifications_none),
+                                  :  Icon(Icons.notifications_none,color: Theme.of(context).primaryColor),
                               Text(S.of(context).notifications)
                             ],
                           ),
@@ -250,9 +250,9 @@ class _SettingLayoutNormalWidgetState extends State<SettingLayoutNormalWidget>
                               borderRadius: BorderRadius.circular(5)),
                           height: 80,
                           width: 110,
-                          child: const Column(
+                          child:  Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [Icon(Icons.help), Text('help')],
+                            children: [Icon(Icons.help,color: Theme.of(context).primaryColor), const Text('help')],
                           ),
                         ),
                       ),

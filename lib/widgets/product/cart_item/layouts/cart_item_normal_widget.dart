@@ -113,7 +113,7 @@ class CartItemNormalWidget extends StatelessWidget {
                                 },
                                 child: const Row(
                                   children: [
-                                    Icon(Icons.delete_forever_outlined, color: Color(0xffEA4335),),
+                                    Icon(CupertinoIcons.delete, color: Color(0xffEA4335),),
                                     Text('Remove',style: TextStyle(color: Color(0xffEA4335)),)
                                   ],
                                 ),

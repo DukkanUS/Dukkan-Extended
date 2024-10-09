@@ -76,23 +76,22 @@ class CustomOrderListItem extends StatelessWidget with ReOderMixin {
                                       SizedBox(
                                         width:
                                             MediaQuery.sizeOf(context).width *
-                                                .6,
-                                        child: Text(
-                                          Bidi.stripHtmlIfNeeded(
-                                            order.lineItems[0].name.toString(),
-                                          ),
-                                          style: const TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.w700,
-                                              overflow: TextOverflow.ellipsis),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                                .55,
+                                        child:  (order.status == OrderStatus.completed) ?
+                                        (order.dateModified != null) ? Text(style: const TextStyle(
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis),'Delivered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.dateModified!)}') : const SizedBox.shrink()
+                                            : (order.createdAt != null) ? Text(style: const TextStyle(
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis),'Ordered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.createdAt!)}') : const SizedBox.shrink()
                                       ),
                                       const Spacer(),
                                       Column(
                                         children: [
                                           CustomOrderStatusWidget(
+                                            width: 125,
                                             title: S.of(context).status,
                                             detail: order.status == OrderStatus.unknown &&
                                                 order.orderStatus != null
@@ -148,9 +147,6 @@ class CustomOrderListItem extends StatelessWidget with ReOderMixin {
                         ),
                       ),
                       const SizedBox(height: 5,),
-                      (order.status == OrderStatus.completed) ?
-                      (order.dateModified != null) ? Text('Delivered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.dateModified!)}') : const SizedBox.shrink()
-                          : (order.createdAt != null) ? Text('Ordered on ${DateFormat('yyyy-MM-dd HH:mm').format(order.createdAt!)}') : const SizedBox.shrink()
                     ],
                   ),
                 ),

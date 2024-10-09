@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/cart/cart_base.dart';
@@ -96,7 +97,7 @@ class _ProductQuantityButtonState extends State<ProductQuantityButton> {
                           ? () => setState(() => quantity--)
                           : null,
                       icon: Icon(
-                        quantity == 1 ? Icons.delete_forever_outlined : Icons.remove,
+                        quantity == 1 ? CupertinoIcons.delete : Icons.remove,
                         color: canDecrease ? Colors.black : Colors.grey,
                       ),
                     ),

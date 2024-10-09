@@ -51,7 +51,7 @@ Map<String, dynamic> environment = {
     "GridCount": 3,
     "isCaching": true,
     "kIsResizeImage": false,
-    "httpCache": true,
+    "httpCache": false,
     "Currencies": [
       {
         "symbol": "\$",

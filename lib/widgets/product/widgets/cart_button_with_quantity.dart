@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../generated/l10n.dart';
 
 class CartButtonWithQuantity extends StatefulWidget {
   const CartButtonWithQuantity({
@@ -114,7 +117,11 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
         children: [
           IconButton(
             onPressed: decreaseQuantity,
-            icon: const Icon(
+            icon: (_quantity == 1) ? const Icon(
+              CupertinoIcons.delete,
+              size: 20,
+              color: Colors.white,
+            ) : const Icon(
               Icons.remove,
               size: 20,
               color: Colors.white,
@@ -203,5 +210,120 @@ class _CartButtonWithQuantityState extends State<CartButtonWithQuantity> {
     setState(() {
       _isShowQuantity = false;
     });
+  }
+}
+
+
+class CustomCartButtonWithQuantity extends StatefulWidget {
+  const CustomCartButtonWithQuantity({
+    super.key,
+    required this.quantity,
+    this.borderRadiusValue = 0,
+    required this.increaseQuantityFunction,
+    required this.decreaseQuantityFunction,
+  });
+
+  final int quantity;
+  final double borderRadiusValue;
+  final VoidCallback increaseQuantityFunction;
+  final VoidCallback decreaseQuantityFunction;
+
+  @override
+  State<CustomCartButtonWithQuantity> createState() => _CustomCartButtonWithQuantityState();
+}
+
+class _CustomCartButtonWithQuantityState extends State<CustomCartButtonWithQuantity> {
+
+  int get _quantity => widget.quantity;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 150),
+      child: buildSelector(),
+    );
+  }
+
+  Widget buildSelector() {
+    return (_quantity == 0) ?
+    GestureDetector(
+      onTap: increaseQuantity,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 6, right: 6),
+        height: 45,
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Center(child: Text(S.of(context).addToCart,style: const TextStyle(color: Colors.white,fontSize: 16),),),
+      ),
+    )
+        : Container(
+      margin: const EdgeInsets.only(bottom: 6, right: 6),
+      height: 45,
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child:  IconButton(
+              onPressed: decreaseQuantity,
+              icon: (_quantity == 1)
+                  ? Icon(
+                CupertinoIcons.delete,
+                size: 20,
+                color: Theme.of(context).primaryColor,
+              )
+                  : Icon(
+                Icons.remove,
+                size: 20,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+          Text(
+            '$_quantity in cart',
+            style: const TextStyle(color: Colors.white,fontSize: 18),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              onPressed: increaseQuantity,
+              icon:  Icon(
+                Icons.add,
+                size: 20,
+                color: Theme.of(context).primaryColor,  // Set icon color to contrast with white background
+              ),
+            ),
+          ),
+
+        ],
+      ),
+    );
+  }
+
+  void increaseQuantity() {
+    widget.increaseQuantityFunction();
+  }
+
+  void decreaseQuantity() {
+    widget.decreaseQuantityFunction();
   }
 }

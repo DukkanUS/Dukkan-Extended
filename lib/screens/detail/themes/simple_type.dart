@@ -11,10 +11,12 @@ import '../../../common/tools/flash.dart';
 import '../../../common/tools/tools.dart';
 import '../../../custom/product_quantity_button.dart';
 import '../../../generated/l10n.dart';
-import '../../../models/index.dart' show Product, ProductModel, UserModel;
+import '../../../models/index.dart' show CartModel, Product, ProductModel, UserModel;
 import '../../../models/product_variant_model.dart';
 import '../../../services/index.dart';
+import '../../../widgets/product/action_button_mixin.dart';
 import '../../../widgets/product/product_bottom_sheet.dart';
+import '../../../widgets/product/widgets/cart_button_with_quantity.dart';
 import '../../../widgets/product/widgets/heart_button.dart';
 import '../../chat/vendor_chat.dart';
 import '../widgets/buy_button_widget.dart';
@@ -40,7 +42,7 @@ class SimpleLayout extends StatefulWidget {
 }
 
 class _SimpleLayoutState extends State<SimpleLayout>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin , ActionButtonMixin{
   late final _scrollController = widget.scrollController ?? ScrollController();
   final ValueNotifier<int> _selectIndexNotifier = ValueNotifier(0);
 
@@ -352,9 +354,40 @@ class _SimpleLayoutState extends State<SimpleLayout>
                       ],
                     ),
                   ),
-                  if (kProductDetail.fixedBuyButtonToBottom &&
-                      _isVisibleBuyButton)
-                    ProductQuantityButton(product:product),
+                  Selector<CartModel, int>(
+                    selector: (context, cartModel) =>
+                    cartModel.productsInCart[product.id] ??
+                        0,
+                    builder: (context, quantity, child) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                        child: CustomCartButtonWithQuantity(
+                          quantity: quantity,
+                          borderRadiusValue:0.0,
+                          increaseQuantityFunction: () {
+                            addToCart(
+                              context,
+                              quantity: 1,
+                              product: product,
+                              enableBottomAddToCart: false,
+                            );
+                          },
+                          decreaseQuantityFunction: () {
+                            if (quantity <= 0) return;
+                            updateQuantity(
+                              context: context,
+                              quantity: quantity - 1,
+                              product: product,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+
+                  // if (kProductDetail.fixedBuyButtonToBottom &&
+                  //     _isVisibleBuyButton)
+                  //   ProductQuantityButton(product:product),
                 ],
               );
             },

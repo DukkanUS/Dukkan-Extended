@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +25,6 @@ import '../../../services/services.dart';
 import '../../../widgets/common/place_picker.dart';
 import '../../../widgets/product/cart_item/cart_item.dart';
 import '../../cart/widgets/coupon_list.dart';
-import '../../cart/widgets/point_reward.dart';
 import '../../cart/widgets/shopping_cart_sumary.dart';
 import '../mixins/checkout_mixin.dart';
 import '../widgets/success.dart';
@@ -47,8 +44,6 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   final services = Services();
   Coupons? coupons;
 
-  String _productsInCartJson = '';
-  final _debounceApplyCouponTag = 'debounceApplyCouponTag';
   final defaultCurrency = kAdvanceConfig.defaultCurrency;
 
   final couponController = TextEditingController();
@@ -107,12 +102,8 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     cartModel.discountAmount = 0.0;
   }
 
-  ///
-
-  bool _isDatePickerExpanded = true;
   String? _selectedTimePeriod;
 
-  // int? selectedIndex = 0;
   bool isLoading = false;
   Order? newOrder;
 
@@ -154,7 +145,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
           setState(() {});
         });
       } catch (ex) {
-        debugPrint("Exception Tax: ${ex.toString()}");
+        debugPrint('Exception Tax: ${ex.toString()}');
       }
       if (shippingMethodModel.shippingMethods!
           .where((element) =>
@@ -186,7 +177,6 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
           // }
           final savedCoupon = cartModel.savedCoupon;
           couponController.text = savedCoupon ?? '';
-          _productsInCartJson = jsonEncode(cartModel.productsInCart);
         }
       });
     });
@@ -207,37 +197,8 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     UserBox().addresses = listAddress;
   }
 
-  void _selectTimePeriod(String period) {
-    setState(() {
-      if (_selectedTimePeriod == period) {
-        _selectedTimePeriod = null;
-        Provider.of<DeliveryTime>(context, listen: false)
-            .updateDeliveryTime(period: 'Any');
-      } else {
-        _selectedTimePeriod = period;
-        Provider.of<DeliveryTime>(context, listen: false)
-            .updateDeliveryTime(period: period);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // final textFieldDecoration = InputDecoration(
-    //   border: OutlineInputBorder(
-    //     borderRadius: BorderRadius.circular(20),
-    //     borderSide: const BorderSide(color: Colors.black),
-    //   ),
-    //   focusedBorder: OutlineInputBorder(
-    //     borderRadius: BorderRadius.circular(20),
-    //     borderSide: const BorderSide(color: Colors.black),
-    //   ),
-    //   enabledBorder: OutlineInputBorder(
-    //     borderRadius: BorderRadius.circular(20),
-    //     borderSide: const BorderSide(color: Colors.black),
-    //   ),
-    //   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-    // );
     final cartModel = Provider.of<CartModel>(context);
     final paymentMethodModel = Provider.of<PaymentMethodModel>(context);
     var user = Provider.of<UserModel>(context, listen: false).user;
@@ -265,7 +226,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
             padding: const EdgeInsets.only(bottom: 15.0),
             child: FloatingActionButton.extended(
                 backgroundColor: bgColor,
-                onPressed: (paymentMethodModel.message?.isNotEmpty ?? false)
+                onPressed: (_selectedTimePeriod?.isEmpty ?? true) ? () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select the delivery period'),backgroundColor: Colors.red,)) : (paymentMethodModel.message?.isNotEmpty ?? false)
                     ? null
                     : () => isPaying || selectedId == null
                         ? showSnackbar
@@ -447,8 +408,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                   width: 10,
                                 ),
                                 Text(
-                                  ('${Provider.of<CartModel>(context).address?.street}') ??
-                                      'Choose Address',
+                                  ('${Provider.of<CartModel>(context).address?.street}'),
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -600,7 +560,10 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                             : const SizedBox.shrink(),
 
                         /// Delivery Time
-                        DeliveryTimeWidget(),
+                        DeliveryTimeWidget(
+                          onTimeSelected:
+                              _onDeliveryTimeSelected, // Pass callback function
+                        ),
 
                         ///Phone Number
                         GestureDetector(
@@ -1083,31 +1046,6 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
     }
   }
 
-  Widget _buildTimeOption(String period) {
-    var isSelected = _selectedTimePeriod == period;
-    return GestureDetector(
-      onTap: () => _selectTimePeriod(period),
-      child: Container(
-        width: MediaQuery.sizeOf(context).width * 0.8,
-        height: 50,
-        decoration: BoxDecoration(
-          border: Border.all(
-              color:
-                  isSelected ? Theme.of(context).primaryColor : Colors.black),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          period,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _renderCouponCode(bool isApplyCouponSuccess) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -1207,5 +1145,14 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
         ],
       ),
     );
+  }
+
+  // Method to update the selected delivery time
+  void _onDeliveryTimeSelected(String selectedTime) {
+    setState(() {
+      _selectedTimePeriod = selectedTime;
+      Provider.of<DeliveryTime>(context, listen: false)
+          .updateDeliveryTime(period: _selectedTimePeriod ?? 'Any');
+    });
   }
 }

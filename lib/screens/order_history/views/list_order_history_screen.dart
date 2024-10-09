@@ -27,7 +27,7 @@ class _ListOrderHistoryScreenState extends State<ListOrderHistoryScreen>
   ColorScheme get colorScheme => Theme.of(context).colorScheme;
   Color get primaryColor => Theme.of(context).primaryColor;
 
-  List<MyOrderStatus> get listOrderStatus => MyOrderStatus.values;
+  List<MyOrderStatus> get listOrderStatus => MyOrderStatus.values.where((os) => !['pending','onHold','refunded','failed'].contains(os.name)).toList();
 
   @override
   void initState() {

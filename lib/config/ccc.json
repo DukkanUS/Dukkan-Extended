@@ -1,0 +1,830 @@
+
+
+{
+  "HorizonLayout": [
+    {
+      "layout": "logo"
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 20
+    },
+    {
+      "layout": "category",
+      "type": "image",
+      "wrap": false,
+      "showShortDescription": true,
+      "size": 1.0,
+      "radius": 100.0,
+      "spacing": 12.0,
+      "items": [
+        {
+          "category": 132,
+          "name": "Bakery",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Nature-s-Own-Hot-Dog-Butter-Buns-15-oz-8-Count_a2df0d1d-a1e5-4798-b378-2b31e66952bc.ae50c444259d0766db0261007cbdfede.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 133,
+          "name": "Beverages",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Naked-No-Sugar-Added-Non-GMO-Mighty-Mango-Fruit-Juice-64-Fl-Oz-Bottle_2a1023f0-6160-45c3-9e1d-60076f8bb274.a7c092444601550079f52bb3d95ddf13.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 138,
+          "name": "Coffee",
+          "image": "https://dukkan.us/wp-content/uploads/2024/05/GUEST_14b5e172-fb90-43d4-92b4-17355c4e7f8c.jpeg",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },{
+          "category": 132,
+          "name": "Bakery",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Nature-s-Own-Hot-Dog-Butter-Buns-15-oz-8-Count_a2df0d1d-a1e5-4798-b378-2b31e66952bc.ae50c444259d0766db0261007cbdfede.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 133,
+          "name": "Beverages",
+          "image": "https://dukkan.us/wp-content/uploads/2024/09/Naked-No-Sugar-Added-Non-GMO-Mighty-Mango-Fruit-Juice-64-Fl-Oz-Bottle_2a1023f0-6160-45c3-9e1d-60076f8bb274.a7c092444601550079f52bb3d95ddf13.jpeg.webp",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        },
+        {
+          "category": 138,
+          "name": "Coffee",
+          "image": "https://dukkan.us/wp-content/uploads/2024/05/GUEST_14b5e172-fb90-43d4-92b4-17355c4e7f8c.jpeg",
+          "originalColor": true,
+          "showText": true,
+          "showDescription": false
+        }
+      ],
+      "line": false,
+      "marginLeft": 0.0,
+      "marginRight": 0.0,
+      "marginTop": 10.0,
+      "marginBottom": 10.0,
+      "paddingX": 10.0,
+      "paddingY": 10.0,
+      "marginX": 0.0,
+      "marginY": 0.0,
+      "hideTitle": false,
+      "noBackground": false,
+      "imageBorderWidth": 0.0,
+      "imageBorderColor": "ffe61a00",
+      "imageBorderStyle": "dot",
+      "imageSpacing": 0.0,
+      "labelFontSize": 14.0,
+      "horizontalItem": false,
+      "separateWidth": 24.0,
+      "gradientStyle": false,
+      "border": 0.6,
+      "enableBorder": false,
+      "textAlignment": "topCenter",
+      "imageBoxFit": "fitWidth",
+      "itemSize": {
+        "width": 123.0,
+        "height": 152.0
+      }
+    },
+    {
+      "parallax": false,
+      "doubleTapToFullScreen": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "fit": "fill",
+      "isBlur": false,
+      "parallaxImageRatio": 1.2,
+      "showNumber": false,
+      "design": "swiper",
+      "showBackground": false,
+      "radius": 6,
+      "enableTimeIndicator": true,
+      "intervalTime": 3,
+      "padding": 0,
+      "upHeight": 0,
+      "pageIndicatorType": "line",
+      "isSlider": true,
+      "isSoundOn": false,
+      "enableParallax": false,
+      "autoPlayVideo": false,
+      "layout": "bannerImage",
+      "marginBottom": 0,
+      "autoPlay": false,
+      "items": [
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e413459e1a04ab016050/download/DALL%C2%B7E_2024-04-18_12.10.07_-_A_clean_and_inviting_banner_for_a_grocery_store_s_Dairy_%26_Eggs_category._The_image_should_display_dairy_products_like_milk%2C_cheese%2C_eggs%2C_with_a_backd.webp",
+          "bannerWithProduct": false,
+          "name": "",
+          "showSubcategory": false,
+          "video": "",
+          "category": "66",
+          "defaultShowProduct": false,
+          "products": []
+        },
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e43eee2e851c0ed19112/download/DALL%C2%B7E_2024-04-18_12.10.10_-_An_appealing_banner_for_a_grocery_store_s_Bakery_category._The_image_should_feature_freshly_baked_bread%2C_pastries%2C_and_other_bakery_items%2C_artisticall.webp",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "73",
+          "defaultShowProduct": false,
+          "products": []
+        },
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e45b5709401593b4e258/download/DALL%C2%B7E_2024-04-18_12.10.12_-_A_dynamic_banner_for_a_grocery_store_s_Beverages_category._The_image_should_showcase_a_variety_of_drinks_like_juices%2C_soft_drinks%2C_and_water_bottles%2C_.webp",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "95",
+          "defaultShowProduct": false,
+          "products": []
+        },
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620e46609a216282e73aacb/download/DALL%C2%B7E_2024-04-18_12.10.15_-_A_professional_banner_for_a_grocery_store_s_Meats_%26_Seafood_category._The_image_should_feature_an_assortment_of_meats_and_seafood%2C_such_as_steaks%2C_chi.webp",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "90",
+          "defaultShowProduct": false,
+          "products": []
+        }
+      ],
+      "marginTop": 0
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 20
+    },
+    {
+      "isInHome": true,
+      "showCartIcon": false,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": true,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": true,
+      "vMargin": 0,
+      "showOnlyImage": true,
+      "onSale": false,
+      "productType": false,
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "twoColumn",
+      "enableRating": false,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Fresh Produce",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "152",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    },
+    {
+      "showCartIcon": false,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": true,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": true,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "twoColumn",
+      "enableRating": false,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Beverages & Water",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "133",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    },
+    {
+      "showCartIcon": false,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": true,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": true,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "twoColumn",
+      "enableRating": false,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Ziyad",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "181",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    },
+    {
+      "parallax": false,
+      "enableParallax": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "marginLeft": 0,
+      "layout": "bannerImage",
+      "fit": "fitWidth",
+      "marginRight": 0,
+      "parallaxImageRatio": 1.2,
+      "design": "static",
+      "marginBottom": 0,
+      "items": [
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620eceb218291f1a42cfcc2/download/Sampars-Web-Banner-Snacks-1.jpg",
+          "padding": 15,
+          "product": "225",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "defaultShowProduct": false,
+          "products": []
+        }
+      ],
+      "marginTop": 0
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    },
+    {
+      "showCartIcon": false,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": true,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": true,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "twoColumn",
+      "enableRating": false,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Bakery & Bread",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "74",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    },
+    {
+      "parallax": false,
+      "enableParallax": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "marginLeft": 0,
+      "layout": "bannerImage",
+      "fit": "fitWidth",
+      "marginRight": 0,
+      "parallaxImageRatio": 1.2,
+      "design": "static",
+      "marginBottom": 0,
+      "items": [
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620eceb218291f1a42cfcc2/download/Sampars-Web-Banner-Snacks-1.jpg",
+          "padding": 15,
+          "product": "225",
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "defaultShowProduct": false,
+          "products": []
+        }
+      ],
+      "marginTop": 0
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    },
+    {
+      "parallax": false,
+      "enableParallax": false,
+      "enableBackground": false,
+      "isHorizontal": false,
+      "marginLeft": 0,
+      "layout": "bannerImage",
+      "fit": "fitWidth",
+      "marginRight": 0,
+      "parallaxImageRatio": 1.2,
+      "design": "static",
+      "marginBottom": 0,
+      "items": [
+        {
+          "image": "https://trello.com/1/cards/6620e3965082cb75d2d09c0a/attachments/6620eb6f2c652ab1c7baf9fe/download/DALL%C2%B7E_2024-04-18_12.07.15_-_A_vibrant_and_colorful_banner_for_a_grocery_store_s_Fruits_%26_Vegetables_category._The_image_should_feature_a_variety_of_fresh_fruits_and_vegetables_li.webp",
+          "padding": 15,
+          "bannerWithProduct": false,
+          "showSubcategory": false,
+          "video": "",
+          "category": "16",
+          "defaultShowProduct": false,
+          "products": []
+        }
+      ],
+      "marginTop": 0
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    },
+    {
+      "showCartIcon": false,
+      "imageBoxfit": "cover",
+      "showStockStatus": true,
+      "featured": false,
+      "hideEmptyProductLayout": false,
+      "showCountDown": false,
+      "parallax": false,
+      "columns": 0,
+      "hideStore": false,
+      "vPadding": 0,
+      "showQuantity": false,
+      "showHeart": true,
+      "hMargin": 6,
+      "parallaxImageRatio": 1.2,
+      "showCartButtonWithQuantity": true,
+      "vMargin": 0,
+      "showOnlyImage": false,
+      "onSale": false,
+      "productType": false,
+      "image": "",
+      "showCategory": false,
+      "productListItemHeight": 125,
+      "showCartIconColor": false,
+      "useSort": false,
+      "hPadding": 0,
+      "hidePrice": false,
+      "rows": 1,
+      "enableBottomAddToCart": false,
+      "layout": "twoColumn",
+      "enableRating": false,
+      "imageRatio": 1.2,
+      "useCircularRadius": true,
+      "hideTitle": false,
+      "borderRadius": 3,
+      "cardDesign": "card",
+      "backgroundRadius": 10,
+      "isSnapping": false,
+      "showCartButton": false,
+      "name": "Bakery",
+      "cartIconRadius": 9,
+      "enableAutoSliding": false,
+      "category": "108.61",
+      "hideEmptyProductListRating": false
+    },
+    {
+      "layout": "spacer",
+      "backgroundColor": null,
+      "useLightColor": false,
+      "height": 10
+    }
+  ],
+  "Setting": {
+    "TabBarConfig": {
+      "enableOnTop": false,
+      "color": null,
+      "radiusTopLeft": 0,
+      "bottomBarStyle": "static",
+      "paddingRight": 0,
+      "radiusTopRight": 0,
+      "TabBarIndicator": {
+        "strokeWidth": 0,
+        "color": null,
+        "horizontalPadding": 0,
+        "topRightRadius": 0,
+        "tabPosition": "bottom",
+        "bottomRightRadius": 0,
+        "bottomLeftRadius": 0,
+        "topLeftRadius": 0,
+        "paintingStyle": "fill",
+        "distanceFromCenter": 0,
+        "radius": 0,
+        "verticalPadding": 0,
+        "height": 0
+      },
+      "showMinimize": false,
+      "marginRight": 0,
+      "enableDivider": true,
+      "paddingBottom": 0,
+      "indicatorStyle": "material",
+      "enable": true,
+      "radiusBottomRight": 0,
+      "iconSize": 22,
+      "showFloatingClip": true,
+      "paddingTop": 0,
+      "isSafeArea": true,
+      "TabBarFloating": {
+        "elevation": 2,
+        "color": null,
+        "width": 50,
+        "floatingType": "circle",
+        "location": null,
+        "isCoverMode": false,
+        "position": 0,
+        "notchMargin": 4,
+        "radius": 50,
+        "height": 50
+      },
+      "showFloating": false,
+      "colorActiveIcon": null,
+      "colorCart": null,
+      "radiusBottomLeft": 0,
+      "alwaysShowTabBar": true,
+      "marginLeft": 0,
+      "colorIcon": null,
+      "marginBottom": 0,
+      "paddingLeft": 0,
+      "marginTop": 0
+    },
+    "FontFamily": "ABeeZee",
+    "FontHeader": "ABeeZee",
+    "ProductDetail": "simpleType",
+    "ShowChat": true,
+    "AgeRestriction": {
+      "enable": false,
+      "alwaysShowUponOpen": true,
+      "imageUrl": "",
+      "minimumAge": 21,
+      "hintMessage": "What is your year of birth?",
+      "useLogo": true,
+      "title": "Welcome to our shop\nYou must be 21 or older to enter",
+      "deniedMessage": "You are not of legal age to use this application",
+      "backgroundImageUrl": ""
+    },
+    "ProductListLayout": "list",
+    "SmartEngagementBanner": {
+      "popup": {
+        "closePosition": "topRight",
+        "updatedTime": 1661314494281,
+        "data": {
+          "parallax": false,
+          "enableParallax": false,
+          "isHorizontal": false,
+          "marginLeft": null,
+          "layout": "bannerImage",
+          "fit": "fitHeight",
+          "marginRight": null,
+          "parallaxImageRatio": 1.2,
+          "design": "static",
+          "marginBottom": 10,
+          "items": [
+            {
+              "image": "https://i.imgur.com/ZL1LO75.png",
+              "padding": 0,
+              "bannerWithProduct": false,
+              "showSubcategory": false,
+              "category": "22",
+              "defaultShowProduct": false,
+              "products": []
+            }
+          ],
+          "marginTop": 10,
+          "key": "p2oq4zc4hg",
+          "height": 0.45
+        },
+        "enable": false,
+        "alwaysShowUponOpen": true
+      },
+      "flexible": {
+        "canClose": true,
+        "data": {
+          "layout": "button",
+          "marginBottom": 0,
+          "alignment": "topCenter",
+          "items": [
+            {
+              "marginRight": 0,
+              "textFontSize": 14,
+              "image": "https://assets9.lottiefiles.com/private_files/lf30_a4mKwA.json",
+              "useMaxWidth": true,
+              "borderRadius": 2,
+              "width": 100,
+              "navigator": {
+                "coupon": "blackf",
+                "showSubcategory": false
+              },
+              "height": 80,
+              "marginLeft": 0
+            }
+          ],
+          "marginTop": 0
+        },
+        "enable": false,
+        "width": 100,
+        "canDrag": true,
+        "height": 100
+      },
+      "sticky": {
+        "data": {
+          "parallax": false,
+          "enableParallax": false,
+          "isHorizontal": false,
+          "marginLeft": 10,
+          "layout": "bannerImage",
+          "fit": "fitWidth",
+          "marginRight": 10,
+          "parallaxImageRatio": 1.2,
+          "design": "static",
+          "marginBottom": 10,
+          "items": [
+            {
+              "image": "https://i.imgur.com/LUaEM3v.jpeg",
+              "padding": 0,
+              "coupon": "halfprice",
+              "bannerWithProduct": false,
+              "showSubcategory": false,
+              "radius": 9,
+              "defaultShowProduct": false,
+              "products": []
+            }
+          ],
+          "marginTop": 10,
+          "key": "ga8oe39k5t",
+          "height": 0.2
+        },
+        "enable": false
+      }
+    },
+    "StickyHeader": true
+  },
+  "TabBar": [
+    {
+      "label": "Home",
+      "layout": "home",
+      "fontFamily": "CupertinoIcons",
+      "fullscreen": false,
+      "pos": 100,
+      "showOriginalColor": false,
+      "defaultTab": false,
+      "icon": "assets/icons/tabs/home_tap.png",
+      "key": "ENhcXWHEIH"
+    },
+    {
+      "label": "List",
+      "layout": "category",
+      "parallaxImageRatio": 1.2,
+      "fontFamily": "CupertinoIcons",
+      "fullscreen": false,
+      "pos": 200,
+      "showOriginalColor": false,
+      "parallax": false,
+      "defaultTab": false,
+      "showSearch": true,
+      "icon": "assets/icons/tabs/list_tap.png",
+      "categoryLayout": "sideMenuWithSub",
+      "key": "UzbsxiXCRp"
+    },
+    {
+      "label": "Orders",
+      "layout": "orders",
+      "fontFamily": "CupertinoIcons",
+      "fullscreen": false,
+      "pos": 400,
+      "showOriginalColor": false,
+      "defaultTab": false,
+      "icon": "assets/icons/tabs/Paper.png",
+      "key": "vAisfDpYem"
+    },
+    {
+      "label": "Profile",
+      "layout": "profile",
+      "settings": [
+        "wishlist",
+        "notifications",
+        "point",
+        "privacy",
+        "about"
+      ],
+      "styleItem": "listTile",
+      "fontFamily": "CupertinoIcons",
+      "visible": true,
+      "fullscreen": false,
+      "pos": 500,
+      "showOriginalColor": false,
+      "defaultTab": false,
+      "showBackground": false,
+      "icon": "assets/icons/tabs/person_tap.png",
+      "drawerIcon": {
+        "fontFamily": "MaterialIcons",
+        "icon": "menu_rounded"
+      },
+      "key": "RVOmCIgVBa"
+    }
+  ],
+  "Drawer": {
+    "filter": 0,
+    "logoConfig": {
+      "marginRight": 0,
+      "boxFit": "cover",
+      "marginBottom": 10,
+      "marginTop": 60,
+      "height": 38,
+      "marginLeft": 5
+    },
+    "enable": true,
+    "subDrawerItem": {
+      "web-13hiqqweo9": {
+        "webViewMode": true,
+        "webUrl": "https://yezmart.ph/jobs/",
+        "icon": "briefcase",
+        "title": "Careers",
+        "iconFontFamily": "CupertinoIcons",
+        "requiredLogin": false
+      }
+    },
+    "safeArea": true,
+    "items": [
+      {
+        "show": true,
+        "type": "home"
+      },
+      {
+        "show": false,
+        "type": "blog"
+      },
+      {
+        "show": true,
+        "type": "profile"
+      },
+      {
+        "show": true,
+        "type": "login"
+      },
+      {
+        "show": true,
+        "type": "category"
+      },
+      {
+        "show": false,
+        "type": "categories"
+      },
+      {
+        "show": false,
+        "type": "cart"
+      }
+    ],
+    "key": "PYdbXUcdLo"
+  },
+  "AppBar": {
+    "elevation": 0,
+    "pinned": true,
+    "showOnScreens": [
+      "home",
+      "product"
+    ],
+    "enable": false,
+    "floating": true,
+    "alwaysShowAppBar": true,
+    "expandedItems": [],
+    "items": [],
+    "snap": true
+  },
+  "Background": {
+    "type": "wave",
+    "height": 0.5
+  }
+}
+
+
+
