@@ -107,7 +107,9 @@ class _RelatedProductState extends State<RelatedProduct> {
                                   ProductCard(
                                     item: item,
                                     width: constraint.maxWidth * 0.35,
-                                    config: ProductConfig.empty(),
+                                    config: ProductConfig.empty()
+                                      ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true..isInHome = true
+                                      ..enableBottomAddToCart = false..enableRating = false..showStockStatus=false,
                                   )
                               ],
                             ),

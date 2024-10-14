@@ -511,7 +511,7 @@
       "showCartIconColor": false,
       "useCircularRadius": true,
       "parallaxImageRatio": 1.2,
-      "enableBottomAddToCart": true,
+      "enableBottomAddToCart": false,
       "productListItemHeight": 125,
       "hideEmptyProductLayout": false,
       "hideEmptyProductListRating": false,

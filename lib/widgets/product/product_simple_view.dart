@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fstore/widgets/product/widgets/cart_button_with_quantity.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/config.dart';
 import '../../../common/tools.dart';
 import '../../../generated/l10n.dart';
-import '../../../models/index.dart' show AppModel, Product;
+import '../../../models/index.dart' show AppModel, CartModel, Product;
 import '../../modules/dynamic_layout/config/product_config.dart';
 import '../../services/index.dart';
 import '../html/index.dart';
@@ -193,13 +194,37 @@ class ProductSimpleView extends StatelessWidget with ActionButtonMixin {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: productPricing,
                   ),
-                if ((kProductDetail.showAddToCartInSearchResult &&
-                    canAddToCart &&
-                    !productConfig.showQuantity))
-                  CartIcon(
-                    product: item!,
-                    config: productConfig,
-                  ),
+                item != null && config != null
+                    ? Selector<CartModel, int>(
+                        selector: (context, cartModel) =>
+                            cartModel.productsInCart[item!.id] ?? 0,
+                        builder: (context, quantity, child) {
+                          return CartButtonWithQuantity(
+                            quantity: quantity,
+                            borderRadiusValue: config!.cartIconRadius ?? 0,
+                            // Add a default value if needed
+                            increaseQuantityFunction: () {
+                              addToCart(
+                                context,
+                                quantity: 1,
+                                product: item!,
+                                enableBottomAddToCart:
+                                    config!.enableBottomAddToCart ??
+                                        false, // Add default value if needed
+                              );
+                            },
+                            decreaseQuantityFunction: () {
+                              if (quantity <= 0) return;
+                              updateQuantity(
+                                context: context,
+                                quantity: quantity - 1,
+                                product: item!,
+                              );
+                            },
+                          );
+                        },
+                      )
+                    : const SizedBox.shrink()
               ],
             ),
           ),

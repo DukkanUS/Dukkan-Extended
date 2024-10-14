@@ -254,12 +254,9 @@ class _ProductListState extends State<ProductList> {
                 item: products[i],
                 width: widthContent,
                 ratioProductImage: widget.ratioProductImage ?? 1.2,
-                config: ProductConfig.empty()..showCartButtonWithQuantity = true
-                  ..showHeart = true..enableBottomAddToCart = products[i].isVariableProduct ..showCartButton = false..showQuantity = false
-                  ..imageRatio = widget.ratioProductImage ?? 1.2
-                  ..showCountDown = kSaleOffProduct.showCountDown &&
-                      widget.layout == Layout.saleOff
-                  ..showCartIcon = false,
+                config:  ProductConfig.empty()
+                  ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true..isInHome = true
+                  ..enableBottomAddToCart = false..enableRating = false..showStockStatus=false,
               );
         },
       ),
@@ -284,10 +281,9 @@ class _ProductListState extends State<ProductList> {
         itemBuilder: (context, index) => PinterestCard(
           item: products[index],
           width: MediaQuery.of(context).size.width / 2,
-          config: ProductConfig.empty()
-            ..showCartIcon = ProductConfig.empty().showCartIcon &&
-                widget.layout != 'columns' &&
-                products[index].canBeAddedToCartFromList(),
+            config:   ProductConfig.empty()
+              ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true..isInHome = true
+              ..enableBottomAddToCart = false..enableRating = false..showStockStatus=false,
         ),
         // staggeredTileBuilder: (index) => const StaggeredTile.fit(2),
       ),
@@ -303,6 +299,9 @@ class _ProductListState extends State<ProductList> {
         (context, index) {
           if (widget.layout == Layout.simpleList) {
             return ProductSimpleView(
+              config: ProductConfig.empty()
+                ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true..isInHome = true
+                ..enableBottomAddToCart = false..enableRating = false..showStockStatus=false,
               item: products![index],
               isFromSearchScreen: true,
             );
@@ -310,12 +309,9 @@ class _ProductListState extends State<ProductList> {
           return Services().widget.renderProductItemTileView(
               item: products![index],
               padding: const EdgeInsets.only(bottom: 10),
-              config:  ProductConfig.empty()..showCartButtonWithQuantity = true
-          ..showHeart = true..enableBottomAddToCart = products[index].isVariableProduct ..showCartButton = false..showQuantity = false
-          ..imageRatio = widget.ratioProductImage ?? 1.2
-          ..showCountDown = kSaleOffProduct.showCountDown &&
-          widget.layout == Layout.saleOff
-          ..showCartIcon = false);
+              config: ProductConfig.empty()
+                ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true..isInHome = true
+                ..enableBottomAddToCart = false..enableRating = false..showStockStatus=false);
         },
         childCount: products?.length,
       ),

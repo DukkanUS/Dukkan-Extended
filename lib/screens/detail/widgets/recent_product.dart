@@ -48,7 +48,9 @@ class RecentProducts extends StatelessWidget {
             ? ProductRecentPlaceholder()
             : ProductListDefault(
                 products: products,
-                config: ProductConfig.empty(),
+                config: ProductConfig.empty()
+    ..showCartIcon = false..showHeart = true..showCartButtonWithQuantity = true..isInHome = true
+    ..enableBottomAddToCart = false..enableRating = false..showStockStatus=false,
                 maxWidth: MediaQuery.of(context).size.width,
               ),
       ],

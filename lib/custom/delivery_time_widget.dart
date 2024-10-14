@@ -12,7 +12,7 @@ class DeliveryTimeWidget extends StatefulWidget {
 
 class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
     with SingleTickerProviderStateMixin {
-  bool _isDatePickerExpanded = false;
+  bool _isDatePickerExpanded = true;
   TabController? _tabController;
 
   String? _selectedTodayTime; // Selected time for Today
@@ -22,6 +22,7 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
   @override
   void initState() {
     super.initState();
+    ///todo update the length
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -31,30 +32,36 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
     super.dispose();
   }
 
-  // Method to get available time slots for today
   List<String> _getAvailableTimeSlotsForToday() {
     final now = DateTime.now();
     final currentHour = now.hour;
 
-    // Updated time slots
-    if (currentHour < 9) {
-      return ['9am - 12pm', '10am - 1pm', '11am - 2pm', '12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
-    } else if (currentHour < 10) {
-      return ['10am - 1pm', '11am - 2pm', '12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
-    } else if (currentHour < 11) {
-      return ['11am - 2pm', '12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
-    } else if (currentHour < 12) {
-      return ['12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
-    } else if (currentHour < 13) {
-      return ['1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
-    } else if (currentHour < 14) {
-      return ['2pm - 5pm', '3pm - 6pm'];
-    } else if (currentHour < 15) {
-      return ['3pm - 6pm'];
-    } else {
+    // If it's before 9 am or after 6 pm, no time slots should be available
+    if (currentHour < 9 || currentHour >= 18) {
       return []; // No time slots available
     }
+
+    // Updated time slots based on the current hour
+    if (currentHour < 10) {
+      return ['9am - 12pm', '10am - 1pm', '11am - 2pm', '12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
+    } else if (currentHour < 11) {
+      return ['10am - 1pm', '11am - 2pm', '12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
+    } else if (currentHour < 12) {
+      return ['11am - 2pm', '12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
+    } else if (currentHour < 13) {
+      return ['12pm - 3pm', '1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
+    } else if (currentHour < 14) {
+      return ['1pm - 4pm', '2pm - 5pm', '3pm - 6pm'];
+    } else if (currentHour < 15) {
+      return ['2pm - 5pm', '3pm - 6pm'];
+    } else if (currentHour < 16) {
+      return ['3pm - 6pm'];
+    } else {
+      return []; // No time slots available after 6 pm
+    }
   }
+
+
 
   // Updated time slots for tomorrow and after tomorrow
   List<String> _getTimeSlots() {
@@ -72,12 +79,12 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
     setState(() {
       if (tabIndex == 0) {
         _selectedTodayTime = timeSlot;
-        widget.onTimeSelected('$timeSlot, ${_getFormattedDay(0)}');
+        widget.onTimeSelected('$timeSlot on Today, ${_getFormattedDay(0)}');
         _selectedTomorrowTime = null;
         _selectedAfterTomorrowTime = null;
       } else if (tabIndex == 1) {
         _selectedTomorrowTime = timeSlot;
-        widget.onTimeSelected('$timeSlot, ${_getFormattedDay(1)}');
+        widget.onTimeSelected('$timeSlot on Tomorrow, ${_getFormattedDay(1)}');
         _selectedTodayTime = null;
         _selectedAfterTomorrowTime = null;
       } else if (tabIndex == 2) {
@@ -86,6 +93,7 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
         _selectedTodayTime = null;
         _selectedTomorrowTime = null;
       }
+      _isDatePickerExpanded = !_isDatePickerExpanded;
     });
   }
 
@@ -112,6 +120,44 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
 
   @override
   Widget build(BuildContext context) {
+    // Get available time slots for today
+    final availableTodaySlots = _getAvailableTimeSlotsForToday();
+
+    // Determine tabs to display based on available slots
+    final tabs = <Tab>[];
+    final tabViews = <Widget>[];
+
+    // Add "Today" tab only if there are available slots for today
+    if (availableTodaySlots.isNotEmpty) {
+      tabs.add(Tab(text: 'Today\n${_getFormattedDay(0)}'));
+      tabViews.add(
+        ListView(
+          children: availableTodaySlots
+              .map((timeSlot) => _buildTimeOption(timeSlot, 0))
+              .toList(),
+        ),
+      );
+    }
+
+    // Always add "Tomorrow" and "After Tomorrow" tabs
+    tabs.add(Tab(text: 'Tomorrow\n${_getFormattedDay(1)}'));
+    tabViews.add(
+      ListView(
+        children: _getTimeSlots()
+            .map((timeSlot) => _buildTimeOption(timeSlot, 1))
+            .toList(),
+      ),
+    );
+
+    tabs.add(Tab(text: _getFormattedDay(2)));
+    tabViews.add(
+      ListView(
+        children: _getTimeSlots()
+            .map((timeSlot) => _buildTimeOption(timeSlot, 2))
+            .toList(),
+      ),
+    );
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -121,7 +167,7 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
       child: ExpansionPanelList(
         expansionCallback: (int index, bool isExpanded) {
           setState(() {
-            _isDatePickerExpanded = !isExpanded;
+            _isDatePickerExpanded = isExpanded;
           });
         },
         children: [
@@ -134,9 +180,9 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
                     const SizedBox(width: 10),
                     Text(
                       _selectedTodayTime != null
-                          ? '${_getFormattedDay(0)}: $_selectedTodayTime'
+                          ? 'Today, ${_getFormattedDay(0)}: $_selectedTodayTime'
                           : _selectedTomorrowTime != null
-                          ? '${_getFormattedDay(1)}: $_selectedTomorrowTime'
+                          ? 'Tomorrow, ${_getFormattedDay(1)}: $_selectedTomorrowTime'
                           : _selectedAfterTomorrowTime != null
                           ? '${_getFormattedDay(2)}: $_selectedAfterTomorrowTime'
                           : 'Delivery Time',
@@ -150,42 +196,19 @@ class _DeliveryTimeWidgetState extends State<DeliveryTimeWidget>
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 children: [
-                  // TabBar for Today, Tomorrow, and After Tomorrow
+                  // TabBar only shows tabs that have time slots
                   TabBar(
                     controller: _tabController,
                     labelColor: Theme.of(context).primaryColor,
                     indicatorColor: Theme.of(context).primaryColor,
                     unselectedLabelColor: Colors.grey,
-                    tabs: [
-                      Tab(text: _getFormattedDay(0)),
-                      Tab(text: _getFormattedDay(1)),
-                      Tab(text: _getFormattedDay(2)),
-                    ],
+                    tabs: tabs,
                   ),
                   SizedBox(
                     height: 200, // Set a fixed height for TabBarView
                     child: TabBarView(
                       controller: _tabController,
-                      children: [
-                        // Today tab with filtered time slots
-                        ListView(
-                          children: _getAvailableTimeSlotsForToday()
-                              .map((timeSlot) => _buildTimeOption(timeSlot, 0))
-                              .toList(),
-                        ),
-                        // Tomorrow tab
-                        ListView(
-                          children: _getTimeSlots()
-                              .map((timeSlot) => _buildTimeOption(timeSlot, 1))
-                              .toList(),
-                        ),
-                        // After tomorrow tab
-                        ListView(
-                          children: _getTimeSlots()
-                              .map((timeSlot) => _buildTimeOption(timeSlot, 2))
-                              .toList(),
-                        ),
-                      ],
+                      children: tabViews,
                     ),
                   ),
                 ],

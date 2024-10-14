@@ -116,7 +116,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
   bool _isPhoneNumberExpanded = false;
 
   // bool _isBillingAddressExpanded = false;
-  bool _isNotesExpanded = true;
+  bool _isNotesExpanded = false;
   bool _isOrderPreviewExpanded = false;
   List<CountryState>? states = [];
 
@@ -509,12 +509,26 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                               const SizedBox(
                                                 width: 10,
                                               ),
-                                              const Text(
-                                                'Delivery Instructions',
-                                                style: TextStyle(
-                                                    fontWeight:
+                                              const Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    'Delivery Instructions',
+                                                    style: TextStyle(
+                                                        fontWeight:
                                                         FontWeight.bold),
-                                              ),
+                                                  ),
+                                                  Text(
+                                                    'Add access code, best entrance, etc,',
+                                                    style: TextStyle(
+                                                        color: Colors.blueAccent,
+                                                        fontSize: 11,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                ],
+                                              )
                                             ],
                                           ),
                                         );
@@ -590,19 +604,31 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                            ((cartModel.address?.phoneNumber
-                                                            ?.isNotEmpty ??
-                                                        false) &&
-                                                    cartModel.address
-                                                            ?.phoneNumber !=
-                                                        '')
-                                                ? (cartModel
-                                                        .address?.phoneNumber ??
-                                                    'Phone Number')
-                                                : 'Phone Number',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold)),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                ((cartModel.address?.phoneNumber
+                                                                ?.isNotEmpty ??
+                                                            false) &&
+                                                        cartModel.address
+                                                                ?.phoneNumber !=
+                                                            '')
+                                                    ? (cartModel
+                                                            .address?.phoneNumber ??
+                                                        'Phone Number')
+                                                    : 'Phone Number',
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold)),
+                                            const Text(
+                                              'We use your number to text or call you about your order',
+                                              style: TextStyle(
+                                                  fontSize: 10.5,
+                                                  fontWeight:
+                                                  FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   );
