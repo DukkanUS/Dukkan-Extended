@@ -104,7 +104,7 @@ class _OrderedSuccessState extends BaseScreen<OrderedSuccess> {
             currency: order?.currencyCode,
           ),
           PriceRowItemWidget(
-            title: S.of(context).shipping,
+            title: 'Delivery fee',
             total: order?.totalShipping,
             style: theme.textTheme.bodyMedium!.copyWith(
               color: secondaryColor,

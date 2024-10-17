@@ -46,7 +46,7 @@ class _MyCartNormalLayoutState extends State<MyCartNormalLayout>
     'isInHome': true,
     'showCartIcon': false,
     'imageBoxfit': 'cover',
-    'showStockStatus': true,
+    'showStockStatus': false,
     'featured': false,
     'hideEmptyProductLayout': false,
     'showCountDown': false,

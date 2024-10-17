@@ -643,9 +643,9 @@ Map<String, dynamic> environment = {
   },
   "loadingIcon": {
     "layout": "lottie",
-    "path": "assets/images/loading_icon.json"
+    "path": "assets/images/loading_icon_2.json"
   },  "splashScreen": {
-    "image": "assets/images/splashscreen.json",
+    "image": "assets/images/splashscreen2.json",
     "animationName": "fluxstore",
     "backgroundColor": "#EDFFE2",
     "paddingBottom": 0,

@@ -99,7 +99,7 @@ class CartModelMagento
 
   /// Magento: get total
   @override
-  double getTotal() {
+  double getTotal({bool includeTaxForShippingCost = true}) {
     var subtotal = getSubTotal();
 
     if (discountAmount > 0) {

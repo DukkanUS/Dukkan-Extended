@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app.dart';
@@ -442,10 +442,12 @@ class _RegistrationScreenMobileState extends State<RegistrationScreenMobile> {
                                         enabledBorder: enabledBorder,
                                         focusedBorder: focusBorder,
                                         labelText: S.of(context).phone,
-                                        hintText:
-                                            S.of(context).enterYourPhoneNumber,
+                                        hintText: '(000) 000-0000',
                                       ),
                                       keyboardType: TextInputType.phone,
+                                      inputFormatters: [
+                                        MaskedInputFormatter('(000) 000-0000', allowedCharMatcher: RegExp(r'[0-9+]')),
+                                      ],
                                     ),
                                   )
                                 ],

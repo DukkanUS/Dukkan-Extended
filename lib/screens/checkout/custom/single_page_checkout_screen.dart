@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -522,7 +523,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                                   Text(
                                                     'Add access code, best entrance, etc,',
                                                     style: TextStyle(
-                                                        color: Colors.blueAccent,
+                                                        color: Colors.grey,
                                                         fontSize: 11,
                                                         fontWeight:
                                                         FontWeight.bold),
@@ -623,6 +624,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                             const Text(
                                               'We use your number to text or call you about your order',
                                               style: TextStyle(
+                                                color: Colors.grey,
                                                   fontSize: 10.5,
                                                   fontWeight:
                                                   FontWeight.bold),
@@ -649,6 +651,9 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                         cartModel.address?.phoneNumber = value;
                                       });
                                     },
+                                    inputFormatters: [
+                                      MaskedInputFormatter('+1 (000) 000-0000', allowedCharMatcher: RegExp(r'[0-9+]')),
+                                    ],
                                   ),
                                 ),
                                 isExpanded: _isPhoneNumberExpanded,
@@ -863,19 +868,20 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                               Text(
                                 S.of(context).subtotal,
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .secondary
-                                      .withOpacity(0.8),
-                                ),
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary)
                               ),
                               Text(
                                   PriceTools.getCurrencyFormatted(
                                       cartModel.getSubTotal(), currencyRate,
                                       currency: cartModel.currencyCode)!,
-                                  style: const TextStyle(
-                                      fontSize: 14, color: kGrey400))
+                                  style:Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    fontSize: 14,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    fontWeight: FontWeight.w600,
+                                  ))
                             ],
                           ),
                         ),
@@ -935,7 +941,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                               ),
                               Text(
                                 PriceTools.getCurrencyFormatted(
-                                    cartModel.getTotal(), currencyRate,
+                                    cartModel.getTotal(includeTaxForShippingCost: false), currencyRate,
                                     currency: cartModel.currencyCode)!,
                                 style: TextStyle(
                                   fontSize: 20,
@@ -974,7 +980,7 @@ class _SingleCheckoutPgeScreenState extends State<SingleCheckoutPgeScreen>
                                     ),
                                     Text(
                                       PriceTools.getCurrencyFormatted(
-                                          (cartModel.getTotal() ?? 0) -
+                                          (cartModel.getTotal(includeTaxForShippingCost: false) ?? 0) -
                                               (snapShot.data?.totalDiscount ??
                                                   0) -
                                               ((snapShot.data?.isFreeShipping ??

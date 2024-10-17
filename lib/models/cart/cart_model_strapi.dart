@@ -37,7 +37,7 @@ class CartModelStrapi
   }
 
   @override
-  double getTotal() {
+  double getTotal({bool includeTaxForShippingCost = true}) {
     var subtotal = getSubTotal()!;
 
     if (subtotal < 0.0) {

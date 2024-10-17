@@ -40,7 +40,7 @@ class CartModelBigCommerce
   }
 
   @override
-  double getTotal() {
+  double getTotal({bool includeTaxForShippingCost = true}) {
     var subtotal = getSubTotal() ?? 1.0;
 
     if (couponObj != null) {

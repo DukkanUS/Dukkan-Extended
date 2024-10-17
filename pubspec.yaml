@@ -106,6 +106,7 @@ dependencies:
   flutter_cache_manager: 3.3.1
   wechat_assets_picker: ^9.0.3
   photo_manager: ^3.1.1
+  flutter_multi_formatter: ^2.0.2
 
   # TOOLS
   google_fonts: 6.1.0

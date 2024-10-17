@@ -357,7 +357,7 @@ class _ShoppingCartSummaryState extends State<ShoppingCartSummary> {
                                   )
                                       : Text(
                                     PriceTools.getCurrencyFormatted(
-                                        cartModel.getTotal()! -
+                                        cartModel.getTotal(includeTaxForShippingCost: false)! -
                                             cartModel.getShippingCost()! -
                                             (snapShot.data
                                                 ?.totalDiscount ??

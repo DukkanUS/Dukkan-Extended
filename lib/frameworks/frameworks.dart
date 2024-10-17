@@ -330,10 +330,11 @@ abstract class BaseFrameworks {
           children: <Widget>[
             Text(
               element.title!,
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
+              style:  TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .secondary),
             ),
             Text(
               PriceTools.getCurrencyFormatted(element.amount, currencyRate,
@@ -493,21 +494,22 @@ abstract class BaseFrameworks {
               children: <Widget>[
                 Expanded(
                   child: Text('Delivery fee',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: isDesktop ? 16 : null,
-                    ),
+                    style:  TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .secondary),
                   ),
                 ),
                 Text(
                   PriceTools.getCurrencyFormatted(
-                      model.getShippingCost(includeTax: true), currencyRate,
+                      model.getShippingCost(includeTax: false), currencyRate,
                       currency: model.currencyCode)!,
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 )
               ],
             ),

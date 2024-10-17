@@ -54,7 +54,7 @@ class CartModelWoo
   }
 
   @override
-  double getTotal() {
+  double getTotal({bool includeTaxForShippingCost = true}) {
     var subtotal = getSubTotal() ?? 1.0;
 
     if (couponObj != null) {
@@ -66,7 +66,7 @@ class CartModelWoo
     }
 
     if (kPaymentConfig.enableShipping) {
-      subtotal += getShippingCost(includeTax: true)!;
+      subtotal += getShippingCost(includeTax: includeTaxForShippingCost)!;
     }
 
     if (taxes.isNotEmpty && !isIncludingTax) {

@@ -24,7 +24,7 @@ abstract class CartModel
   double getItemTotal(
       {ProductVariation? productVariation, Product? product, int quantity = 1});
 
-  double? getTotal();
+  double? getTotal({bool includeTaxForShippingCost = true});
 
   String updateQuantity(Product product, String key, int quantity);
 

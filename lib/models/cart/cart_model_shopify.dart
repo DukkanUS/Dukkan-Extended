@@ -74,7 +74,7 @@ class CartModelShopify
   }
 
   @override
-  double? getTotal() {
+  double? getTotal({bool includeTaxForShippingCost = true}) {
     var subtotal = getSubTotal() ?? 1;
     var shippingCost = 0.0;
     if (kPaymentConfig.enableShipping) {

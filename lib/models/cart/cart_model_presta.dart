@@ -36,7 +36,7 @@ class CartModelPresta
   }
 
   @override
-  double? getTotal() {
+  double? getTotal({bool includeTaxForShippingCost = true}) {
     var subtotal = getSubTotal() ?? 1;
     var amount = couponObj?.amount;
     if (amount != null) {

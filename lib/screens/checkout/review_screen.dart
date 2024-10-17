@@ -259,7 +259,7 @@ class _ReviewState extends BaseScreen<ReviewScreen> {
                                   ),
                                   Text(
                                     PriceTools.getCurrencyFormatted(
-                                        (model.getTotal()??0)-(snapShot.data?.totalDiscount??0)
+                                        (model.getTotal(includeTaxForShippingCost: false)??0)-(snapShot.data?.totalDiscount??0)
                                             -((snapShot.data?.isFreeShipping ?? false) ? model.getShippingCost() ?? 0:0), currencyRate,
                                         currency: model.currencyCode)!,
                                     style: Theme.of(context).textTheme.subtitle1!.copyWith(
