@@ -183,10 +183,10 @@ dependencies:
   graphql: 5.2.0-beta.7
 
   ### Flutter 3 fix warning
-  intl_phone_number_input: # custom feature for phone number
-    git:
-      url: https://github.com/inspireui/intl_phone_number_input
-      ref: 1a3fa368a009eac3cf02a91052956981da10e725
+#  intl_phone_number_input: # custom feature for phone number
+#    git:
+#      url: https://github.com/inspireui/intl_phone_number_input
+#      ref: 1a3fa368a009eac3cf02a91052956981da10e725
   flutter_swiper_null_safety:
     git:
       url: https://github.com/inspireui/flutter_swiper_null_safety
