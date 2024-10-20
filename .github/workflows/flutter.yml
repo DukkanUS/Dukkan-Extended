@@ -9,28 +9,28 @@ on:
       - main
 
 jobs:
-#  build:
-#    runs-on: macos-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v2
-#
-#      - name: Set up JDK
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: '17'
-#
-#      - name: Install Flutter
-#        uses: subosito/flutter-action@v2
-#        with:
-#          flutter-version: '3.24.3'
-#
-#      - name: Install dependencies
-#        run: flutter pub get
+  build:
+    runs-on: macos-latest
 
-  #      - name: Build APK
-  #        run: flutter build apk --release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.6'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
 
   #      - name: Build iOS App
   #        run: flutter build ios --release
@@ -61,6 +61,7 @@ jobs:
 
   verify-firebase:
     runs-on: ubuntu-latest
+    needs: build # Ensure this job runs after the build job
 
     steps:
       - name: Checkout code
@@ -73,6 +74,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: dukkan-testers # Specify a tester group (can be any group)
           releaseNotes: "Connectivity check"
+          file: build/app/outputs/flutter-apk/app-release.apk
 #        env:
 #          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }} # Pass the service account JSON as an environment variable
 
