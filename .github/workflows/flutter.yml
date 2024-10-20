@@ -29,8 +29,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
+#      - name: Build APK
+#        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-file
+          path: temp-apk/app-release.apk
+#          path: build/app/outputs/flutter-apk/app-release.apk
 
   #      - name: Build iOS App
   #        run: flutter build ios --release
@@ -67,6 +74,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: android-apk-file
+
+      - name: List files
+        run: ls -la
+
       - name: Verify Firebase Connectivity
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
@@ -74,7 +89,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: dukkan-testers # Specify a tester group (can be any group)
           releaseNotes: "Connectivity check"
-          file: build/app/outputs/flutter-apk/app-release.apk
+          file: app-release.apk
 #        env:
 #          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }} # Pass the service account JSON as an environment variable
 
