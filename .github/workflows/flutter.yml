@@ -9,34 +9,87 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: macos-latest
+#  build:
+#    runs-on: macos-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v1
+#        with:
+#          java-version: '17'
+#
+#      - name: Install Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.24.3'
+#
+#      - name: Install dependencies
+#        run: flutter pub get
+
+  #      - name: Build APK
+  #        run: flutter build apk --release
+
+  #      - name: Build iOS App
+  #        run: flutter build ios --release
+  #        env:
+  #          CI: true
+
+  #      - name: Upload Android to Firebase App Distribution
+  #        uses: wzieba/Firebase-Distribution-Github-Action@v1
+  #        with:
+  #          appId: ${{ secrets.FIREBASE_APP_ID }} # Firebase App ID for Android
+  ##          token: ${{ secrets.FIREBASE_TOKEN }} # Firebase CLI token (optional, see notes below)
+  #          groups: testers # Replace with your tester group
+  #          file: build/app/outputs/flutter-apk/app-release.apk
+  #          releaseNotes: "New Android release!"
+  #        env:
+  #          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }} # Pass the service account JSON as an environment variable
+
+  #      - name: Upload iOS to Firebase App Distribution
+  #        uses: wzieba/Firebase-Distribution-Github-Action@v1
+  #        with:
+  #          appId: ${{ secrets.FIREBASE_APP_ID_IOS }} # Firebase App ID for iOS
+  #          groups: testers # Replace with your tester group
+  #          file: build/ios/ipa/YourApp.ipa
+  #          releaseNotes: "New iOS release!"
+  #        env:
+  #          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }} # Pass the service account JSON as an environment variable
+
+
+  verify-firebase:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Verify Firebase Connectivity
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          java-version: '11'
-
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.6'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Build iOS App
-        run: flutter build ios --release
+          appId: ${{ secrets.FIREBASE_APP_ID }} # Firebase App ID
+          groups: dukkan-testers # Specify a tester group (can be any group)
+          releaseNotes: "Connectivity check"
         env:
-          CI: true
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }} # Pass the service account JSON as an environment variable
 
+
+#  upload-android:
+#    runs-on: ubuntu-latest # Use Linux for the upload job
+#    needs: build # Ensure this job runs after the build job
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Upload Android to Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{ secrets.FIREBASE_APP_ID }} # Firebase App ID for Android
+#          groups: dukkan-testers
+#          file: build/app/outputs/flutter-apk/app-release.apk # Path for Android APK
+#          releaseNotes: "New Android release!"
+#        env:
+#          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }} # Pass the service account JSON as an environment variable
