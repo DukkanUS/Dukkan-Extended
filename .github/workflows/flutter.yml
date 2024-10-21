@@ -29,34 +29,34 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
+#      - name: Build APK
+#        run: flutter build apk --release
+#
+#      - name: List files
+#        run: ls -la
+#
+#      - name: Upload APK
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: android-apk-file
+##          path: temp-apk/app-release.apk
+#          path: build/app/outputs/flutter-apk/app-release.apk
+#
+#      - name: List files
+#        run: ls -la
+#
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: android-apk-file
 
       - name: List files
         run: ls -la
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-apk-file
-#          path: temp-apk/app-release.apk
-          path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: List files
-        run: ls -la
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: android-apk-file
-
-      - name: List files
-        run: ls -la
-
-  #      - name: Build iOS App
-  #        run: flutter build ios --release
-  #        env:
-  #          CI: true
+      - name: Build iOS App
+        run: flutter build ios --release
+        env:
+          CI: true
 
   #      - name: Upload Android to Firebase App Distribution
   #        uses: wzieba/Firebase-Distribution-Github-Action@v1
